@@ -1,0 +1,58 @@
+install:
+  cache:
+    prepared_shop: false
+  git:
+    repository: 'OXID-eSales/consistency-check-tool'
+    ref: &ref '{{ .Github.RefName }}'
+    shop_url: 'https://github.com/OXID-eSales/consistency-check-tool.git'
+    shop_ref: *ref
+  composer:
+    root_url: ''
+    transform: |
+      {
+          "require": {
+              "oxid-esales/oxideshop-ce": "{{ .Data.global.composer.dev_ref }}"
+          }
+      }
+
+install_shop_with_modules:
+  composer:
+    root_url: ''
+
+runscript: &runscript
+  matrix:
+    script: |
+      [
+        "consistency_check_tool :tests-unit",
+        "consistency_check_tool :tests-integration",
+        "consistency_check_tool :tests-codeception"
+      ]
+  consistency_check_tool :
+    path: ''
+
+runslim:
+  <<: *runscript
+  matrix:
+    script: |
+      [
+        "consistency_check_tool :phpcs-report",
+        "consistency_check_tool :phpmd-report",
+        "consistency_check_tool :phpstan-report"
+      ]
+
+sonarcloud:
+  matrix:
+    testplan: '["-"]'
+  strip_path: '/var/www/'
+  project_key: 'OXID-eSales_consistency-check-tool'
+  project_name: 'oxid-esales/consistency-check-tool'
+  organization: 'oxid-esales'
+  parameters: |
+    -Dsonar.language=php
+    -Dsonar.scm.provider=git
+    -Dsonar.sources=src
+    -Dsonar.tests=tests
+    -Dsonar.php.phpstan.reportPaths=coverage-reports/phpstan.report.json
+
+finish:
+  slack_title: 'Module consistency check tool  ({{ .Data.global.git.shop_ref }}) by {{ .Github.Actor }}'
