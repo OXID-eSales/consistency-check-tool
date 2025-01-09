@@ -1,10 +1,10 @@
 {
     "name": "oxid-esales/consistency-check-tool",
-    "description": "Module with data consistency commands",
-    "type": "oxideshop-module",
+    "description": "The component with data consistency commands",
+    "type": "oxideshop-component",
     "keywords": [
         "oxid",
-        "modules",
+        "component",
         "eShop"
     ],
     "license": [
