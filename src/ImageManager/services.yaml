@@ -8,3 +8,6 @@ services:
 
   OxidEsales\ConsistencyCheck\ImageManager\Factory\ImageDataTypeFactoryInterface:
     class: OxidEsales\ConsistencyCheck\ImageManager\Factory\ImageEntity
+
+    OxidEsales\ConsistencyCheck\Repository\ImageDatabaseRepositoryInterface:
+      class: OxidEsales\ConsistencyCheck\Repository\ImageDatabaseRepository
