@@ -7,24 +7,15 @@
 
 namespace OxidEsales\ConsistencyCheck\ImageManager\DataTransferObject;
 
+use OxidEsales\ConsistencyCheck\ImageManager\DataType\ImageDataTypeInterface;
+
 interface ImageCollectionInterface
 {
-    /**
-     * @param array<string> $images List of image names.
-     */
-    public function add(string $entity, string $field, array $images): void;
+    public function add(ImageDataTypeInterface $image): void;
 
     /**
      * Gets all images in the collection.
-     * @return array<string, array<string, array<string>>>
+     * @return array<ImageDataTypeInterface>
      */
     public function getAll(): array;
-
-    /**
-     * Gets images for a specific entity and field.
-     * @return array<string> List of image names or an empty array.
-     */
-    public function get(string $entity, string $field): array;
-
-    public function diff(ImageCollectionInterface $collection): ImageCollectionInterface;
 }
