@@ -1,3 +1,6 @@
+imports:
+  - { resource: entity/services.yaml }
+
 services:
   _defaults:
     public: false
