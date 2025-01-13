@@ -1,0 +1,5 @@
+name: Manual trigger
+# Matrix workflow using re-usable github actions
+
+on:
+  workflow_dispatch:
