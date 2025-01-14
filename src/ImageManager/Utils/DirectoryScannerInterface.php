@@ -8,8 +8,9 @@
 namespace OxidEsales\ConsistencyCheck\ImageManager\Utils;
 
 use OxidEsales\ConsistencyCheck\ImageManager\DataTransferObject\ImageCollectionInterface;
+use OxidEsales\ConsistencyCheck\ImageManager\Entity\EntityInterface;
 
 interface DirectoryScannerInterface
 {
-    public function scanDirectories(): ImageCollectionInterface;
+    public function scanEntityDirectory(EntityInterface $entity): ImageCollectionInterface;
 }
