@@ -5,6 +5,14 @@ services:
   _defaults:
     public: false
     autowire: true
+    bind:
+      Symfony\Component\Finder\Finder: '@OxidEsales\ConsistencyCheck\ImageManager\Utils\Finder'
+
+  OxidEsales\ConsistencyCheck\ImageManager\Utils\Finder:
+    class: Symfony\Component\Finder\Finder
+
+  OxidEsales\ConsistencyCheck\ImageManager\Utils\FileSystemUtilsInterface:
+    class: OxidEsales\ConsistencyCheck\ImageManager\Utils\FileSystemUtils
 
   OxidEsales\ConsistencyCheck\ImageManager\Factory\ImageDataTypeFactoryInterface:
     class: OxidEsales\ConsistencyCheck\ImageManager\Factory\ImageEntity
