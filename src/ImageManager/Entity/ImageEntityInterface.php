@@ -7,7 +7,7 @@
 
 namespace OxidEsales\ConsistencyCheck\ImageManager\Entity;
 
-interface EntityInterface
+interface ImageEntityInterface
 {
     public function getTable(): string;
     public function getFieldName(): string;

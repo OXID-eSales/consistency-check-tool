@@ -14,7 +14,6 @@ interface ImageCollectionInterface
     public function add(ImageDataTypeInterface $image): void;
 
     /**
-     * Gets all images in the collection.
      * @return array<ImageDataTypeInterface>
      */
     public function getAll(): array;
