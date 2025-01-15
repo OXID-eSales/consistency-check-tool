@@ -1,2 +1,5 @@
+parameters:
+  app.log_file_path: '/var/www/source/log/oe_consistency_check.log'
+
 imports:
   - { resource: src/ImageManager/services.yaml }
