@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 namespace OxidEsales\ConsistencyCheck\ImageManager\Entity;
 
-class ImageEntity implements EntityInterface
+class ImageEntity implements ImageEntityInterface
 {
     public function __construct(
         private readonly string $table,
