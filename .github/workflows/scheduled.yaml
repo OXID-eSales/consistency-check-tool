@@ -7,7 +7,7 @@ on:
     - cron: '16 1 */7 * *'
 
 jobs:
-  module_71x_nightly:
+  module_73x_nightly:
     if: always()
     uses: oxid-eSales/github-actions/.github/workflows/universal_workflow_light.yaml@v4
     with:
