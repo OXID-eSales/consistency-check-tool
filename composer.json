@@ -1,6 +1,6 @@
 {
     "name": "oxid-esales/consistency-check-tool",
-    "description": "The component with data consistency commands",
+    "description": "OXID eSales Consistency Check Component",
     "type": "oxideshop-component",
     "keywords": [
         "oxid",
@@ -12,7 +12,9 @@
     ],
     "require": {
         "php": "^8.2",
-        "symfony/filesystem": "^6.3"
+        "symfony/filesystem": "^6.3",
+        "oxid-esales/oxideshop-pe": "dev-b-7.3.x",
+        "oxid-esales/oxideshop-ee": "dev-b-7.3.x"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
@@ -73,6 +75,20 @@
         "allow-plugins": {
             "oxid-esales/oxideshop-composer-plugin": true,
             "oxid-esales/oxideshop-unified-namespace-generator": true
+        }
+    },
+    "repositories": {
+        "oxid-esales/oxideshop-ee": {
+            "type": "git",
+            "url": "https://github.com/OXID-eSales/oxideshop_ee.git"
+        },
+        "oxid-esales/oxideshop-pe": {
+            "type": "git",
+            "url": "https://github.com/OXID-eSales/oxideshop_pe.git"
+        },
+        "oxid-esales/oxideshop-ce": {
+            "type": "git",
+            "url": "https://github.com/OXID-eSales/oxideshop_ce.git"
         }
     }
 }
