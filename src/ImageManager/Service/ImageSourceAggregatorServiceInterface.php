@@ -11,10 +11,5 @@ use OxidEsales\ConsistencyCheck\ImageManager\DataTransferObject\ImageCollectionI
 
 interface ImageSourceAggregatorServiceInterface
 {
-    /**
-     * Fetches all attached images from the repositories and structures them into an ImageCollection.
-     *
-     * @return ImageCollectionInterface Structured collection of attached images.
-     */
     public function getAttachedImages(): ImageCollectionInterface;
 }

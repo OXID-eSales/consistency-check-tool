@@ -10,7 +10,6 @@ namespace OxidEsales\ConsistencyCheck\ImageManager\Repository;
 interface ImageSourceRepositoryInterface
 {
     /**
-     *
      * @return array<array<string, string|null>>
      */
     public function getAttachedImages(): array;
