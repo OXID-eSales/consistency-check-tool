@@ -33,8 +33,9 @@ class ImageCollectionTest extends TestCase
         $image = new ImageDataType(uniqid(), uniqid(), uniqid());
         $sut->add($image);
 
-        $this->assertCount(1, $sut->getAll());
-        $this->assertSame($image, $sut->getAll()[0]);
+        $allImages = array_values($sut->getAll());
+        $this->assertCount(1, $allImages);
+        $this->assertSame($image, $allImages[0]);
     }
 
     #[Test]
@@ -50,9 +51,32 @@ class ImageCollectionTest extends TestCase
         $sut->add($image2);
         $sut->add($image3);
 
-        $allImages = $sut->getAll();
-
+        $allImages = array_values($sut->getAll());
+        $this->assertCount(3, $allImages);
         $this->assertSame([$image1, $image2, $image3], $allImages);
+    }
+
+    #[Test]
+    public function containsReturnsTrueForExistingImage(): void
+    {
+        $sut = $this->getSut();
+        $image = new ImageDataType(uniqid(), uniqid(), uniqid());
+
+        $sut->add($image);
+
+        $this->assertTrue($sut->contains($image));
+    }
+
+    #[Test]
+    public function containsReturnsFalseForNonExistingImage(): void
+    {
+        $sut = $this->getSut();
+        $image1 = new ImageDataType(uniqid(), uniqid(), uniqid());
+        $image2 = new ImageDataType(uniqid(), uniqid(), uniqid());
+
+        $sut->add($image1);
+
+        $this->assertFalse($sut->contains($image2));
     }
 
     private function getSut(): ImageCollectionInterface

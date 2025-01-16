@@ -14,16 +14,17 @@ use OxidEsales\ConsistencyCheck\ImageManager\DataType\ImageDataTypeInterface;
 class ImageCollection implements ImageCollectionInterface
 {
     /**
-     * @var array<ImageDataTypeInterface>
+     * @var array<string, ImageDataTypeInterface>
      */
-    private array $data = [];
+    private array $imageHashMap = [];
 
     /**
      * @inheritDoc
      */
     public function add(ImageDataTypeInterface $image): void
     {
-        $this->data[] = $image;
+        $hash = $this->hashImage($image);
+        $this->imageHashMap[$hash] = $image;
     }
 
     /**
@@ -31,6 +32,17 @@ class ImageCollection implements ImageCollectionInterface
      */
     public function getAll(): array
     {
-        return $this->data;
+        return $this->imageHashMap;
+    }
+
+    public function contains(ImageDataTypeInterface $image): bool
+    {
+        $hash = $this->hashImage($image);
+        return isset($this->imageHashMap[$hash]);
+    }
+
+    private function hashImage(ImageDataTypeInterface $image): string
+    {
+        return md5($image->getFieldName() . $image->getImageName() . $image->getDirectory());
     }
 }

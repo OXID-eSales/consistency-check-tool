@@ -14,7 +14,9 @@ interface ImageCollectionInterface
     public function add(ImageDataTypeInterface $image): void;
 
     /**
-     * @return array<ImageDataTypeInterface>
+     * @return array<string,ImageDataTypeInterface>
      */
     public function getAll(): array;
+
+    public function contains(ImageDataTypeInterface $image): bool;
 }
