@@ -7,12 +7,15 @@
 
 namespace OxidEsales\ConsistencyCheck\ImageManager\Repository;
 
+use OxidEsales\ConsistencyCheck\ImageManager\DataType\ImageDataTypeInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Entity\ImageEntityInterface;
+use OxidEsales\ConsistencyCheck\ImageManager\Exception\ImageDatabaseRepositoryException;
 
 interface ImageDatabaseRepositoryInterface
 {
     /**
-     * @return array<string>
+     * @return array<ImageDataTypeInterface>
+     * @throws ImageDatabaseRepositoryException
      */
     public function getImages(ImageEntityInterface $entity): array;
 }
