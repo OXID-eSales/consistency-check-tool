@@ -14,18 +14,18 @@ interface FileSystemUtilsInterface
     public function directoryExists(string $directoryPath): bool;
 
     /**
-     * @return array<string> Array of filenames.
-     * @throws FileSystemException If the directory does not exist.
+     * @return array<string>
+     * @throws FileSystemException
      */
     public function getFilesInDirectory(string $directoryPath): array;
 
     /**
-     * @throws FileSystemException If the source file does not exist or the move fails.
+     * @throws FileSystemException
      */
     public function moveFile(string $source, string $destination): void;
 
     /**
-     * @throws FileSystemException If the file does not exist or the delete operation fails.
+     * @throws FileSystemException
      */
     public function deleteFile(string $filePath): void;
 }

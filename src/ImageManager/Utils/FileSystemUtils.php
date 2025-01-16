@@ -68,7 +68,7 @@ class FileSystemUtils implements FileSystemUtilsInterface
     }
 
     /**
-     * @throws FileSystemException If the file does not exist.
+     * @throws FileSystemException
      */
     private function ensureFileExists(string $filePath): void
     {
