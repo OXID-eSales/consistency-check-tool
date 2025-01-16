@@ -1,4 +1,10 @@
+imports:
+  - { resource: entity/services.yaml }
+
 services:
   _defaults:
     public: false
     autowire: true
+
+  OxidEsales\ConsistencyCheck\ImageManager\Factory\ImageDataTypeFactoryInterface:
+    class: OxidEsales\ConsistencyCheck\ImageManager\Factory\ImageEntity

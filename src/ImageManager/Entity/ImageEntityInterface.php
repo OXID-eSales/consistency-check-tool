@@ -9,6 +9,7 @@ namespace OxidEsales\ConsistencyCheck\ImageManager\Entity;
 
 interface ImageEntityInterface
 {
+    public function getName(): string;
     public function getTable(): string;
     public function getFieldName(): string;
     public function getDirectory(): string;

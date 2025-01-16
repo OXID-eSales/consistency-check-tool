@@ -1,0 +1,193 @@
+services:
+  # Product Image Entities
+  oxid_esales.consistency_check.entity.image_entity.product.oxpic1:
+    class: OxidEsales\ConsistencyCheck\Entity\ImageEntity
+    arguments:
+      $name: 'Product'
+      $table: 'oxarticles'
+      $fieldName: 'OXPIC1'
+      $directory: 'pictures/master/products/1'
+    tags: ['oe.consistency_check.image_entity']
+
+  oxid_esales.consistency_check.entity.image_entity.product.oxpic2:
+    class: OxidEsales\ConsistencyCheck\Entity\ImageEntity
+    arguments:
+      $name: 'Product'
+      $table: 'oxarticles'
+      $fieldName: 'OXPIC2'
+      $directory: 'pictures/master/products/2'
+    tags: ['oe.consistency_check.image_entity']
+
+  oxid_esales.consistency_check.entity.image_entity.product.oxpic3:
+    class: OxidEsales\ConsistencyCheck\Entity\ImageEntity
+    arguments:
+      $name: 'Product'
+      $table: 'oxarticles'
+      $fieldName: 'OXPIC3'
+      $directory: 'pictures/master/products/3'
+    tags: ['oe.consistency_check.image_entity']
+
+  oxid_esales.consistency_check.entity.image_entity.product.oxpic4:
+    class: OxidEsales\ConsistencyCheck\Entity\ImageEntity
+    arguments:
+      $name: 'Product'
+      $table: 'oxarticles'
+      $fieldName: 'OXPIC4'
+      $directory: 'pictures/master/products/4'
+    tags: ['oe.consistency_check.image_entity']
+
+  oxid_esales.consistency_check.entity.image_entity.product.oxpic5:
+    class: OxidEsales\ConsistencyCheck\Entity\ImageEntity
+    arguments:
+      $name: 'Product'
+      $table: 'oxarticles'
+      $fieldName: 'OXPIC5'
+      $directory: 'pictures/master/products/5'
+    tags: ['oe.consistency_check.image_entity']
+
+  oxid_esales.consistency_check.entity.image_entity.product.oxpic6:
+    class: OxidEsales\ConsistencyCheck\Entity\ImageEntity
+    arguments:
+      $name: 'Product'
+      $table: 'oxarticles'
+      $fieldName: 'OXPIC6'
+      $directory: 'pictures/master/products/6'
+    tags: ['oe.consistency_check.image_entity']
+
+  oxid_esales.consistency_check.entity.image_entity.product.oxpic7:
+    class: OxidEsales\ConsistencyCheck\Entity\ImageEntity
+    arguments:
+      $name: 'Product'
+      $table: 'oxarticles'
+      $fieldName: 'OXPIC7'
+      $directory: 'pictures/master/products/7'
+    tags: ['oe.consistency_check.image_entity']
+
+  oxid_esales.consistency_check.entity.image_entity.product.oxpic8:
+    class: OxidEsales\ConsistencyCheck\Entity\ImageEntity
+    arguments:
+      $name: 'Product'
+      $table: 'oxarticles'
+      $fieldName: 'OXPIC8'
+      $directory: 'pictures/master/products/8'
+    tags: ['oe.consistency_check.image_entity']
+
+  oxid_esales.consistency_check.entity.image_entity.product.oxpic9:
+    class: OxidEsales\ConsistencyCheck\Entity\ImageEntity
+    arguments:
+      $name: 'Product'
+      $table: 'oxarticles'
+      $fieldName: 'OXPIC9'
+      $directory: 'pictures/master/products/9'
+    tags: ['oe.consistency_check.image_entity']
+
+  oxid_esales.consistency_check.entity.image_entity.product.oxpic10:
+    class: OxidEsales\ConsistencyCheck\Entity\ImageEntity
+    arguments:
+      $name: 'Product'
+      $table: 'oxarticles'
+      $fieldName: 'OXPIC10'
+      $directory: 'pictures/master/products/10'
+    tags: ['oe.consistency_check.image_entity']
+
+  oxid_esales.consistency_check.entity.image_entity.product.oxpic11:
+    class: OxidEsales\ConsistencyCheck\Entity\ImageEntity
+    arguments:
+      $name: 'Product'
+      $table: 'oxarticles'
+      $fieldName: 'OXPIC11'
+      $directory: 'pictures/master/products/11'
+    tags: ['oe.consistency_check.image_entity']
+
+  oxid_esales.consistency_check.entity.image_entity.product.oxpic12:
+    class: OxidEsales\ConsistencyCheck\Entity\ImageEntity
+    arguments:
+      $name: 'Product'
+      $table: 'oxarticles'
+      $fieldName: 'OXPIC12'
+      $directory: 'pictures/master/products/12'
+    tags: ['oe.consistency_check.image_entity']
+
+  oxid_esales.consistency_check.entity.image_entity.product.oxicon:
+    class: OxidEsales\ConsistencyCheck\Entity\ImageEntity
+    arguments:
+      $name: 'Product'
+      $table: 'oxarticles'
+      $fieldName: 'OXICON'
+      $directory: 'pictures/master/products/icon'
+    tags: ['oe.consistency_check.image_entity']
+
+  oxid_esales.consistency_check.entity.image_entity.product.oxthumb:
+    class: OxidEsales\ConsistencyCheck\Entity\ImageEntity
+    arguments:
+      $name: 'Product'
+      $table: 'oxarticles'
+      $fieldName: 'OXTHUMB'
+      $directory: 'pictures/master/products/thumb'
+    tags: ['oe.consistency_check.image_entity']
+
+  # Category Image Entities
+  oxid_esales.consistency_check.entity.image_entity.category.oxthumb:
+    class: OxidEsales\ConsistencyCheck\Entity\ImageEntity
+    arguments:
+      $name: 'Category'
+      $table: 'oxcategories'
+      $fieldName: 'OXTHUMB'
+      $directory: 'pictures/master/category/thumb'
+    tags: ['oe.consistency_check.image_entity']
+
+  oxid_esales.consistency_check.entity.image_entity.category.oxicon:
+    class: OxidEsales\ConsistencyCheck\Entity\ImageEntity
+    arguments:
+      $name: 'Category'
+      $table: 'oxcategories'
+      $fieldName: 'OXICON'
+      $directory: 'pictures/master/category/icon'
+    tags: ['oe.consistency_check.image_entity']
+
+  oxid_esales.consistency_check.entity.image_entity.category.oxpromoicon:
+    class: OxidEsales\ConsistencyCheck\Entity\ImageEntity
+    arguments:
+      $name: 'Category'
+      $table: 'oxcategories'
+      $fieldName: 'OXPROMOICON'
+      $directory: 'pictures/master/category/promo_icon'
+    tags: ['oe.consistency_check.image_entity']
+
+  # Manufacturer Image Entities
+
+  oxid_esales.consistency_check.entity.image_entity.manufacturer.oxicon:
+    class: OxidEsales\ConsistencyCheck\Entity\ImageEntity
+    arguments:
+      $name: 'Manufacturer'
+      $table: 'oxmanufacturers'
+      $fieldName: 'OXICON'
+      $directory: 'pictures/master/manufacturer/icon'
+    tags: ['oe.consistency_check.image_entity']
+
+  oxid_esales.consistency_check.entity.image_entity.manufacturer.oxpicture:
+    class: OxidEsales\ConsistencyCheck\Entity\ImageEntity
+    arguments:
+      $name: 'Manufacturer'
+      $table: 'oxmanufacturers'
+      $fieldName: 'OXPICTURE'
+      $directory: 'pictures/master/manufacturer/picture'
+    tags: ['oe.consistency_check.image_entity']
+
+  oxid_esales.consistency_check.entity.image_entity.manufacturer.oxpromotion_icon:
+    class: OxidEsales\ConsistencyCheck\Entity\ImageEntity
+    arguments:
+      $name: 'Manufacturer'
+      $table: 'oxmanufacturers'
+      $fieldName: 'OXPROMOTION_ICON'
+      $directory: 'pictures/master/manufacturer/promo_icon'
+    tags: ['oe.consistency_check.image_entity']
+
+  oxid_esales.consistency_check.entity.image_entity.manufacturer.oxthumbail:
+    class: OxidEsales\ConsistencyCheck\Entity\ImageEntity
+    arguments:
+      $name: 'Manufacturer'
+      $table: 'oxmanufacturers'
+      $fieldName: 'OXTHUMBNAIL'
+      $directory: 'pictures/master/manufacturer/thumb'
+    tags: ['oe.consistency_check.image_entity']
