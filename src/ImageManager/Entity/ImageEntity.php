@@ -12,10 +12,16 @@ namespace OxidEsales\ConsistencyCheck\ImageManager\Entity;
 class ImageEntity implements ImageEntityInterface
 {
     public function __construct(
+        private readonly string $name,
         private readonly string $table,
         private readonly string $fieldName,
         private readonly string $directory,
     ) {
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
     }
 
     public function getTable(): string

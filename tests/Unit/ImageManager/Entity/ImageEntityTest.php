@@ -17,11 +17,13 @@ class ImageEntityTest extends TestCase
     public function itReturnsCorrectGetterValues()
     {
         $sut  = new ImageEntity(
+            name: $expectedName = uniqid(),
             table: $expectedTable = uniqid(),
             fieldName: $expectedFieldName = uniqid(),
             directory: $expectedDirectory = uniqid(),
         );
 
+        $this->assertSame($expectedName, $sut->getName());
         $this->assertSame($expectedTable, $sut->getTable());
         $this->assertSame($expectedFieldName, $sut->getFieldName());
         $this->assertSame($expectedDirectory, $sut->getDirectory());
