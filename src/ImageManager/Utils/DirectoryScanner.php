@@ -8,7 +8,7 @@
 namespace OxidEsales\ConsistencyCheck\ImageManager\Utils;
 
 use OxidEsales\ConsistencyCheck\ImageManager\DataTransferObject\ImageCollectionInterface;
-use OxidEsales\ConsistencyCheck\ImageManager\Entity\EntityInterface;
+use OxidEsales\ConsistencyCheck\ImageManager\Entity\ImageEntityInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Factory\ImageCollectionFactoryInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Factory\ImageDataTypeFactoryInterface;
 
@@ -21,7 +21,7 @@ class DirectoryScanner implements DirectoryScannerInterface
     ) {
     }
 
-    public function scanEntityDirectory(EntityInterface $entity): ImageCollectionInterface
+    public function scanEntityDirectory(ImageEntityInterface $entity): ImageCollectionInterface
     {
         $directoryPath = $entity->getDirectory();
         $imageCollection = $this->imageCollectionFactory->create();

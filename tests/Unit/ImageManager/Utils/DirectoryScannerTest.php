@@ -10,7 +10,7 @@ namespace OxidEsales\ConsistencyCheck\ImageManager\Tests\Unit\ImageManager\Utils
 use OxidEsales\ConsistencyCheck\ImageManager\DataTransferObject\ImageCollection;
 use OxidEsales\ConsistencyCheck\ImageManager\DataTransferObject\ImageCollectionInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\DataType\ImageDataTypeInterface;
-use OxidEsales\ConsistencyCheck\ImageManager\Entity\EntityInterface;
+use OxidEsales\ConsistencyCheck\ImageManager\Entity\ImageEntityInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Factory\ImageCollectionFactoryInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Factory\ImageDataTypeFactoryInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Utils\DirectoryScanner;
@@ -58,7 +58,7 @@ class DirectoryScannerTest extends TestCase
             imageCollectionFactory: $imageCollectionFactoryMock,
         );
 
-        $entityStub = $this->createStub(EntityInterface::class);
+        $entityStub = $this->createStub(ImageEntityInterface::class);
         $entityStub->method('getDirectory')->willReturn($directoryPath);
         $entityStub->method('getFieldName')->willReturn($testFieldName);
 
@@ -99,7 +99,7 @@ class DirectoryScannerTest extends TestCase
             imageCollectionFactory: $imageCollectionFactoryMock,
         );
 
-        $entityStub = $this->createStub(EntityInterface::class);
+        $entityStub = $this->createStub(ImageEntityInterface::class);
         $entityStub->method('getDirectory')->willReturn($directoryPath);
 
         $result = $sut->scanEntityDirectory($entityStub);
