@@ -5,14 +5,15 @@
  * See LICENSE file for license details.
  */
 
-namespace OxidEsales\ConsistencyCheck\ImageManager\Utils;
+namespace OxidEsales\ConsistencyCheck\ImageManager\Repository;
 
 use OxidEsales\ConsistencyCheck\ImageManager\DataTransferObject\ImageCollectionInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Entity\ImageEntityInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Factory\ImageCollectionFactoryInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Factory\ImageDataTypeFactoryInterface;
+use OxidEsales\ConsistencyCheck\ImageManager\Utils\FileSystemUtilsInterface;
 
-class DirectoryScanner implements DirectoryScannerInterface
+class ImageDirectoryRepository implements ImageRepositoryInterface
 {
     public function __construct(
         private readonly FileSystemUtilsInterface $fileSystemUtils,
@@ -21,7 +22,7 @@ class DirectoryScanner implements DirectoryScannerInterface
     ) {
     }
 
-    public function scanEntityDirectory(ImageEntityInterface $entity): ImageCollectionInterface
+    public function getImages(ImageEntityInterface $entity): ImageCollectionInterface
     {
         $directoryPath = $entity->getDirectory();
         $imageCollection = $this->imageCollectionFactory->create();

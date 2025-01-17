@@ -5,12 +5,12 @@
  * See LICENSE file for license details.
  */
 
-namespace OxidEsales\ConsistencyCheck\ImageManager\Utils;
+namespace OxidEsales\ConsistencyCheck\ImageManager\Repository;
 
 use OxidEsales\ConsistencyCheck\ImageManager\DataTransferObject\ImageCollectionInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Entity\ImageEntityInterface;
 
-interface DirectoryScannerInterface
+interface ImageRepositoryInterface
 {
-    public function scanEntityDirectory(ImageEntityInterface $entity): ImageCollectionInterface;
+    public function getImages(ImageEntityInterface $entity): ImageCollectionInterface;
 }

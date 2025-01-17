@@ -13,13 +13,14 @@ use OxidEsales\ConsistencyCheck\ImageManager\DataType\ImageDataTypeInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Entity\ImageEntityInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Factory\ImageCollectionFactoryInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Factory\ImageDataTypeFactoryInterface;
-use OxidEsales\ConsistencyCheck\ImageManager\Utils\DirectoryScanner;
-use OxidEsales\ConsistencyCheck\ImageManager\Utils\DirectoryScannerInterface;
+use OxidEsales\ConsistencyCheck\ImageManager\Repository\ImageDirectoryRepository;
+use OxidEsales\ConsistencyCheck\ImageManager\Repository\ImageDirectoryRepositoryInterface;
+use OxidEsales\ConsistencyCheck\ImageManager\Repository\ImageRepositoryInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Utils\FileSystemUtilsInterface;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
-class DirectoryScannerTest extends TestCase
+class ImageDirectoryRepositoryTest extends TestCase
 {
     #[Test]
     public function itScansEntityDirectoryReturnsImageCollection(): void
@@ -62,7 +63,7 @@ class DirectoryScannerTest extends TestCase
         $entityStub->method('getDirectory')->willReturn($directoryPath);
         $entityStub->method('getFieldName')->willReturn($testFieldName);
 
-        $imageCollection = $sut->scanEntityDirectory($entityStub);
+        $imageCollection = $sut->getImages($entityStub);
 
         $this->assertInstanceOf(ImageCollectionInterface::class, $imageCollection);
         $this->assertCount(2, $imageCollection->getAll());
@@ -102,7 +103,7 @@ class DirectoryScannerTest extends TestCase
         $entityStub = $this->createStub(ImageEntityInterface::class);
         $entityStub->method('getDirectory')->willReturn($directoryPath);
 
-        $result = $sut->scanEntityDirectory($entityStub);
+        $result = $sut->getImages($entityStub);
 
 
         $this->assertInstanceOf(ImageCollectionInterface::class, $result);
@@ -113,11 +114,11 @@ class DirectoryScannerTest extends TestCase
         ?FileSystemUtilsInterface $fileSystemUtils = null,
         ?ImageDataTypeFactoryInterface $imageFactory = null,
         ?ImageCollectionFactoryInterface $imageCollectionFactory = null,
-    ): DirectoryScannerInterface {
+    ): ImageRepositoryInterface {
             $fileSystemUtils ??= $this->createStub(FileSystemUtilsInterface::class);
             $imageFactory ??= $this->createStub(ImageDataTypeFactoryInterface::class);
             $imageCollectionFactory ??= $this->createStub(ImageCollectionFactoryInterface::class);
-        return new DirectoryScanner(
+        return new ImageDirectoryRepository(
             fileSystemUtils: $fileSystemUtils,
             imageFactory: $imageFactory,
             imageCollectionFactory: $imageCollectionFactory
