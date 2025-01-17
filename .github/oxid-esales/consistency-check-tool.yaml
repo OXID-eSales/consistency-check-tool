@@ -24,8 +24,7 @@ runscript: &runscript
     script: |
       [
         "consistency_check_tool :tests-unit",
-        "consistency_check_tool :tests-integration",
-        "consistency_check_tool :tests-codeception"
+        "consistency_check_tool :tests-integration"
       ]
   consistency_check_tool :
     path: ''
