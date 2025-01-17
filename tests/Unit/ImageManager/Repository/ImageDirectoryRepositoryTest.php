@@ -14,7 +14,6 @@ use OxidEsales\ConsistencyCheck\ImageManager\Entity\ImageEntityInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Factory\ImageCollectionFactoryInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Factory\ImageDataTypeFactoryInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Repository\ImageDirectoryRepository;
-use OxidEsales\ConsistencyCheck\ImageManager\Repository\ImageDirectoryRepositoryInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Repository\ImageRepositoryInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Utils\FileSystemUtilsInterface;
 use PHPUnit\Framework\Attributes\Test;

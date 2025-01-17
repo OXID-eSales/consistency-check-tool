@@ -11,23 +11,26 @@ namespace OxidEsales\ConsistencyCheck\ImageManager\Repository;
 
 use Doctrine\DBAL\Exception as DBALException;
 use Doctrine\DBAL\Result;
+use OxidEsales\ConsistencyCheck\ImageManager\DataTransferObject\ImageCollectionInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Entity\ImageEntityInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Exception\ImageDatabaseRepositoryException;
+use OxidEsales\ConsistencyCheck\ImageManager\Factory\ImageCollectionFactoryInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Factory\ImageDataTypeFactoryInterface;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 
-class ImageDatabaseRepository implements ImageDatabaseRepositoryInterface
+class ImageDatabaseRepository implements ImageRepositoryInterface
 {
     public function __construct(
         private readonly QueryBuilderFactoryInterface $queryBuilderFactory,
         private readonly ImageDataTypeFactoryInterface $imageDataTypeFactory,
+        private readonly ImageCollectionFactoryInterface $imageCollectionFactory,
     ) {
     }
 
     /**
      * @inheritDoc
      */
-    public function getImages(ImageEntityInterface $entity): array
+    public function getImages(ImageEntityInterface $entity): ImageCollectionInterface
     {
         $queryBuilder = $this->queryBuilderFactory->create();
 
@@ -42,15 +45,18 @@ class ImageDatabaseRepository implements ImageDatabaseRepositoryInterface
             $queryResult = $queryBuilder->execute();
 
             $images = [];
+            $imageCollection = $this->imageCollectionFactory->create();
             while ($data = $queryResult->fetchAssociative()) {
-                $images[] = $this->imageDataTypeFactory->createFromFileDetails(
-                    fieldName: $entity->getFieldName(),
-                    imageName: $data[$entity->getFieldName()],
-                    directory: $entity->getDirectory(),
+                $imageCollection->add(
+                    $this->imageDataTypeFactory->createFromFileDetails(
+                        fieldName: $entity->getFieldName(),
+                        imageName: $data[$entity->getFieldName()],
+                        directory: $entity->getDirectory(),
+                    )
                 );
             }
 
-            return $images;
+            return $imageCollection;
         } catch (DBALException) {
             throw new ImageDatabaseRepositoryException($entity->getTable(), $entity->getFieldName());
         }
