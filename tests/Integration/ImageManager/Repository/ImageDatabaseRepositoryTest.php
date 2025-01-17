@@ -81,9 +81,9 @@ class ImageDatabaseRepositoryTest extends IntegrationTestCase
         ?string $directory = null,
     ): ImageEntityInterface {
         $entityStub = $this->createStub(ImageEntityInterface::class);
-        $entityStub->method('getFieldName')->willReturn($filedName ??= uniqid());
-        $entityStub->method('getTable')->willReturn($tableName ??= uniqid());
-        $entityStub->method('getDirectory')->willReturn($directory ??= uniqid());
+        $entityStub->method('getFieldName')->willReturn($filedName ?? uniqid());
+        $entityStub->method('getTable')->willReturn($tableName ?? uniqid());
+        $entityStub->method('getDirectory')->willReturn($directory ?? uniqid());
 
         return $entityStub;
     }

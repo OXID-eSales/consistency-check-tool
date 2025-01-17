@@ -9,6 +9,8 @@ declare(strict_types=1);
 
 namespace OxidEsales\ConsistencyCheck\ImageManager\Repository;
 
+use Doctrine\DBAL\Exception as DBALException;
+use Doctrine\DBAL\Result;
 use OxidEsales\ConsistencyCheck\ImageManager\Entity\ImageEntityInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Exception\ImageDatabaseRepositoryException;
 use OxidEsales\ConsistencyCheck\ImageManager\Factory\ImageDataTypeFactoryInterface;
@@ -36,6 +38,7 @@ class ImageDatabaseRepository implements ImageDatabaseRepositoryInterface
                     $queryBuilder->expr()->isNotNull($entity->getFieldName())
                 );
 
+            /** @var Result $queryResult */
             $queryResult = $queryBuilder->execute();
 
             $images = [];
@@ -48,7 +51,7 @@ class ImageDatabaseRepository implements ImageDatabaseRepositoryInterface
             }
 
             return $images;
-        } catch (\Exception $e) {
+        } catch (DBALException) {
             throw new ImageDatabaseRepositoryException($entity->getTable(), $entity->getFieldName());
         }
     }
