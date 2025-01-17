@@ -5,7 +5,7 @@
  * See LICENSE file for license details.
  */
 
-namespace OxidEsales\ConsistencyCheck\ImageManager\Tests\Unit\ImageManager\Utils;
+namespace OxidEsales\ConsistencyCheck\ImageManager\Tests\Unit\ImageManager\Repository;
 
 use OxidEsales\ConsistencyCheck\ImageManager\DataTransferObject\ImageCollection;
 use OxidEsales\ConsistencyCheck\ImageManager\DataTransferObject\ImageCollectionInterface;
@@ -49,7 +49,11 @@ class ImageDirectoryRepositoryTest extends TestCase
             ->method('createFromFileDetails')
             ->willReturnCallback(function ($fieldName, $fileName, $path) use (&$createdImages) {
                 $createdImages[] = [$fieldName, $fileName, $path];
-                return $this->createMock(ImageDataTypeInterface::class);
+				$mockImage = $this->createStub(ImageDataTypeInterface::class);
+				$mockImage->method('getFieldName')->willReturn($fieldName);
+				$mockImage->method('getImageName')->willReturn($fileName);
+				$mockImage->method('getDirectory')->willReturn($path);
+				return $mockImage;
             });
 
         $sut = $this->getSut(
