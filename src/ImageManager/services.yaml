@@ -1,5 +1,5 @@
 imports:
-  - { resource: entity/services.yaml }
+  - { resource: Entity/services.yaml }
 
 services:
   _defaults:
@@ -9,5 +9,5 @@ services:
   OxidEsales\ConsistencyCheck\ImageManager\Factory\ImageDataTypeFactoryInterface:
     class: OxidEsales\ConsistencyCheck\ImageManager\Factory\ImageEntity
 
-    OxidEsales\ConsistencyCheck\Repository\ImageDatabaseRepositoryInterface:
-      class: OxidEsales\ConsistencyCheck\Repository\ImageDatabaseRepository
+  OxidEsales\ConsistencyCheck\ImageManager\Repository\ImageDatabaseRepositoryInterface:
+    class: OxidEsales\ConsistencyCheck\ImageManager\Repository\ImageDatabaseRepository
