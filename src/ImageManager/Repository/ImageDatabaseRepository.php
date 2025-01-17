@@ -32,7 +32,9 @@ class ImageDatabaseRepository implements ImageDatabaseRepositoryInterface
         try {
             $queryBuilder->select($entity->getFieldName())
                 ->from($entity->getTable())
-                ->where("{$entity->getFieldName()} IS NOT NULL");
+                ->where(
+                    $queryBuilder->expr()->isNotNull($entity->getFieldName())
+                );
 
             $queryResult = $queryBuilder->execute();
 
