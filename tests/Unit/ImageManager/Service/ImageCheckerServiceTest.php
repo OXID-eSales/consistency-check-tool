@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace ImageManager\Service;
+namespace OxidEsales\ConsistencyCheck\ImageManager\Tests\Unit\ImageManager\Service;
 
 use OxidEsales\ConsistencyCheck\ImageManager\DataTransferObject\ImageCollectionInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\DataType\ImageDataTypeInterface;
