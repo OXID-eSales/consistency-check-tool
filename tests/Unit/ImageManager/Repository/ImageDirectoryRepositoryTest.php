@@ -49,11 +49,11 @@ class ImageDirectoryRepositoryTest extends TestCase
             ->method('createFromFileDetails')
             ->willReturnCallback(function ($fieldName, $fileName, $path) use (&$createdImages) {
                 $createdImages[] = [$fieldName, $fileName, $path];
-				$mockImage = $this->createStub(ImageDataTypeInterface::class);
-				$mockImage->method('getFieldName')->willReturn($fieldName);
-				$mockImage->method('getImageName')->willReturn($fileName);
-				$mockImage->method('getDirectory')->willReturn($path);
-				return $mockImage;
+                $mockImage = $this->createStub(ImageDataTypeInterface::class);
+                $mockImage->method('getFieldName')->willReturn($fieldName);
+                $mockImage->method('getImageName')->willReturn($fileName);
+                $mockImage->method('getDirectory')->willReturn($path);
+                return $mockImage;
             });
 
         $sut = $this->getSut(
