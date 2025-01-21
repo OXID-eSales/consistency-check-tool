@@ -15,12 +15,12 @@ use Psr\Log\LoggerInterface as PsrLoggerInterface;
 
 class ImageManagerService implements ImageManagerServiceInterface
 {
-    private const IMAGE_MOVED_SUCCESSFUL = 'Moved image: %s to %s';
-    private const IMAGE_MOVED_DRY_RUN = '[DRY-RUN] Move %s to %s';
-    private const IMAGE_MOVED_FAILED = 'Failed to move image: %s. Error: %s';
-    private const IMAGE_DELETED_SUCCESSFUL = 'Deleted image: %s';
-    private const IMAGE_DELETED_DRY_RUN = '[DRY-RUN] Delete %s';
-    private const IMAGE_DELETED_FAILED = 'Failed to delete image: %s';
+    private const IMAGE_MOVED_SUCCESSFUL = 'Moved image: %s to %s for %s';
+    private const IMAGE_MOVED_DRY_RUN = '[DRY-RUN] Move %s to %s for %s';
+    private const IMAGE_MOVED_FAILED = 'Failed to move image: %s. Error: %s for %s';
+    private const IMAGE_DELETED_SUCCESSFUL = 'Deleted image: %s for %s';
+    private const IMAGE_DELETED_DRY_RUN = '[DRY-RUN] Delete %s for %s';
+    private const IMAGE_DELETED_FAILED = 'Failed to delete image: %s for %s';
 
     public function __construct(
         private readonly FileSystemUtilsInterface $fileSystemUtils,
@@ -33,14 +33,16 @@ class ImageManagerService implements ImageManagerServiceInterface
             $sourcePath = rtrim($image->getDirectory(), '/') . '/' . $image->getImageName();
             $destinationPath = rtrim($destination, '/') . '/' . $image->getImageName();
 
+			$entityDetails = sprintf('[%s:%s]', $image->getFieldName(), $image->getImageName());
+
             if ($dryRun) {
-                $this->logger->info(sprintf(self::IMAGE_MOVED_DRY_RUN, $sourcePath, $destinationPath));
+                $this->logger->info(sprintf(self::IMAGE_MOVED_DRY_RUN, $sourcePath, $destinationPath, $entityDetails));
             } else {
                 try {
                     $this->fileSystemUtils->moveFile($sourcePath, $destinationPath);
-                    $this->logger->info(sprintf(self::IMAGE_MOVED_SUCCESSFUL, $sourcePath, $destinationPath));
+                    $this->logger->info(sprintf(self::IMAGE_MOVED_SUCCESSFUL, $sourcePath, $destinationPath, $entityDetails));
                 } catch (\Exception $e) {
-                    $this->logger->error(sprintf(self::IMAGE_MOVED_FAILED, $sourcePath, $e->getMessage()));
+                    $this->logger->error(sprintf(self::IMAGE_MOVED_FAILED, $sourcePath, $e->getMessage(), $entityDetails));
                 }
             }
         }
@@ -51,14 +53,16 @@ class ImageManagerService implements ImageManagerServiceInterface
         foreach ($images->getAll() as $image) {
             $filePath = rtrim($image->getDirectory(), '/') . '/' . $image->getImageName();
 
-            if ($dryRun) {
-                $this->logger->info(sprintf(self::IMAGE_DELETED_DRY_RUN, $filePath));
+			$entityDetails = sprintf('[%s:%s]', $image->getFieldName(), $image->getImageName());
+
+			if ($dryRun) {
+                $this->logger->info(sprintf(self::IMAGE_DELETED_DRY_RUN, $filePath, $entityDetails));
             } else {
                 try {
                     $this->fileSystemUtils->deleteFile($filePath);
-                    $this->logger->info(sprintf(self::IMAGE_DELETED_SUCCESSFUL, $filePath));
+                    $this->logger->info(sprintf(self::IMAGE_DELETED_SUCCESSFUL, $filePath, $entityDetails));
                 } catch (\Exception $e) {
-                    $this->logger->error(sprintf(self::IMAGE_DELETED_FAILED, $filePath, $e->getMessage()));
+                    $this->logger->error(sprintf(self::IMAGE_DELETED_FAILED, $filePath, $e->getMessage(), $entityDetails));
                 }
             }
         }
