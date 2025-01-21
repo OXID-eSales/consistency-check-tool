@@ -16,9 +16,9 @@ use Psr\Log\LoggerInterface as PsrLoggerInterface;
 class ImageManagerService implements ImageManagerServiceInterface
 {
     private const IMAGE_MOVED_SUCCESSFUL = 'Moved image: %s to %s';
-	private const IMAGE_MOVED_FAILED = 'Failed to move image: %s. Error: %s';
-	private const IMAGE_DELETED_SUCCESSFUL = 'Deleted image: %s';
-	private const IMAGE_DELETED_FAILED = 'Failed to delete image: %s';
+    private const IMAGE_MOVED_FAILED = 'Failed to move image: %s. Error: %s';
+    private const IMAGE_DELETED_SUCCESSFUL = 'Deleted image: %s';
+    private const IMAGE_DELETED_FAILED = 'Failed to delete image: %s';
 
     public function __construct(
         private readonly FileSystemUtilsInterface $fileSystemUtils,
