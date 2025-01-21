@@ -33,15 +33,17 @@ class ImageManagerService implements ImageManagerServiceInterface
             $sourcePath = rtrim($image->getDirectory(), '/') . '/' . $image->getImageName();
             $destinationPath = rtrim($destination, '/') . '/' . $image->getImageName();
 
-			$entityDetails = sprintf('[%s:%s]', $image->getFieldName(), $image->getImageName());
+            $entityDetails = sprintf('[%s:%s]', $image->getFieldName(), $image->getImageName());
 
             if ($dryRun) {
                 $this->logger->info(sprintf(self::IMAGE_MOVED_DRY_RUN, $sourcePath, $destinationPath, $entityDetails));
             } else {
                 try {
                     $this->fileSystemUtils->moveFile($sourcePath, $destinationPath);
+					// phpcs:ignore Generic.Files.LineLength.TooLong
                     $this->logger->info(sprintf(self::IMAGE_MOVED_SUCCESSFUL, $sourcePath, $destinationPath, $entityDetails));
                 } catch (\Exception $e) {
+					// phpcs:ignore Generic.Files.LineLength.TooLong
                     $this->logger->error(sprintf(self::IMAGE_MOVED_FAILED, $sourcePath, $e->getMessage(), $entityDetails));
                 }
             }
@@ -53,15 +55,16 @@ class ImageManagerService implements ImageManagerServiceInterface
         foreach ($images->getAll() as $image) {
             $filePath = rtrim($image->getDirectory(), '/') . '/' . $image->getImageName();
 
-			$entityDetails = sprintf('[%s:%s]', $image->getFieldName(), $image->getImageName());
+            $entityDetails = sprintf('[%s:%s]', $image->getFieldName(), $image->getImageName());
 
-			if ($dryRun) {
+            if ($dryRun) {
                 $this->logger->info(sprintf(self::IMAGE_DELETED_DRY_RUN, $filePath, $entityDetails));
             } else {
                 try {
                     $this->fileSystemUtils->deleteFile($filePath);
                     $this->logger->info(sprintf(self::IMAGE_DELETED_SUCCESSFUL, $filePath, $entityDetails));
                 } catch (\Exception $e) {
+					// phpcs:ignore Generic.Files.LineLength.TooLong
                     $this->logger->error(sprintf(self::IMAGE_DELETED_FAILED, $filePath, $e->getMessage(), $entityDetails));
                 }
             }
