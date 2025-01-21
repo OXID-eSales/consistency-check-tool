@@ -52,3 +52,6 @@ services:
 
   OxidEsales\ConsistencyCheck\ImageManager\Factory\ProgressBarFactoryInterface:
     class: OxidEsales\ConsistencyCheck\ImageManager\Factory\ProgressBarFactory
+
+  OxidEsales\ConsistencyCheck\ImageManager\Service\ImageEntityFilterServiceInterface:
+    class: OxidEsales\ConsistencyCheck\ImageManager\Service\ImageEntityFilterService
