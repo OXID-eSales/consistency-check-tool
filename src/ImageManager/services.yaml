@@ -49,3 +49,6 @@ services:
       $loggerName: 'Consistency Check Logger'
       $logFilePath: '%app.log_file_path%'
       $logLevel: !php/const Psr\Log\LogLevel::DEBUG
+
+  OxidEsales\ConsistencyCheck\ImageManager\Factory\ProgressBarFactoryInterface:
+    class: OxidEsales\ConsistencyCheck\ImageManager\Factory\ProgressBarFactory
