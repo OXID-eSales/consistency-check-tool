@@ -21,6 +21,66 @@ use Psr\Log\LoggerInterface as PsrLoggerInterface;
 class ImageManagerServiceTest extends TestCase
 {
     #[Test]
+    public function itPerformsDryRunMoveSuccessfully(): void
+    {
+        $imageCollectionSpy = $this->createMock(ImageCollectionInterface::class);
+        $imageCollectionSpy
+            ->method('getAll')
+            ->willReturn([
+                uniqid() => $this->createImageStub()
+            ]);
+
+        $fileSystemUtilsSpy = $this->createMock(FileSystemUtilsInterface::class);
+        $fileSystemUtilsSpy
+            ->expects($this->never())
+            ->method('moveFile');
+
+        $loggerSpy = $this->createMock(PsrLoggerInterface::class);
+        $loggerSpy
+            ->method('info')
+            ->with($this->stringContains('[DRY-RUN] Move'));
+
+        $sut = $this->getSut(
+            fileSystemUtils: $fileSystemUtilsSpy,
+            logger: $loggerSpy
+        );
+
+        $sut->moveImages($imageCollectionSpy, uniqid(), true);
+
+        $this->assertTrue(true);
+    }
+
+    #[Test]
+    public function itPerformsDryRunDeleteSuccessfully(): void
+    {
+        $imageCollectionSpy = $this->createMock(ImageCollectionInterface::class);
+        $imageCollectionSpy
+            ->method('getAll')
+            ->willReturn([
+                uniqid() => $this->createImageStub()
+            ]);
+
+        $fileSystemUtilsSpy = $this->createMock(FileSystemUtilsInterface::class);
+        $fileSystemUtilsSpy
+            ->expects($this->never())
+            ->method('deleteFile');
+
+        $loggerSpy = $this->createMock(PsrLoggerInterface::class);
+        $loggerSpy
+            ->method('info')
+            ->with($this->stringContains('[DRY-RUN] Delete'));
+
+        $sut = $this->getSut(
+            fileSystemUtils: $fileSystemUtilsSpy,
+            logger: $loggerSpy
+        );
+
+        $sut->deleteImages($imageCollectionSpy, true);
+
+        $this->assertTrue(true);
+    }
+
+    #[Test]
     public function itMovesImagesSuccessfully(): void
     {
         $destination = uniqid();
