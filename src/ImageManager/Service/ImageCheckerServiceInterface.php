@@ -8,9 +8,9 @@
 namespace OxidEsales\ConsistencyCheck\ImageManager\Service;
 
 use OxidEsales\ConsistencyCheck\ImageManager\DataTransferObject\ImageCollectionInterface;
-use OxidEsales\ConsistencyCheck\ImageManager\Entity\ImageEntity;
+use OxidEsales\ConsistencyCheck\ImageManager\Entity\ImageEntityInterface;
 
 interface ImageCheckerServiceInterface
 {
-    public function getUnusedImages(ImageEntity $entity): ImageCollectionInterface;
+    public function getUnusedImages(ImageEntityInterface $entity): ImageCollectionInterface;
 }
