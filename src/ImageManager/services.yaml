@@ -52,3 +52,6 @@ services:
 
   OxidEsales\ConsistencyCheck\ImageManager\Service\ImageEntityFilterServiceInterface:
     class: OxidEsales\ConsistencyCheck\ImageManager\Service\ImageEntityFilterService
+
+  OxidEsales\ConsistencyCheck\ImageManager\Service\MessageFormatterServiceInterface:
+    class: OxidEsales\ConsistencyCheck\ImageManager\Service\MessageFormatterService
