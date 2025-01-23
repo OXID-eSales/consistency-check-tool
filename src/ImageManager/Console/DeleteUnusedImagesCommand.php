@@ -9,78 +9,31 @@ declare(strict_types=1);
 
 namespace OxidEsales\ConsistencyCheck\ImageManager\Console;
 
-use OxidEsales\ConsistencyCheck\ImageManager\Entity\ImageEntityInterface;
-use OxidEsales\ConsistencyCheck\ImageManager\Service\ImageCheckerServiceInterface;
-use OxidEsales\ConsistencyCheck\ImageManager\Service\ImageEntityFilterServiceInterface;
-use OxidEsales\ConsistencyCheck\ImageManager\Service\ImageManagerServiceInterface;
-use OxidEsales\ConsistencyCheck\ImageManager\Service\MessageFormatterServiceInterface;
-use Psr\Log\LoggerInterface as PsrLoggerInterface;
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class DeleteUnusedImagesCommand extends Command
+class DeleteUnusedImagesCommand extends AbstractUnusedImagesCommand
 {
     protected static $defaultName = 'oe:consistency_check:delete-unused-images';
 
-    private const MESSAGE_PROCESSING = 'Processing unused images for entity: %s';
-    private const MESSAGE_DELETED_IMAGES = 'Deleted %d images for entity %s';
-    private const MESSAGE_NO_IMAGES = 'No unused images found for entity %s';
-    private const MESSAGE_COMPLETION = 'Unused image deletion operation completed.';
-    private const ERROR_PROCESSING = 'Error processing entity %s: %s';
+    protected const MESSAGE_DELETED_IMAGES = 'Deleted %d images for entity %s';
+    protected const MESSAGE_COMPLETION = 'Unused image deletion operation completed.';
 
-    public function __construct(
-        private readonly iterable $entities,
-        private readonly ImageCheckerServiceInterface $imageCheckerService,
-        private readonly ImageManagerServiceInterface $imageManagerService,
-        private readonly ImageEntityFilterServiceInterface $entityFilterService,
-        private readonly MessageFormatterServiceInterface $messageFormatter,
-        private readonly ProgressBar $progressBar,
-        private readonly PsrLoggerInterface $logger
-    ) {
-        parent::__construct();
-    }
+    private const COMMAND_DESCRIPTION = 'Deletes unused images.';
+    private const COMMAND_OPTION_TYPE = 'Entity type to process (product, category, manufacturer)';
+    private const COMMAND_OPTION_DRY_RUN = 'Perform a dry run without actual file deletions';
 
     protected function configure(): void
     {
         $this
-            ->setDescription('Deletes unused images.')
+            ->setDescription(self::COMMAND_DESCRIPTION)
 			// phpcs:ignore Generic.Files.LineLength.TooLong
-            ->addOption('type', null, InputOption::VALUE_OPTIONAL, 'Entity type to process (product, category, manufacturer)')
-            ->addOption('dry-run', null, InputOption::VALUE_NONE, 'Perform a dry run without actual file deletions');
+            ->addOption('type', null, InputOption::VALUE_OPTIONAL, self::COMMAND_OPTION_TYPE)
+            ->addOption('dry-run', null, InputOption::VALUE_NONE, self::COMMAND_OPTION_DRY_RUN);
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output): int
-    {
-        $type = $input->getOption('type');
-        $dryRun = $input->getOption('dry-run');
-
-        $filteredEntities = $this->entityFilterService->filterEntitiesByName($this->entities, $type);
-        $this->progressBar->start(count($filteredEntities));
-
-        foreach ($filteredEntities as $entity) {
-            try {
-                $this->processEntity($entity, $output, $dryRun);
-            } catch (\Exception $e) {
-                $entityDetails = sprintf('[%s:%s]', $entity->getName(), $entity->getFieldName());
-                $this->logger->error(sprintf(self::ERROR_PROCESSING, $entityDetails, $e->getMessage()));
-				// phpcs:ignore Generic.Files.LineLength.TooLong
-                $output->writeln($this->messageFormatter->formatError(self::ERROR_PROCESSING, $entityDetails, $e->getMessage()));
-            }
-
-            $this->progressBar->advance();
-        }
-
-        $this->progressBar->finish();
-        $output->writeln($this->messageFormatter->formatInfo(self::MESSAGE_COMPLETION));
-        $this->logger->info(self::MESSAGE_COMPLETION);
-
-        return Command::SUCCESS;
-    }
-
-    private function processEntity(ImageEntityInterface $entity, OutputInterface $output, bool $dryRun): void
+    protected function processEntity($entity, InputInterface $input, OutputInterface $output): void
     {
         $unusedImages = $this->imageCheckerService->getUnusedImages($entity);
         $entityDetails = sprintf('[%s:%s]', $entity->getName(), $entity->getFieldName());
@@ -89,7 +42,7 @@ class DeleteUnusedImagesCommand extends Command
             $output->writeln($this->messageFormatter->formatInfo(self::MESSAGE_PROCESSING, $entityDetails));
             $this->logger->info(sprintf(self::MESSAGE_PROCESSING, $entityDetails));
 
-            $this->imageManagerService->deleteImages($unusedImages, $dryRun);
+            $this->imageManagerService->deleteImages($unusedImages, $input->getOption('dry-run'));
 
 			// phpcs:ignore Generic.Files.LineLength.TooLong
             $output->writeln($this->messageFormatter->formatInfo(self::MESSAGE_DELETED_IMAGES, count($unusedImages->getAll()), $entityDetails));
