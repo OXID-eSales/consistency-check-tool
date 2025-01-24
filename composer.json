@@ -22,8 +22,7 @@
         "phpmd/phpmd": "^2.15",
         "oxid-esales/oxideshop-ce": "dev-b-7.3.x",
         "phpunit/phpunit": "~10.5.17",
-        "mikey179/vfsstream": "~1.6.8",
-        "oxid-esales/developer-tools": "dev-b-7.3.x"
+        "mikey179/vfsstream": "~1.6.8"
     },
     "conflict": {
         "oxid-esales/oxideshop-ce": "<7.3"
@@ -73,12 +72,6 @@
         "allow-plugins": {
             "oxid-esales/oxideshop-composer-plugin": true,
             "oxid-esales/oxideshop-unified-namespace-generator": true
-        }
-    },
-    "repositories": {
-        "oxid-esales/oxideshop-ce": {
-            "type": "git",
-            "url": "https://github.com/OXID-eSales/oxideshop_ce.git"
         }
     }
 }
