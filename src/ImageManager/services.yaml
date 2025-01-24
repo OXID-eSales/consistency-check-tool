@@ -50,6 +50,9 @@ services:
       $logFilePath: '%app.log_file_path%'
       $logLevel: !php/const Psr\Log\LogLevel::DEBUG
 
+  OxidEsales\ConsistencyCheck\ImageManager\Factory\ProgressBarFactoryInterface:
+    class: OxidEsales\ConsistencyCheck\ImageManager\Factory\ProgressBarFactory
+
   OxidEsales\ConsistencyCheck\ImageManager\Service\ImageEntityFilterServiceInterface:
     class: OxidEsales\ConsistencyCheck\ImageManager\Service\ImageEntityFilterService
 
