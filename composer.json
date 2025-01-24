@@ -12,9 +12,7 @@
     ],
     "require": {
         "php": "^8.2",
-        "symfony/filesystem": "^6.3",
-        "oxid-esales/oxideshop-pe": "dev-b-7.3.x",
-        "oxid-esales/oxideshop-ee": "dev-b-7.3.x"
+        "symfony/filesystem": "^6.3"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
@@ -75,6 +73,12 @@
         "allow-plugins": {
             "oxid-esales/oxideshop-composer-plugin": true,
             "oxid-esales/oxideshop-unified-namespace-generator": true
+        }
+    },
+    "repositories": {
+        "oxid-esales/oxideshop-ce": {
+            "type": "git",
+            "url": "https://github.com/OXID-eSales/oxideshop_ce.git"
         }
     }
 }
