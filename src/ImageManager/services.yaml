@@ -7,7 +7,6 @@ services:
     autowire: true
     bind:
       Symfony\Component\Finder\Finder: '@OxidEsales\ConsistencyCheck\ImageManager\Utils\Finder'
-      Symfony\Component\Console\Helper\ProgressBar: '@OxidEsales\ConsistencyCheck\ImageManager\Utils\ProgressBar'
 
   OxidEsales\ConsistencyCheck\ImageManager\Utils\Finder:
     class: Symfony\Component\Finder\Finder
@@ -32,7 +31,7 @@ services:
     arguments:
       $imageDatabaseRepository: '@OxidEsales\ConsistencyCheck\ImageManager\Repository\ImageDatabaseRepository'
       $imageDirectoryRepository: '@OxidEsales\ConsistencyCheck\ImageManager\Repository\ImageDirectoryRepository'
-      $imageCollectionFactory: '@OxidEsales\ConsistencyCheck\ImageManager\Factory\ImageCollectionFactory'
+      $imageCollectionFactory: '@OxidEsales\ConsistencyCheck\ImageManager\Factory\ImageCollectionFactoryInterface'
       $logger: '@OxidEsales\ConsistencyCheck\ImageManager\Logger'
 
   OxidEsales\ConsistencyCheck\ImageManager\Logger:
@@ -53,6 +52,9 @@ services:
 
   OxidEsales\ConsistencyCheck\ImageManager\Service\ImageEntityFilterServiceInterface:
     class: OxidEsales\ConsistencyCheck\ImageManager\Service\ImageEntityFilterService
+
+  OxidEsales\ConsistencyCheck\ImageManager\Service\ImageManagerServiceInterface:
+    class: OxidEsales\ConsistencyCheck\ImageManager\Service\ImageManagerService
 
   OxidEsales\ConsistencyCheck\ImageManager\Service\MessageFormatterServiceInterface:
     class: OxidEsales\ConsistencyCheck\ImageManager\Service\MessageFormatterService
