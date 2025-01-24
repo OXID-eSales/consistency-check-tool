@@ -62,16 +62,13 @@ services:
   OxidEsales\ConsistencyCheck\ImageManager\Service\MessageFormatterServiceInterface:
     class: OxidEsales\ConsistencyCheck\ImageManager\Service\MessageFormatterService
 
-  OxidEsales\ConsistencyCheck\ImageManager\Utils\ProgressBar:
-    class: Symfony\Component\Console\Helper\ProgressBar
-
   OxidEsales\ConsistencyCheck\ImageManager\Console\MoveUnusedImagesCommand:
     arguments:
       $entities: !tagged_iterator 'oe.consistency_check.image_entity'
       $imageCheckerService: '@OxidEsales\ConsistencyCheck\ImageManager\Service\ImageCheckerServiceInterface'
       $imageManagerService: '@OxidEsales\ConsistencyCheck\ImageManager\Service\ImageManagerServiceInterface'
       $entityFilterService: '@OxidEsales\ConsistencyCheck\ImageManager\Service\ImageEntityFilterServiceInterface'
-      $progressBar: '@OxidEsales\ConsistencyCheck\ImageManager\Utils\ProgressBar'
+      $progressBar: '@OxidEsales\ConsistencyCheck\ImageManager\Factory\ProgressBarFactoryInterface'
       $logger: '@OxidEsales\ConsistencyCheck\ImageManager\Logger'
     tags:
       - { name: 'console.command', command: 'oe.consistency_check:move-unused-images' }
@@ -82,7 +79,7 @@ services:
       $imageCheckerService: '@OxidEsales\ConsistencyCheck\ImageManager\Service\ImageCheckerServiceInterface'
       $imageManagerService: '@OxidEsales\ConsistencyCheck\ImageManager\Service\ImageManagerServiceInterface'
       $entityFilterService: '@OxidEsales\ConsistencyCheck\ImageManager\Service\ImageEntityFilterServiceInterface'
-      $progressBar: '@OxidEsales\ConsistencyCheck\ImageManager\Utils\ProgressBar'
+      $progressBar: '@OxidEsales\ConsistencyCheck\ImageManager\Factory\ProgressBarFactoryInterface'
       $logger: '@OxidEsales\ConsistencyCheck\ImageManager\Logger'
     tags:
       - { name: 'console.command', command: 'oe.consistency_check:delete-unused-images' }

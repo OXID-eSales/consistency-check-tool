@@ -9,13 +9,13 @@ declare(strict_types=1);
 
 namespace OxidEsales\ConsistencyCheck\ImageManager\Console;
 
+use OxidEsales\ConsistencyCheck\ImageManager\Factory\ProgressBarFactoryInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Service\ImageCheckerServiceInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Service\ImageEntityFilterServiceInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Service\ImageManagerServiceInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Service\MessageFormatterServiceInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -30,7 +30,7 @@ abstract class AbstractUnusedImagesCommand extends Command
         protected readonly ImageManagerServiceInterface $imageManagerService,
         protected readonly ImageEntityFilterServiceInterface $entityFilterService,
         protected readonly MessageFormatterServiceInterface $messageFormatter,
-        protected readonly ProgressBar $progressBar,
+        protected readonly ProgressBarFactoryInterface $progressBar,
         protected readonly LoggerInterface $logger
     ) {
         parent::__construct();
@@ -40,7 +40,8 @@ abstract class AbstractUnusedImagesCommand extends Command
     {
         $type = $input->getOption('type');
         $filteredEntities = $this->entityFilterService->filterEntitiesByName($this->entities, $type);
-        $this->progressBar->start(count($filteredEntities));
+        $progressBar = $this->progressBar->create($output, count($filteredEntities));
+        $progressBar->start();
 
         foreach ($filteredEntities as $entity) {
             try {
@@ -51,10 +52,10 @@ abstract class AbstractUnusedImagesCommand extends Command
 				// phpcs:ignore Generic.Files.LineLength.TooLong
                 $output->writeln($this->messageFormatter->formatError(static::ERROR_PROCESSING, $entityDetails, $e->getMessage()));
             }
-            $this->progressBar->advance();
+            $progressBar->advance();
         }
 
-        $this->progressBar->finish();
+        $progressBar->finish();
         $output->writeln($this->messageFormatter->formatInfo(static::MESSAGE_COMPLETION));
         $this->logger->info(static::MESSAGE_COMPLETION);
 

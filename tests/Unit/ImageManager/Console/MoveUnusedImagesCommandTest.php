@@ -12,6 +12,7 @@ namespace OxidEsales\ConsistencyCheck\ImageManager\Tests\Unit\ImageManager\Conso
 use OxidEsales\ConsistencyCheck\ImageManager\Console\MoveUnusedImagesCommand;
 use OxidEsales\ConsistencyCheck\ImageManager\DataTransferObject\ImageCollectionInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Entity\ImageEntityInterface;
+use OxidEsales\ConsistencyCheck\ImageManager\Factory\ProgressBarFactoryInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Service\ImageCheckerServiceInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Service\ImageEntityFilterServiceInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Service\ImageManagerServiceInterface;
@@ -184,9 +185,15 @@ class MoveUnusedImagesCommandTest extends TestCase
         return $entityStub;
     }
 
-    private function createProgressBarStub(): ProgressBar
+    private function createProgressBarFactoryStub(): ProgressBarFactoryInterface
     {
-        return  new ProgressBar(new NullOutput());
+        $progressBarFactory = $this->createMock(ProgressBarFactoryInterface::class);
+        $progressBarMock = new ProgressBar(new NullOutput());
+        $progressBarFactory
+            ->method('create')
+            ->willReturn($progressBarMock);
+
+        return $progressBarFactory;
     }
 
     private function getSut(
@@ -201,7 +208,7 @@ class MoveUnusedImagesCommandTest extends TestCase
         $imageManagerService ??= $this->createStub(ImageManagerServiceInterface::class);
         $imageEntityFilter ??= $this->createStub(ImageEntityFilterServiceInterface::class);
         $messageFormatter ??= $this->createStub(MessageFormatterServiceInterface::class);
-        $progressBar = $this->createProgressBarStub();
+        $progressBar = $this->createProgressBarFactoryStub();
         $logger ??= $this->createStub(LoggerInterface::class);
 
         return new MoveUnusedImagesCommand(
