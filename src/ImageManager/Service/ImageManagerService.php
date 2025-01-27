@@ -39,7 +39,7 @@ class ImageManagerService implements ImageManagerServiceInterface
 
             if ($dryRun) {
                 $this->logger->info(sprintf(self::IMAGE_MOVED_DRY_RUN, $sourcePath, $destinationPath, $entityDetails));
-				$moveCount++;
+                $moveCount++;
             } else {
                 try {
                     $this->fileSystemUtils->moveFile($sourcePath, $destinationPath);
@@ -67,7 +67,7 @@ class ImageManagerService implements ImageManagerServiceInterface
 
             if ($dryRun) {
                 $this->logger->info(sprintf(self::IMAGE_DELETED_DRY_RUN, $filePath, $entityDetails));
-				$deletedCount++;
+                $deletedCount++;
             } else {
                 try {
                     $this->fileSystemUtils->deleteFile($filePath);
