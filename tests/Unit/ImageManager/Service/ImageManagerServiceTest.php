@@ -86,8 +86,8 @@ class ImageManagerServiceTest extends TestCase
         $destination = uniqid();
         $imageMock = $this->createImageStub(uniqid(), $imageName = uniqid(), $sourcePath = uniqid());
 
-        $imageCollectionSpy = $this->createMock(ImageCollectionInterface::class);
-        $imageCollectionSpy
+        $imageCollectionStub = $this->createMock(ImageCollectionInterface::class);
+        $imageCollectionStub
             ->method('getAll')
             ->willReturn([
                 uniqid() => $imageMock
@@ -110,15 +110,17 @@ class ImageManagerServiceTest extends TestCase
             logger: $loggerSpy
         );
 
-        $sut->moveImages($imageCollectionSpy, $destination);
+        $movedCount = $sut->moveImages($imageCollectionStub, $destination);
+
+        $this->assertSame(1, $movedCount);
     }
 
     #[Test]
     public function itLogsErrorWhenMoveFails(): void
     {
         $imageStub = $this->createImageStub();
-        $imageCollectionSpy = $this->createMock(ImageCollectionInterface::class);
-        $imageCollectionSpy
+        $imageCollectionStub = $this->createMock(ImageCollectionInterface::class);
+        $imageCollectionStub
             ->method('getAll')
             ->willReturn([
                 uniqid() => $imageStub
@@ -138,43 +140,22 @@ class ImageManagerServiceTest extends TestCase
             logger: $loggerSpy
         );
 
-        $sut->moveImages(images: $imageCollectionSpy, destination: uniqid());
+        $movedCount = $sut->moveImages(images: $imageCollectionStub, destination: uniqid());
 
-        $this->assertTrue(true);
+        $this->assertSame(0, $movedCount);
     }
 
     #[Test]
-    public function itDeletesImagesSuccessfully(): void
+    public function itHandlesNoImagesToMoveSuccessfully(): void
     {
-        $sourcePath = uniqid();
-        $fileName = uniqid();
+        $imageCollectionStub = $this->createMock(ImageCollectionInterface::class);
+        $imageCollectionStub->method('getAll')->willReturn([]);
 
-        $imageMock = $this->createImageStub(imageName: $fileName, directory: $sourcePath);
-        $imageCollectionSpy = $this->createMock(ImageCollectionInterface::class);
-        $imageCollectionSpy
-            ->method('getAll')
-            ->willReturn([
-                uniqid() => $imageMock
-            ]);
+        $sut = $this->getSut();
 
-        $fileSystemUtilsSpy = $this->createMock(FileSystemUtilsInterface::class);
-        $fileSystemUtilsSpy->expects($this->once())
-            ->method('deleteFile')
-            ->with($sourcePath . '/' . $fileName);
+        $movedCount = $sut->moveImages($imageCollectionStub, uniqid());
 
-        $loggerSpy = $this->createMock(PsrLoggerInterface::class);
-        $loggerSpy
-            ->method('info')
-            ->with(self::stringContains('Deleted image:'));
-
-        $sut = $this->getSut(
-            fileSystemUtils: $fileSystemUtilsSpy,
-            logger: $loggerSpy
-        );
-
-        $sut->deleteImages($imageCollectionSpy);
-
-        $this->assertTrue(true);
+        $this->assertSame(0, $movedCount);
     }
 
     #[Test]
@@ -184,8 +165,8 @@ class ImageManagerServiceTest extends TestCase
         $fileName = uniqid();
 
         $imageMock = $this->createImageStub(imageName: $fileName, directory: $sourcePath);
-        $imageCollectionSpy = $this->createMock(ImageCollectionInterface::class);
-        $imageCollectionSpy
+        $imageCollectionStub = $this->createMock(ImageCollectionInterface::class);
+        $imageCollectionStub
             ->method('getAll')
             ->willReturn([
                 uniqid() => $imageMock
@@ -206,9 +187,56 @@ class ImageManagerServiceTest extends TestCase
             logger: $loggerSpy
         );
 
-        $sut->deleteImages($imageCollectionSpy);
+        $deletedCount = $sut->deleteImages($imageCollectionStub);
 
-        $this->assertTrue(true);
+        $this->assertSame(0, $deletedCount);
+    }
+
+    #[Test]
+    public function itHandlesNoImagesToDeleteSuccessfully(): void
+    {
+        $imageCollectionStub = $this->createMock(ImageCollectionInterface::class);
+        $imageCollectionStub->method('getAll')->willReturn([]);
+
+        $sut = $this->getSut();
+
+        $deletedCount = $sut->deleteImages($imageCollectionStub);
+
+        $this->assertSame(0, $deletedCount);
+    }
+
+    #[Test]
+    public function itDeletesImagesSuccessfully(): void
+    {
+        $sourcePath = uniqid();
+        $fileName = uniqid();
+
+        $imageMock = $this->createImageStub(imageName: $fileName, directory: $sourcePath);
+        $imageCollectionStub = $this->createMock(ImageCollectionInterface::class);
+        $imageCollectionStub
+            ->method('getAll')
+            ->willReturn([
+                uniqid() => $imageMock
+            ]);
+
+        $fileSystemUtilsSpy = $this->createMock(FileSystemUtilsInterface::class);
+        $fileSystemUtilsSpy->expects($this->once())
+            ->method('deleteFile')
+            ->with($sourcePath . '/' . $fileName);
+
+        $loggerSpy = $this->createMock(PsrLoggerInterface::class);
+        $loggerSpy
+            ->method('info')
+            ->with(self::stringContains('Deleted image:'));
+
+        $sut = $this->getSut(
+            fileSystemUtils: $fileSystemUtilsSpy,
+            logger: $loggerSpy
+        );
+
+        $deletedCount = $sut->deleteImages($imageCollectionStub);
+
+        $this->assertSame(1, $deletedCount);
     }
 
     private function createImageStub(

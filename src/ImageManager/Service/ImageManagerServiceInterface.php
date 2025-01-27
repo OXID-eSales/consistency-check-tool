@@ -11,6 +11,6 @@ use OxidEsales\ConsistencyCheck\ImageManager\DataTransferObject\ImageCollectionI
 
 interface ImageManagerServiceInterface
 {
-    public function moveImages(ImageCollectionInterface $images, string $destination, bool $dryRun = false): void;
-    public function deleteImages(ImageCollectionInterface $images, bool $dryRun = false): void;
+    public function moveImages(ImageCollectionInterface $images, string $destination, bool $dryRun = false): int;
+    public function deleteImages(ImageCollectionInterface $images, bool $dryRun = false): int;
 }

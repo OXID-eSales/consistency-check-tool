@@ -27,8 +27,10 @@ class ImageManagerService implements ImageManagerServiceInterface
         private readonly PsrLoggerInterface $logger
     ) {
     }
-    public function moveImages(ImageCollectionInterface $images, string $destination, bool $dryRun = false): void
+    public function moveImages(ImageCollectionInterface $images, string $destination, bool $dryRun = false): int
     {
+        $moveCount = 0;
+
         foreach ($images->getAll() as $image) {
             $sourcePath = rtrim($image->getDirectory(), '/') . '/' . $image->getImageName();
             $destinationPath = rtrim($destination, '/') . '/' . $image->getImageName();
@@ -40,6 +42,7 @@ class ImageManagerService implements ImageManagerServiceInterface
             } else {
                 try {
                     $this->fileSystemUtils->moveFile($sourcePath, $destinationPath);
+                    $moveCount++;
 					// phpcs:ignore Generic.Files.LineLength.TooLong
                     $this->logger->info(sprintf(self::IMAGE_MOVED_SUCCESSFUL, $sourcePath, $destinationPath, $entityDetails));
                 } catch (\Exception $e) {
@@ -48,10 +51,14 @@ class ImageManagerService implements ImageManagerServiceInterface
                 }
             }
         }
+
+        return $moveCount;
     }
 
-    public function deleteImages(ImageCollectionInterface $images, bool $dryRun = false): void
+    public function deleteImages(ImageCollectionInterface $images, bool $dryRun = false): int
     {
+        $deletedCount = 0;
+
         foreach ($images->getAll() as $image) {
             $filePath = rtrim($image->getDirectory(), '/') . '/' . $image->getImageName();
 
@@ -62,6 +69,7 @@ class ImageManagerService implements ImageManagerServiceInterface
             } else {
                 try {
                     $this->fileSystemUtils->deleteFile($filePath);
+                    $deletedCount++;
                     $this->logger->info(sprintf(self::IMAGE_DELETED_SUCCESSFUL, $filePath, $entityDetails));
                 } catch (\Exception $e) {
 					// phpcs:ignore Generic.Files.LineLength.TooLong
@@ -69,5 +77,7 @@ class ImageManagerService implements ImageManagerServiceInterface
                 }
             }
         }
+
+        return $deletedCount;
     }
 }
