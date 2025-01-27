@@ -58,11 +58,11 @@ class MoveUnusedImagesCommand extends AbstractUnusedImagesCommand
             $this->logger->info(sprintf(self::MESSAGE_PROCESSING, $entityDetails));
 
 			// phpcs:ignore Generic.Files.LineLength.TooLong
-            $this->imageManagerService->moveImages($unusedImages, $input->getOption('destination'), $input->getOption('dry-run'));
+            $movedImagesCount = $this->imageManagerService->moveImages($unusedImages, $input->getOption('destination'), $input->getOption('dry-run'));
 
 			// phpcs:ignore Generic.Files.LineLength.TooLong
-            $output->writeln($this->messageFormatter->formatInfo(self::MESSAGE_MOVED_IMAGES, count($unusedImages->getAll()), $entityDetails));
-            $this->logger->info(sprintf(self::MESSAGE_MOVED_IMAGES, count($unusedImages->getAll()), $entityDetails));
+            $output->writeln($this->messageFormatter->formatInfo(self::MESSAGE_MOVED_IMAGES, $movedImagesCount, $entityDetails));
+            $this->logger->info(sprintf(self::MESSAGE_MOVED_IMAGES, $movedImagesCount, $entityDetails));
         } else {
             $output->writeln($this->messageFormatter->formatComment(self::MESSAGE_NO_IMAGES, $entityDetails));
             $this->logger->info(sprintf(self::MESSAGE_NO_IMAGES, $entityDetails));

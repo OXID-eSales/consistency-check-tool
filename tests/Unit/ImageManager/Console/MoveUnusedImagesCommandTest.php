@@ -61,7 +61,8 @@ class MoveUnusedImagesCommandTest extends TestCase
         $imageManagerServiceStub = $this->createStub(ImageManagerServiceInterface::class);
         $imageManagerServiceStub
             ->expects(self::once())
-            ->method('moveImages');
+            ->method('moveImages')
+            ->willReturn(1);
 
         $entityFilterServiceStub = $this->createStub(ImageEntityFilterServiceInterface::class);
         $entityFilterServiceStub

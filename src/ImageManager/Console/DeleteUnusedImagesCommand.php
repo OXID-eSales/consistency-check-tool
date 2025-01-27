@@ -39,14 +39,14 @@ class DeleteUnusedImagesCommand extends AbstractUnusedImagesCommand
         $entityDetails = sprintf('[%s:%s]', $entity->getName(), $entity->getFieldName());
 
         if ($unusedImages->getAll()) {
-            $output->writeln($this->messageFormatter->formatInfo(self::MESSAGE_PROCESSING, $entityDetails));
+            $output->writeln("\n" . $this->messageFormatter->formatInfo(self::MESSAGE_PROCESSING, $entityDetails));
             $this->logger->info(sprintf(self::MESSAGE_PROCESSING, $entityDetails));
 
-            $this->imageManagerService->deleteImages($unusedImages, $input->getOption('dry-run'));
+            $deletedImagesCount = $this->imageManagerService->deleteImages($unusedImages, $input->getOption('dry-run'));
 
 			// phpcs:ignore Generic.Files.LineLength.TooLong
-            $output->writeln($this->messageFormatter->formatInfo(self::MESSAGE_DELETED_IMAGES, count($unusedImages->getAll()), $entityDetails));
-            $this->logger->info(sprintf(self::MESSAGE_DELETED_IMAGES, count($unusedImages->getAll()), $entityDetails));
+            $output->writeln($this->messageFormatter->formatInfo(self::MESSAGE_DELETED_IMAGES, $deletedImagesCount, $entityDetails));
+            $this->logger->info(sprintf(self::MESSAGE_DELETED_IMAGES, $deletedImagesCount, $entityDetails));
         } else {
             $output->writeln($this->messageFormatter->formatComment(self::MESSAGE_NO_IMAGES, $entityDetails));
             $this->logger->info(sprintf(self::MESSAGE_NO_IMAGES, $entityDetails));

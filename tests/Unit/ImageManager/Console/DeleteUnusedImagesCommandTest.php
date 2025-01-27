@@ -42,7 +42,8 @@ class DeleteUnusedImagesCommandTest extends TestCase
         $imageManagerServiceStub = $this->createStub(ImageManagerServiceInterface::class);
         $imageManagerServiceStub
             ->expects(self::once())
-            ->method('deleteImages');
+            ->method('deleteImages')
+            ->willReturn(1);
 
         $entityFilterServiceStub = $this->createStub(ImageEntityFilterServiceInterface::class);
         $entityFilterServiceStub

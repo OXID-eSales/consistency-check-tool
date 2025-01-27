@@ -56,7 +56,7 @@ abstract class AbstractUnusedImagesCommand extends Command
         }
 
         $progressBar->finish();
-        $output->writeln($this->messageFormatter->formatInfo(static::MESSAGE_COMPLETION));
+        $output->writeln("\n" . $this->messageFormatter->formatInfo(static::MESSAGE_COMPLETION));
         $this->logger->info(static::MESSAGE_COMPLETION);
 
         return Command::SUCCESS;
