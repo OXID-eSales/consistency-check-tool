@@ -54,17 +54,17 @@ class MoveUnusedImagesCommand extends AbstractUnusedImagesCommand
         $entityDetails = sprintf('[%s:%s]', $entity->getName(), $entity->getFieldName());
 
         if ($unusedImages->getAll()) {
-            $output->writeln($this->messageFormatter->formatInfo(self::MESSAGE_PROCESSING, $entityDetails));
+            $output->writeln("\n" . $this->messageFormatter->formatInfo(self::MESSAGE_PROCESSING, $entityDetails));
             $this->logger->info(sprintf(self::MESSAGE_PROCESSING, $entityDetails));
 
 			// phpcs:ignore Generic.Files.LineLength.TooLong
             $movedImagesCount = $this->imageManagerService->moveImages($unusedImages, $input->getOption('destination'), $input->getOption('dry-run'));
 
 			// phpcs:ignore Generic.Files.LineLength.TooLong
-            $output->writeln($this->messageFormatter->formatInfo(self::MESSAGE_MOVED_IMAGES, $movedImagesCount, $entityDetails));
+            $output->writeln("\n" . $this->messageFormatter->formatInfo(self::MESSAGE_MOVED_IMAGES, $movedImagesCount, $entityDetails));
             $this->logger->info(sprintf(self::MESSAGE_MOVED_IMAGES, $movedImagesCount, $entityDetails));
         } else {
-            $output->writeln($this->messageFormatter->formatComment(self::MESSAGE_NO_IMAGES, $entityDetails));
+            $output->writeln("\n" . $this->messageFormatter->formatComment(self::MESSAGE_NO_IMAGES, $entityDetails));
             $this->logger->info(sprintf(self::MESSAGE_NO_IMAGES, $entityDetails));
         }
     }

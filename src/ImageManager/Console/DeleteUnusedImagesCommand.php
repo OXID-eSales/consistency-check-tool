@@ -45,10 +45,10 @@ class DeleteUnusedImagesCommand extends AbstractUnusedImagesCommand
             $deletedImagesCount = $this->imageManagerService->deleteImages($unusedImages, $input->getOption('dry-run'));
 
 			// phpcs:ignore Generic.Files.LineLength.TooLong
-            $output->writeln($this->messageFormatter->formatInfo(self::MESSAGE_DELETED_IMAGES, $deletedImagesCount, $entityDetails));
+            $output->writeln("\n" . $this->messageFormatter->formatInfo(self::MESSAGE_DELETED_IMAGES, $deletedImagesCount, $entityDetails));
             $this->logger->info(sprintf(self::MESSAGE_DELETED_IMAGES, $deletedImagesCount, $entityDetails));
         } else {
-            $output->writeln($this->messageFormatter->formatComment(self::MESSAGE_NO_IMAGES, $entityDetails));
+            $output->writeln("\n" . $this->messageFormatter->formatComment(self::MESSAGE_NO_IMAGES, $entityDetails));
             $this->logger->info(sprintf(self::MESSAGE_NO_IMAGES, $entityDetails));
         }
     }
