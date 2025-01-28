@@ -11,11 +11,11 @@
         "GPL-3.0"
     ],
     "require": {
-        "php": "^8.2",
-        "symfony/filesystem": "^6.3"
+        "php": "^8.2"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
+    "prefer-dist": true,
     "require-dev": {
         "phpstan/phpstan": "^2.0.2",
         "squizlabs/php_codesniffer": "^3.10",
@@ -29,13 +29,8 @@
     },
     "autoload": {
         "psr-4": {
-            "OxidEsales\\ConsistencyCheck\\": "src/"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "OxidEsales\\ConsistencyCheck\\Tests\\": "tests/",
-            "OxidEsales\\EshopCommunity\\Tests\\": "./vendor/oxid-esales/oxideshop-ce/tests"
+            "OxidEsales\\ConsistencyCheck\\": "src/",
+            "OxidEsales\\ConsistencyCheck\\Tests\\": "tests/"
         }
     },
     "scripts": {
@@ -70,7 +65,7 @@
     },
     "config": {
         "allow-plugins": {
-            "oxid-esales/oxideshop-composer-plugin": true,
+            "oxid-esales/oxideshop-composer-plugin": false,
             "oxid-esales/oxideshop-unified-namespace-generator": true
         }
     }
