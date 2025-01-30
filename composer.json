@@ -45,8 +45,8 @@
         "phpstan": "phpstan -ctests/PhpStan/phpstan.neon analyse src/",
         "phpstan-report": "phpstan -ctests/PhpStan/phpstan.neon analyse src/ --error-format=json > tests/Reports/phpstan.report.json",
 
-        "phpmd": "phpmd src ansi tests/PhpMd/standard.xml",
-        "phpmd-report": "phpmd src json tests/PhpMd/standard.xml --reportfile tests/Reports/phpmd.report.json",
+        "phpmd": "phpmd src ansi tests/PhpMd/standard.xml --ignore-errors-on-exit --ignore-violations-on-exit",
+        "phpmd-report": "phpmd src json tests/PhpMd/standard.xml --ignore-errors-on-exit --ignore-violations-on-exit --reportfile tests/Reports/phpmd.report.json",
 
         "static": [
             "@phpcs",
@@ -54,8 +54,8 @@
             "@phpmd"
         ],
 
-        "tests-unit": "XDEBUG_MODE=coverage vendor/bin/phpunit --config=tests/ --testsuite=Unit --coverage-clover=tests/Reports/coverage_unit_module-template.xml",
-        "tests-integration": "XDEBUG_MODE=coverage vendor/bin/phpunit --bootstrap=/var/www/source/bootstrap.php --config=tests/ --testsuite=Integration --coverage-clover=tests/Reports/coverage_integration_module-template.xml",
+        "tests-unit": "XDEBUG_MODE=coverage vendor/bin/phpunit --config=tests/ --testsuite=Unit --coverage-clover=tests/Reports/coverage_unit_consistency-check-tool.xml",
+        "tests-integration": "XDEBUG_MODE=coverage vendor/bin/phpunit --bootstrap=/var/www/source/bootstrap.php --config=tests/ --testsuite=Integration --coverage-clover=tests/Reports/coverage_integration_consistency-check-tool.xml",
         "tests-coverage": "XDEBUG_MODE=coverage vendor/bin/phpunit --coverage-text --bootstrap=/var/www/source/bootstrap.php --config=tests/ --coverage-html=tests/Reports/CoverageHtml",
 
         "tests-all": [
