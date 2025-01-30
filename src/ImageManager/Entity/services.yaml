@@ -1,7 +1,7 @@
 services:
   # Product Image Entities
   oxid_esales.consistency_check.entity.image_entity.product.oxpic1:
-    class: OxidEsales\ConsistencyCheck\Entity\ImageEntity
+    class: OxidEsales\ConsistencyCheck\ImageManager\Entity\ImageEntity
     arguments:
       $name: 'Product'
       $table: 'oxarticles'
@@ -10,7 +10,7 @@ services:
     tags: ['oe.consistency_check.image_entity']
 
   oxid_esales.consistency_check.entity.image_entity.product.oxpic2:
-    class: OxidEsales\ConsistencyCheck\Entity\ImageEntity
+    class: OxidEsales\ConsistencyCheck\ImageManager\Entity\ImageEntity
     arguments:
       $name: 'Product'
       $table: 'oxarticles'
@@ -19,7 +19,7 @@ services:
     tags: ['oe.consistency_check.image_entity']
 
   oxid_esales.consistency_check.entity.image_entity.product.oxpic3:
-    class: OxidEsales\ConsistencyCheck\Entity\ImageEntity
+    class: OxidEsales\ConsistencyCheck\ImageManager\Entity\ImageEntity
     arguments:
       $name: 'Product'
       $table: 'oxarticles'
@@ -28,7 +28,7 @@ services:
     tags: ['oe.consistency_check.image_entity']
 
   oxid_esales.consistency_check.entity.image_entity.product.oxpic4:
-    class: OxidEsales\ConsistencyCheck\Entity\ImageEntity
+    class: OxidEsales\ConsistencyCheck\ImageManager\Entity\ImageEntity
     arguments:
       $name: 'Product'
       $table: 'oxarticles'
@@ -37,7 +37,7 @@ services:
     tags: ['oe.consistency_check.image_entity']
 
   oxid_esales.consistency_check.entity.image_entity.product.oxpic5:
-    class: OxidEsales\ConsistencyCheck\Entity\ImageEntity
+    class: OxidEsales\ConsistencyCheck\ImageManager\Entity\ImageEntity
     arguments:
       $name: 'Product'
       $table: 'oxarticles'
@@ -46,7 +46,7 @@ services:
     tags: ['oe.consistency_check.image_entity']
 
   oxid_esales.consistency_check.entity.image_entity.product.oxpic6:
-    class: OxidEsales\ConsistencyCheck\Entity\ImageEntity
+    class: OxidEsales\ConsistencyCheck\ImageManager\Entity\ImageEntity
     arguments:
       $name: 'Product'
       $table: 'oxarticles'
@@ -55,7 +55,7 @@ services:
     tags: ['oe.consistency_check.image_entity']
 
   oxid_esales.consistency_check.entity.image_entity.product.oxpic7:
-    class: OxidEsales\ConsistencyCheck\Entity\ImageEntity
+    class: OxidEsales\ConsistencyCheck\ImageManager\Entity\ImageEntity
     arguments:
       $name: 'Product'
       $table: 'oxarticles'
@@ -64,7 +64,7 @@ services:
     tags: ['oe.consistency_check.image_entity']
 
   oxid_esales.consistency_check.entity.image_entity.product.oxpic8:
-    class: OxidEsales\ConsistencyCheck\Entity\ImageEntity
+    class: OxidEsales\ConsistencyCheck\ImageManager\Entity\ImageEntity
     arguments:
       $name: 'Product'
       $table: 'oxarticles'
@@ -73,7 +73,7 @@ services:
     tags: ['oe.consistency_check.image_entity']
 
   oxid_esales.consistency_check.entity.image_entity.product.oxpic9:
-    class: OxidEsales\ConsistencyCheck\Entity\ImageEntity
+    class: OxidEsales\ConsistencyCheck\ImageManager\Entity\ImageEntity
     arguments:
       $name: 'Product'
       $table: 'oxarticles'
@@ -82,7 +82,7 @@ services:
     tags: ['oe.consistency_check.image_entity']
 
   oxid_esales.consistency_check.entity.image_entity.product.oxpic10:
-    class: OxidEsales\ConsistencyCheck\Entity\ImageEntity
+    class: OxidEsales\ConsistencyCheck\ImageManager\Entity\ImageEntity
     arguments:
       $name: 'Product'
       $table: 'oxarticles'
@@ -91,7 +91,7 @@ services:
     tags: ['oe.consistency_check.image_entity']
 
   oxid_esales.consistency_check.entity.image_entity.product.oxpic11:
-    class: OxidEsales\ConsistencyCheck\Entity\ImageEntity
+    class: OxidEsales\ConsistencyCheck\ImageManager\Entity\ImageEntity
     arguments:
       $name: 'Product'
       $table: 'oxarticles'
@@ -100,7 +100,7 @@ services:
     tags: ['oe.consistency_check.image_entity']
 
   oxid_esales.consistency_check.entity.image_entity.product.oxpic12:
-    class: OxidEsales\ConsistencyCheck\Entity\ImageEntity
+    class: OxidEsales\ConsistencyCheck\ImageManager\Entity\ImageEntity
     arguments:
       $name: 'Product'
       $table: 'oxarticles'
@@ -109,7 +109,7 @@ services:
     tags: ['oe.consistency_check.image_entity']
 
   oxid_esales.consistency_check.entity.image_entity.product.oxicon:
-    class: OxidEsales\ConsistencyCheck\Entity\ImageEntity
+    class: OxidEsales\ConsistencyCheck\ImageManager\Entity\ImageEntity
     arguments:
       $name: 'Product'
       $table: 'oxarticles'
@@ -118,7 +118,7 @@ services:
     tags: ['oe.consistency_check.image_entity']
 
   oxid_esales.consistency_check.entity.image_entity.product.oxthumb:
-    class: OxidEsales\ConsistencyCheck\Entity\ImageEntity
+    class: OxidEsales\ConsistencyCheck\ImageManager\Entity\ImageEntity
     arguments:
       $name: 'Product'
       $table: 'oxarticles'
@@ -128,7 +128,7 @@ services:
 
   # Category Image Entities
   oxid_esales.consistency_check.entity.image_entity.category.oxthumb:
-    class: OxidEsales\ConsistencyCheck\Entity\ImageEntity
+    class: OxidEsales\ConsistencyCheck\ImageManager\Entity\ImageEntity
     arguments:
       $name: 'Category'
       $table: 'oxcategories'
@@ -137,7 +137,7 @@ services:
     tags: ['oe.consistency_check.image_entity']
 
   oxid_esales.consistency_check.entity.image_entity.category.oxicon:
-    class: OxidEsales\ConsistencyCheck\Entity\ImageEntity
+    class: OxidEsales\ConsistencyCheck\ImageManager\Entity\ImageEntity
     arguments:
       $name: 'Category'
       $table: 'oxcategories'
@@ -146,7 +146,7 @@ services:
     tags: ['oe.consistency_check.image_entity']
 
   oxid_esales.consistency_check.entity.image_entity.category.oxpromoicon:
-    class: OxidEsales\ConsistencyCheck\Entity\ImageEntity
+    class: OxidEsales\ConsistencyCheck\ImageManager\Entity\ImageEntity
     arguments:
       $name: 'Category'
       $table: 'oxcategories'
@@ -157,7 +157,7 @@ services:
   # Manufacturer Image Entities
 
   oxid_esales.consistency_check.entity.image_entity.manufacturer.oxicon:
-    class: OxidEsales\ConsistencyCheck\Entity\ImageEntity
+    class: OxidEsales\ConsistencyCheck\ImageManager\Entity\ImageEntity
     arguments:
       $name: 'Manufacturer'
       $table: 'oxmanufacturers'
@@ -166,7 +166,7 @@ services:
     tags: ['oe.consistency_check.image_entity']
 
   oxid_esales.consistency_check.entity.image_entity.manufacturer.oxpicture:
-    class: OxidEsales\ConsistencyCheck\Entity\ImageEntity
+    class: OxidEsales\ConsistencyCheck\ImageManager\Entity\ImageEntity
     arguments:
       $name: 'Manufacturer'
       $table: 'oxmanufacturers'
@@ -175,7 +175,7 @@ services:
     tags: ['oe.consistency_check.image_entity']
 
   oxid_esales.consistency_check.entity.image_entity.manufacturer.oxpromotion_icon:
-    class: OxidEsales\ConsistencyCheck\Entity\ImageEntity
+    class: OxidEsales\ConsistencyCheck\ImageManager\Entity\ImageEntity
     arguments:
       $name: 'Manufacturer'
       $table: 'oxmanufacturers'
@@ -184,7 +184,7 @@ services:
     tags: ['oe.consistency_check.image_entity']
 
   oxid_esales.consistency_check.entity.image_entity.manufacturer.oxthumbail:
-    class: OxidEsales\ConsistencyCheck\Entity\ImageEntity
+    class: OxidEsales\ConsistencyCheck\ImageManager\Entity\ImageEntity
     arguments:
       $name: 'Manufacturer'
       $table: 'oxmanufacturers'
