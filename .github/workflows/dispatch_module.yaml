@@ -22,12 +22,12 @@ on:
 
 jobs:
   build_testplan:
-    runs-on: ubuntu-latest
+    runs-on: ["self-hosted", "x64"]
     outputs:
-      testplan: '${{ steps.build.outputs.testplan }}'
+      testplan: '${{ steps.build_testplan.outputs.testplan }}'
     steps:
       - name: 'Build testplan'
-        id: build
+        id: build_testplan
         run: |
           # Build testplan
           # shellcheck disable=SC2088
@@ -51,7 +51,7 @@ jobs:
     uses: oxid-eSales/github-actions/.github/workflows/universal_workflow_light.yaml@v4
     with:
       testplan: ${{ needs.build_testplan.outputs.testplan }}
-      runs_on: '"ubuntu-latest"'
+      runs_on: '["self-hosted", "x64"]'
       defaults: 'v4'
       plan_folder: '.github/oxid-esales'
     secrets:
@@ -70,7 +70,7 @@ jobs:
     uses: oxid-eSales/github-actions/.github/workflows/universal_workflow_light.yaml@v0
     with:
       testplan: ${{ needs.build_testplan.outputs.testplan }}
-      runs_on: '"ubuntu-latest"'
+      runs_on: '["self-hosted", "x64"]'
       defaults: 'v0'
       plan_folder: '.github/oxid-esales'
     secrets:

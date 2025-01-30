@@ -1,57 +1,83 @@
-install:
+install_shop_with_modules:
   cache:
     prepared_shop: false
-  git:
-    repository: 'OXID-eSales/consistency-check-tool'
-    ref: &ref '{{ .Github.RefName }}'
-    shop_url: 'https://github.com/OXID-eSales/consistency-check-tool.git'
-    shop_ref: *ref
   composer:
-    root_url: ''
     transform: |
       {
           "require": {
-              "oxid-esales/oxideshop-ce": "{{ .Data.global.composer.dev_ref }}"
+              "oxid-esales/oxideshop-ce": "{{ .Data.global.composer.dev_ref }}",
+              "oxid-esales/oxideshop-pe": "{{ .Data.global.composer.dev_ref }}",
+              "oxid-esales/oxideshop-ee": "{{ .Data.global.composer.dev_ref }}",
+              "oxid-esales/twig-component": "{{ .Data.global.composer.dev_ref }}",
+              "oxid-esales/twig-component-pe": "{{ .Data.global.composer.dev_ref }}",
+              "oxid-esales/twig-component-ee": "{{ .Data.global.composer.dev_ref }}",
+              "oxid-esales/twig-admin-theme": "{{ .Data.global.composer.dev_ref }}",
+              "oxid-esales/apex-theme": "{{ .Data.global.composer.dev_ref }}",
+              "oxid-esales/developer-tools": "{{ .Data.global.composer.dev_ref }}",
+              "oxid-esales/consistency-check-tool": "dev-b-7.3.x-add-github-actions-OXDEV-9076"
+          },
+          "repositories": {
+            "oxid-esales/consistency-check-tool": {
+              "type": "git",
+              "url": "https://github.com/OXID-eSales/consistency-check-tool.git"
+            },
+            "oxid-esales/oxideshop-ee": {
+              "type": "git",
+              "url": "https://github.com/OXID-eSales/oxideshop_ee.git"
+            },
+            "oxid-esales/oxideshop-pe": {
+              "type": "git",
+              "url": "https://github.com/OXID-eSales/oxideshop_pe.git"
+            },
+            "oxid-esales/twig-component-pe": {
+              "type": "git",
+              "url": "https://github.com/OXID-eSales/twig-component-pe.git"
+            },
+            "oxid-esales/twig-component-ee": {
+              "type": "git",
+              "url": "https://github.com/OXID-eSales/twig-component-ee.git"
+            }
           }
       }
-
-install_shop_with_modules:
-  composer:
-    root_url: ''
+  custom_script_container: |
+    vendor/bin/oe-console oe:database:reset --db-host=mysql --db-port=3306 --db-name=example --db-user=root --db-password=root --force
+    vendor/bin/oe-console oe:theme:activate apex
 
 runscript: &runscript
   matrix:
     script: |
       [
-        "consistency_check_tool :tests-unit",
-        "consistency_check_tool :tests-integration"
+        "consistency_check_tool:tests-unit",
+        "consistency_check_tool:tests-integration"
       ]
-  consistency_check_tool :
-    path: ''
+  composer:
+    early: true
+  consistency_check_tool:
+    path: 'vendor/oxid-esales/consistency-check-tool'
 
 runslim:
   <<: *runscript
   matrix:
     script: |
       [
-        "consistency_check_tool :phpcs-report",
-        "consistency_check_tool :phpmd-report",
-        "consistency_check_tool :phpstan-report"
+        "consistency_check_tool:phpcs-report",
+        "consistency_check_tool:phpmd-report",
+        "consistency_check_tool:phpstan-report"
       ]
 
 sonarcloud:
   matrix:
     testplan: '["-"]'
-  strip_path: '/var/www/'
+  strip_path: '/var/www/vendor/oxid-esales/consistency-check-tool/'
   project_key: 'OXID-eSales_consistency-check-tool'
   project_name: 'oxid-esales/consistency-check-tool'
   organization: 'oxid-esales'
   parameters: |
-    -Dsonar.language=php
-    -Dsonar.scm.provider=git
-    -Dsonar.sources=src
-    -Dsonar.tests=tests
+    -Dsonar.language=php \
+    -Dsonar.scm.provider=git \
+    -Dsonar.sources=src \
+    -Dsonar.tests=tests \
     -Dsonar.php.phpstan.reportPaths=coverage-reports/phpstan.report.json
 
 finish:
-  slack_title: 'Module consistency check tool  ({{ .Data.global.git.shop_ref }}) by {{ .Github.Actor }}'
+  slack_title: 'Component consistency check tool  ({{ .Data.global.git.shop_ref }}) by {{ .Github.Actor }}'

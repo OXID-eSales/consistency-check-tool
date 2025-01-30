@@ -7,12 +7,12 @@ on:
     - cron: '16 1 */7 * *'
 
 jobs:
-  module_73x_nightly:
+  schedule_matrix:
     if: always()
     uses: oxid-eSales/github-actions/.github/workflows/universal_workflow_light.yaml@v4
     with:
-      testplan: '~/defaults/7.3.x.yaml,~/defaults/scheduled.yaml,~/consistency-check-tool.yaml'
-      runs_on: '"ubuntu-latest"'
+      testplan: '~/defaults/7.3.x.yaml,~/consistency-check-tool.yaml'
+      runs_on: '["self-hosted", "x64"]'
       defaults: 'v4'
       plan_folder: '.github/oxid-esales'
       use_scheduled_slack_channel: true
