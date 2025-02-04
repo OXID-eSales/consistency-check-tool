@@ -5,11 +5,11 @@
  * See LICENSE file for license details.
  */
 
-namespace OxidEsales\ConsistencyCheck\ImageManager\Utils;
+namespace OxidEsales\ConsistencyCheck\ImageManager\Factory;
 
 use OxidEsales\ConsistencyCheck\ImageManager\DataTransferObject\ImageCollectionInterface;
 
-interface DirectoryScannerInterface
+interface ImageCollectionFactoryInterface
 {
-    public function scanDirectories(): ImageCollectionInterface;
+    public function create(): ImageCollectionInterface;
 }

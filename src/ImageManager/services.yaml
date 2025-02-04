@@ -17,5 +17,11 @@ services:
   OxidEsales\ConsistencyCheck\ImageManager\Factory\ImageDataTypeFactoryInterface:
     class: OxidEsales\ConsistencyCheck\ImageManager\Factory\ImageDataTypeFactory
 
-  OxidEsales\ConsistencyCheck\ImageManager\Repository\ImageDatabaseRepositoryInterface:
+  OxidEsales\ConsistencyCheck\ImageManager\Factory\ImageCollectionFactoryInterface:
+    class: OxidEsales\ConsistencyCheck\ImageManager\Factory\ImageCollectionFactory
+
+  OxidEsales\ConsistencyCheck\ImageManager\Repository\ImageDirectoryRepository:
+    class: OxidEsales\ConsistencyCheck\ImageManager\Repository\ImageDirectoryRepository
+
+  OxidEsales\ConsistencyCheck\ImageManager\Repository\ImageDatabaseRepository:
     class: OxidEsales\ConsistencyCheck\ImageManager\Repository\ImageDatabaseRepository
