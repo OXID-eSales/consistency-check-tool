@@ -14,7 +14,7 @@ install_shop_with_modules:
               "oxid-esales/twig-admin-theme": "{{ .Data.global.composer.dev_ref }}",
               "oxid-esales/apex-theme": "{{ .Data.global.composer.dev_ref }}",
               "oxid-esales/developer-tools": "{{ .Data.global.composer.dev_ref }}",
-              "oxid-esales/consistency-check-tool": "dev-b-7.3.x-add-github-actions-OXDEV-9076"
+              "oxid-esales/consistency-check-tool": "dev-{{ .Github.RefName }}"
           },
           "repositories": {
             "oxid-esales/consistency-check-tool": {
