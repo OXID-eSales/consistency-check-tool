@@ -54,7 +54,7 @@ class ImageDatabaseRepositoryTest extends IntegrationTestCase
             ->willReturnMap([[$image1Stub], [$image2Stub]]);
 
         $imageCollectionFactoryStub = $this->createStub(ImageCollectionFactoryInterface::class);
-		$imageCollectionFactoryStub->method('create')->willReturn($imageCollectionMock);
+        $imageCollectionFactoryStub->method('create')->willReturn($imageCollectionMock);
 
         $sut = $this->getSut(
             queryBuilderFactory: $queryBuilderFactory,

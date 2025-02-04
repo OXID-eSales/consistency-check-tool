@@ -44,7 +44,6 @@ class ImageDatabaseRepository implements ImageRepositoryInterface
             /** @var Result $queryResult */
             $queryResult = $queryBuilder->execute();
 
-            $images = [];
             $imageCollection = $this->imageCollectionFactory->create();
             while ($data = $queryResult->fetchAssociative()) {
                 $imageCollection->add(
