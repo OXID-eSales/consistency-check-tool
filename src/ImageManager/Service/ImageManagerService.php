@@ -20,7 +20,7 @@ class ImageManagerService implements ImageManagerServiceInterface
     private const IMAGE_MOVED_FAILED = 'Failed to move image: %s. Error: %s for %s';
     private const IMAGE_DELETED_SUCCESSFUL = 'Deleted image: %s for %s';
     private const IMAGE_DELETED_DRY_RUN = '[DRY-RUN] Delete %s for %s';
-    private const IMAGE_DELETED_FAILED = 'Failed to delete image: %s for %s';
+    private const IMAGE_DELETED_FAILED = 'Failed to delete image: %s. Error: %s for %s';
 
     public function __construct(
         private readonly FileSystemUtilsInterface $fileSystemUtils,
@@ -44,11 +44,23 @@ class ImageManagerService implements ImageManagerServiceInterface
                 try {
                     $this->fileSystemUtils->moveFile($sourcePath, $destinationPath);
                     $moveCount++;
-					// phpcs:ignore Generic.Files.LineLength.TooLong
-                    $this->logger->info(sprintf(self::IMAGE_MOVED_SUCCESSFUL, $sourcePath, $destinationPath, $entityDetails));
+                    $this->logger->info(
+                        sprintf(
+                            self::IMAGE_MOVED_SUCCESSFUL,
+                            $sourcePath,
+                            $destinationPath,
+                            $entityDetails
+                        )
+                    );
                 } catch (\Exception $e) {
-					// phpcs:ignore Generic.Files.LineLength.TooLong
-                    $this->logger->error(sprintf(self::IMAGE_MOVED_FAILED, $sourcePath, $e->getMessage(), $entityDetails));
+                    $this->logger->error(
+                        sprintf(
+                            self::IMAGE_MOVED_FAILED,
+                            $sourcePath,
+                            $e->getMessage(),
+                            $entityDetails
+                        )
+                    );
                 }
             }
         }
@@ -72,10 +84,22 @@ class ImageManagerService implements ImageManagerServiceInterface
                 try {
                     $this->fileSystemUtils->deleteFile($filePath);
                     $deletedCount++;
-                    $this->logger->info(sprintf(self::IMAGE_DELETED_SUCCESSFUL, $filePath, $entityDetails));
+                    $this->logger->info(
+                        sprintf(
+                            self::IMAGE_DELETED_SUCCESSFUL,
+                            $filePath,
+                            $entityDetails
+                        )
+                    );
                 } catch (\Exception $e) {
-					// phpcs:ignore Generic.Files.LineLength.TooLong
-                    $this->logger->error(sprintf(self::IMAGE_DELETED_FAILED, $filePath, $e->getMessage(), $entityDetails));
+                    $this->logger->error(
+                        sprintf(
+                            self::IMAGE_DELETED_FAILED,
+                            $filePath,
+                            $e->getMessage(),
+                            $entityDetails
+                        )
+                    );
                 }
             }
         }
