@@ -52,7 +52,7 @@ class MoveUnusedImagesCommandTest extends IntegrationTestCase
             imageManagerService: $this->get(ImageManagerServiceInterface::class),
             entityFilterService: $this->get(ImageEntityFilterServiceInterface::class),
             messageFormatter: $this->get(MessageFormatterServiceInterface::class),
-            progressBar: $this->get(ProgressBarFactoryInterface::class),
+            progressBarFactory: $this->get(ProgressBarFactoryInterface::class),
             logger: $this->get(LoggerInterface::class)
         );
     }

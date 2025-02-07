@@ -218,7 +218,7 @@ class MoveUnusedImagesCommandTest extends TestCase
             imageManagerService: $imageManagerService,
             entityFilterService: $imageEntityFilter,
             messageFormatter: $messageFormatter,
-            progressBar: $progressBar,
+            progressBarFactory: $progressBar,
             logger: $logger
         );
     }

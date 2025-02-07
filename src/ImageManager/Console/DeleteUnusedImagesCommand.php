@@ -9,9 +9,9 @@ declare(strict_types=1);
 
 namespace OxidEsales\ConsistencyCheck\ImageManager\Console;
 
+use OxidEsales\ConsistencyCheck\ImageManager\DataTransferObject\ImageCollectionInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Output\OutputInterface;
 
 class DeleteUnusedImagesCommand extends AbstractUnusedImagesCommand
 {
@@ -28,28 +28,22 @@ class DeleteUnusedImagesCommand extends AbstractUnusedImagesCommand
     {
         $this
             ->setDescription(self::COMMAND_DESCRIPTION)
-			// phpcs:ignore Generic.Files.LineLength.TooLong
             ->addOption('type', null, InputOption::VALUE_OPTIONAL, self::COMMAND_OPTION_TYPE)
             ->addOption('dry-run', null, InputOption::VALUE_NONE, self::COMMAND_OPTION_DRY_RUN);
     }
 
-    protected function processEntity($entity, InputInterface $input, OutputInterface $output): void
+    protected function processImages(ImageCollectionInterface $unusedImages, InputInterface $input): int
     {
-        $unusedImages = $this->imageCheckerService->getUnusedImages($entity);
-        $entityDetails = sprintf('[%s:%s]', $entity->getName(), $entity->getFieldName());
+        return $this->imageManagerService->deleteImages($unusedImages, $input->getOption('dry-run'));
+    }
 
-        if ($unusedImages->getAll()) {
-            $output->writeln("\n" . $this->messageFormatter->formatInfo(self::MESSAGE_PROCESSING, $entityDetails));
-            $this->logger->info(sprintf(self::MESSAGE_PROCESSING, $entityDetails));
+    protected function getMessageProcessedImages(): string
+    {
+        return self::MESSAGE_DELETED_IMAGES;
+    }
 
-            $deletedImagesCount = $this->imageManagerService->deleteImages($unusedImages, $input->getOption('dry-run'));
-
-			// phpcs:ignore Generic.Files.LineLength.TooLong
-            $output->writeln("\n" . $this->messageFormatter->formatInfo(self::MESSAGE_DELETED_IMAGES, $deletedImagesCount, $entityDetails));
-            $this->logger->info(sprintf(self::MESSAGE_DELETED_IMAGES, $deletedImagesCount, $entityDetails));
-        } else {
-            $output->writeln("\n" . $this->messageFormatter->formatComment(self::MESSAGE_NO_IMAGES, $entityDetails));
-            $this->logger->info(sprintf(self::MESSAGE_NO_IMAGES, $entityDetails));
-        }
+    protected function getMessageCompletion(): string
+    {
+        return self::MESSAGE_COMPLETION;
     }
 }
