@@ -29,14 +29,16 @@ class FileSystemUtils implements FileSystemUtilsInterface
      */
     public function getFilesInDirectory(string $directoryPath): array
     {
+        $finder = clone $this->finder;
+
         if (!$this->directoryExists($directoryPath)) {
             throw FileSystemException::directoryNotFound($directoryPath);
         }
 
         $files = [];
-        $this->finder->files()->in($directoryPath);
+        $finder->files()->in($directoryPath);
 
-        foreach ($this->finder as $file) {
+        foreach ($finder as $file) {
             $files[] = $file->getFilename();
         }
 
