@@ -9,7 +9,7 @@ namespace OxidEsales\ConsistencyCheck\ImageManager\Service;
 
 interface MessageFormatterServiceInterface
 {
-    public function formatInfo(string $message, ...$args): string;
-    public function formatError(string $message, ...$args): string;
-    public function formatComment(string $message, ...$args): string;
+    public function formatInfo(string $message, mixed ...$args): string;
+    public function formatError(string $message, mixed ...$args): string;
+    public function formatComment(string $message, mixed ...$args): string;
 }
