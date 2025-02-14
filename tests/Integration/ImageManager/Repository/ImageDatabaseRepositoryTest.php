@@ -37,6 +37,7 @@ class ImageDatabaseRepositoryTest extends IntegrationTestCase
         $queryBuilderFactory = ContainerFacade::get(QueryBuilderFactoryInterface::class);
         $this->insertRecord($queryBuilderFactory, ['OXID' => uniqid(), $fieldName => $image1]);
         $this->insertRecord($queryBuilderFactory, ['OXID' => uniqid(), $fieldName => $image2]);
+        $this->insertRecord($queryBuilderFactory, ['OXID' => uniqid(), $fieldName => '']);
 
         $image1Stub = $this->createStub(ImageDataTypeInterface::class);
         $image2Stub = $this->createStub(ImageDataTypeInterface::class);
