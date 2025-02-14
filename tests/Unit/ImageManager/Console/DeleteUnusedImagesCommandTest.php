@@ -160,6 +160,55 @@ class DeleteUnusedImagesCommandTest extends TestCase
         $this->assertStringContainsString($exceptionMessage, $output);
     }
 
+    #[Test]
+    public function itOutputsErrorWhenNoImagesAreProcessed(): void
+    {
+        $entityStub = $this->createEntityStub();
+        $unusedImages = $this->createStub(ImageCollectionInterface::class);
+        $unusedImages->method('getAll')->willReturn([$this->createStub(ImageEntityInterface::class)]);
+
+        $imageCheckerServiceStub = $this->createStub(ImageCheckerServiceInterface::class);
+        $imageCheckerServiceStub->method('getUnusedImages')->willReturn($unusedImages);
+
+        $imageManagerServiceStub = $this->createStub(ImageManagerServiceInterface::class);
+        $imageManagerServiceStub
+            ->method('deleteImages')
+            ->willReturn(0);
+
+        $loggerMock = $this->createMock(PsrLoggerInterface::class);
+        $loggerMock
+            ->expects(self::once())
+            ->method('error')
+            ->with(self::stringContains('Check error log for details'));
+
+        $entityFilterServiceSpy = $this->createStub(ImageEntityFilterServiceInterface::class);
+        $entityFilterServiceSpy
+            ->method('filterEntitiesByName')
+            ->willReturn([$entityStub]);
+
+        $formatterMock = $this->createMock(MessageFormatterServiceInterface::class);
+        $formatterMock
+            ->method('formatError')
+            ->willReturnCallback(function ($message, ...$args) {
+                return sprintf('<comment>' . $message . '</comment>', ...$args);
+            });
+
+        $sut = $this->getSut(
+            entities: [$entityStub],
+            imageCheckerService: $imageCheckerServiceStub,
+            imageManagerService: $imageManagerServiceStub,
+            imageEntityFilter: $entityFilterServiceSpy,
+            messageFormatter: $formatterMock,
+            logger: $loggerMock,
+        );
+
+        $tester = new CommandTester($sut);
+        $tester->execute([]);
+
+        $output = $tester->getDisplay();
+        $this->assertStringContainsString('Check error log for details', $output);
+    }
+
 
     private function createEntityStub(string $name = null): ImageEntityInterface
     {
