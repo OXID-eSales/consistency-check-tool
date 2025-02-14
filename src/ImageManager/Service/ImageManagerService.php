@@ -36,7 +36,11 @@ class ImageManagerService implements ImageManagerServiceInterface
 
         foreach ($images->getAll() as $image) {
             $sourcePath = rtrim($image->getDirectory(), '/') . '/' . $image->getImageName();
-            $destinationPath = rtrim($destination, '/') . rtrim($image->getDirectory(), '/') . '/' . $image->getImageName();
+
+            $destinationPath = rtrim($destination, '/') .
+                rtrim($image->getDirectory(), '/') .
+                '/' .
+                $image->getImageName();
 
             $entityDetails = sprintf('[%s:%s]', $image->getFieldName(), $image->getImageName());
 
