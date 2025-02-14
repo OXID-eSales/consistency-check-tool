@@ -11,9 +11,9 @@ namespace OxidEsales\ConsistencyCheck\ImageManager\Tests\Unit\ImageManager\Servi
 
 use OxidEsales\ConsistencyCheck\ImageManager\DataTransferObject\ImageCollectionInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\DataType\ImageDataTypeInterface;
-use OxidEsales\ConsistencyCheck\ImageManager\Exception\FileSystemException;
 use OxidEsales\ConsistencyCheck\ImageManager\Service\ImageManagerService;
 use OxidEsales\ConsistencyCheck\ImageManager\Utils\FileSystemUtilsInterface;
+use OxidEsales\EshopCommunity\Internal\Framework\FileSystem\ImageHandlerInterface;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface as PsrLoggerInterface;
@@ -31,9 +31,15 @@ class ImageManagerServiceTest extends TestCase
             ]);
 
         $fileSystemUtilsSpy = $this->createMock(FileSystemUtilsInterface::class);
-        $fileSystemUtilsSpy
+
+        $imageHandlerSpy = $this->createMock(ImageHandlerInterface::class);
+        $imageHandlerSpy
             ->expects($this->never())
-            ->method('moveFile');
+            ->method('copy');
+        $imageHandlerSpy
+            ->expects($this->never())
+            ->method('remove');
+
 
         $loggerSpy = $this->createMock(PsrLoggerInterface::class);
         $loggerSpy
@@ -42,7 +48,8 @@ class ImageManagerServiceTest extends TestCase
 
         $sut = $this->getSut(
             fileSystemUtils: $fileSystemUtilsSpy,
-            logger: $loggerSpy
+            logger: $loggerSpy,
+            imageHandler: $imageHandlerSpy
         );
 
         $sut->moveImages($imageCollectionSpy, uniqid(), true);
@@ -60,10 +67,10 @@ class ImageManagerServiceTest extends TestCase
                 uniqid() => $this->createImageStub()
             ]);
 
-        $fileSystemUtilsSpy = $this->createMock(FileSystemUtilsInterface::class);
-        $fileSystemUtilsSpy
+        $imageHandlerSpy = $this->createMock(ImageHandlerInterface::class);
+        $imageHandlerSpy
             ->expects($this->never())
-            ->method('deleteFile');
+            ->method('remove');
 
         $loggerSpy = $this->createMock(PsrLoggerInterface::class);
         $loggerSpy
@@ -71,8 +78,8 @@ class ImageManagerServiceTest extends TestCase
             ->with($this->stringContains('[DRY-RUN] Delete'));
 
         $sut = $this->getSut(
-            fileSystemUtils: $fileSystemUtilsSpy,
-            logger: $loggerSpy
+            logger: $loggerSpy,
+            imageHandler: $imageHandlerSpy
         );
 
         $sut->deleteImages($imageCollectionSpy, true);
@@ -93,10 +100,21 @@ class ImageManagerServiceTest extends TestCase
                 uniqid() => $imageMock
             ]);
 
+        $imageHandlerSpy = $this->createMock(ImageHandlerInterface::class);
+        $imageHandlerSpy->expects($this->once())
+            ->method('copy')
+            ->with($this->anything(), $this->anything());
+
+        $imageHandlerSpy->expects($this->once())
+            ->method('remove');
+
+        $basePath = uniqid();
         $fileSystemUtilsSpy = $this->createMock(FileSystemUtilsInterface::class);
         $fileSystemUtilsSpy->expects($this->once())
-            ->method('moveFile')
-            ->with($sourcePath . '/' . $imageName, $destination . '/' . $imageName);
+            ->method('getAbsolutePath')
+            ->with($sourcePath . '/' . $imageName)
+            ->willReturn($basePath . '/' . $sourcePath . '/' . $imageName);
+
 
         $loggerSpy = $this->createMock(PsrLoggerInterface::class);
 
@@ -107,7 +125,8 @@ class ImageManagerServiceTest extends TestCase
 
         $sut = $this->getSut(
             fileSystemUtils: $fileSystemUtilsSpy,
-            logger: $loggerSpy
+            logger: $loggerSpy,
+            imageHandler: $imageHandlerSpy
         );
 
         $movedCount = $sut->moveImages($imageCollectionStub, $destination);
@@ -126,9 +145,9 @@ class ImageManagerServiceTest extends TestCase
                 uniqid() => $imageStub
             ]);
 
-        $fileSystemUtilsSpy = $this->createMock(FileSystemUtilsInterface::class);
-        $fileSystemUtilsSpy->method('moveFile')
-            ->willThrowException(new FileSystemException());
+        $imageHandlerSpy = $this->createMock(ImageHandlerInterface::class);
+        $imageHandlerSpy->method('copy')
+            ->willThrowException(new \Exception());
 
         $loggerSpy = $this->createMock(PsrLoggerInterface::class);
         $loggerSpy
@@ -136,8 +155,8 @@ class ImageManagerServiceTest extends TestCase
             ->with($this->stringStartsWith('Failed to move image:'));
 
         $sut = $this->getSut(
-            fileSystemUtils: $fileSystemUtilsSpy,
-            logger: $loggerSpy
+            logger: $loggerSpy,
+            imageHandler: $imageHandlerSpy
         );
 
         $movedCount = $sut->moveImages(images: $imageCollectionStub, destination: uniqid());
@@ -172,10 +191,11 @@ class ImageManagerServiceTest extends TestCase
                 uniqid() => $imageMock
             ]);
 
-        $fileSystemUtilsSpy = $this->createMock(FileSystemUtilsInterface::class);
-        $fileSystemUtilsSpy->expects($this->once())
-            ->method('deleteFile')
-            ->willThrowException(new FileSystemException());
+
+        $imageHandlerSpy = $this->createMock(ImageHandlerInterface::class);
+        $imageHandlerSpy->expects($this->once())
+            ->method('remove')
+            ->willThrowException(new \Exception());
 
         $loggerSpy = $this->createMock(PsrLoggerInterface::class);
         $loggerSpy
@@ -183,8 +203,8 @@ class ImageManagerServiceTest extends TestCase
             ->with($this->stringContains('Failed to delete image'));
 
         $sut = $this->getSut(
-            fileSystemUtils: $fileSystemUtilsSpy,
-            logger: $loggerSpy
+            logger: $loggerSpy,
+            imageHandler: $imageHandlerSpy
         );
 
         $deletedCount = $sut->deleteImages($imageCollectionStub);
@@ -219,9 +239,9 @@ class ImageManagerServiceTest extends TestCase
                 uniqid() => $imageMock
             ]);
 
-        $fileSystemUtilsSpy = $this->createMock(FileSystemUtilsInterface::class);
-        $fileSystemUtilsSpy->expects($this->once())
-            ->method('deleteFile')
+        $imageHandlerSpy = $this->createMock(ImageHandlerInterface::class);
+        $imageHandlerSpy->expects($this->once())
+            ->method('remove')
             ->with($sourcePath . '/' . $fileName);
 
         $loggerSpy = $this->createMock(PsrLoggerInterface::class);
@@ -230,8 +250,8 @@ class ImageManagerServiceTest extends TestCase
             ->with(self::stringContains('Deleted image:'));
 
         $sut = $this->getSut(
-            fileSystemUtils: $fileSystemUtilsSpy,
-            logger: $loggerSpy
+            logger: $loggerSpy,
+            imageHandler: $imageHandlerSpy
         );
 
         $deletedCount = $sut->deleteImages($imageCollectionStub);
@@ -255,13 +275,16 @@ class ImageManagerServiceTest extends TestCase
     private function getSut(
         ?FileSystemUtilsInterface $fileSystemUtils = null,
         ?PsrLoggerInterface $logger = null,
+        ?ImageHandlerInterface $imageHandler = null,
     ): ImageManagerService {
         $fileSystemUtils ??= $this->createMock(FileSystemUtilsInterface::class);
         $logger ??= $this->createMock(PsrLoggerInterface::class);
+        $imageHandler ??= $this->createMock(ImageHandlerInterface::class);
 
         return new ImageManagerService(
             fileSystemUtils: $fileSystemUtils,
-            logger: $logger
+            logger: $logger,
+            imageHandler: $imageHandler
         );
     }
 }
