@@ -11,7 +11,7 @@ namespace OxidEsales\ConsistencyCheck\ImageManager\Tests\Unit\ImageManager\Utils
 
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
-use OxidEsales\ConsistencyCheck\ImageManager\Exception\FileSystemException;
+use OxidEsales\ConsistencyCheck\ImageManager\Exception\DirectoryNotFoundException;
 use OxidEsales\ConsistencyCheck\ImageManager\Utils\FileSystemUtils;
 use OxidEsales\ConsistencyCheck\ImageManager\Utils\FileSystemUtilsInterface;
 use OxidEsales\EshopCommunity\Internal\Transition\Utility\ContextInterface;
@@ -74,8 +74,8 @@ class FileSystemServiceTest extends TestCase
 
         $nonExistingDirectory = $this->fileSystem->url() . '/' . uniqid();
 
-        $this->expectException(FileSystemException::class);
-        $this->expectExceptionMessage(sprintf(FileSystemException::DIRECTORY_NOT_FOUND, $nonExistingDirectory));
+        $this->expectException(DirectoryNotFoundException::class);
+        $this->expectExceptionMessage(sprintf("Directory not found: %s", $nonExistingDirectory));
 
         $sut->getFilesInDirectory($nonExistingDirectory);
     }

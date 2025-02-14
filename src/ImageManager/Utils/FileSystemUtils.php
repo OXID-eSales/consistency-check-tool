@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 namespace OxidEsales\ConsistencyCheck\ImageManager\Utils;
 
-use OxidEsales\ConsistencyCheck\ImageManager\Exception\FileSystemException;
+use OxidEsales\ConsistencyCheck\ImageManager\Exception\DirectoryNotFoundException;
 use OxidEsales\EshopCommunity\Internal\Transition\Utility\ContextInterface;
 use Symfony\Component\Filesystem\Path;
 use Symfony\Component\Finder\Finder;
@@ -35,7 +35,7 @@ class FileSystemUtils implements FileSystemUtilsInterface
         $finder = clone $this->finder;
 
         if (!$this->directoryExists($directoryPath)) {
-            throw FileSystemException::directoryNotFound($directoryPath);
+            throw new DirectoryNotFoundException($directoryPath);
         }
 
         $files = [];
