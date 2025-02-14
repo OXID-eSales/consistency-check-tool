@@ -18,14 +18,4 @@ interface FileSystemUtilsInterface
      * @throws FileSystemException
      */
     public function getFilesInDirectory(string $directoryPath): array;
-
-    /**
-     * @throws FileSystemException
-     */
-    public function moveFile(string $source, string $destination): void;
-
-    /**
-     * @throws FileSystemException
-     */
-    public function deleteFile(string $filePath): void;
 }

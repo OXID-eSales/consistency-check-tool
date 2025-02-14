@@ -10,18 +10,21 @@ declare(strict_types=1);
 namespace OxidEsales\ConsistencyCheck\ImageManager\Utils;
 
 use OxidEsales\ConsistencyCheck\ImageManager\Exception\FileSystemException;
+use OxidEsales\EshopCommunity\Internal\Transition\Utility\ContextInterface;
+use Symfony\Component\Filesystem\Path;
 use Symfony\Component\Finder\Finder;
 
 class FileSystemUtils implements FileSystemUtilsInterface
 {
     public function __construct(
-        private readonly Finder $finder
+        private readonly Finder $finder,
+        private readonly ContextInterface $context,
     ) {
     }
 
     public function directoryExists(string $directoryPath): bool
     {
-        return is_dir($directoryPath);
+        return is_dir($this->getAbsolutePath($directoryPath));
     }
 
     /**
@@ -36,7 +39,7 @@ class FileSystemUtils implements FileSystemUtilsInterface
         }
 
         $files = [];
-        $finder->files()->in($directoryPath);
+        $finder->files()->in($this->getAbsolutePath($directoryPath));
 
         foreach ($finder as $file) {
             $files[] = $file->getFilename();
@@ -45,39 +48,8 @@ class FileSystemUtils implements FileSystemUtilsInterface
         return $files;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function moveFile(string $source, string $destination): void
+    public function getAbsolutePath(string $path): string
     {
-        $this->ensureFileExists($source);
-
-        if (!@rename($source, $destination)) {
-            throw FileSystemException::fileMoveFailed($source, $destination);
-        }
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function deleteFile(string $filePath): void
-    {
-        $this->ensureFileExists($filePath);
-
-        if (!@unlink($filePath)) {
-            if (file_exists($filePath)) {
-                throw FileSystemException::fileDeleteFailed($filePath);
-            }
-        }
-    }
-
-    /**
-     * @throws FileSystemException
-     */
-    private function ensureFileExists(string $filePath): void
-    {
-        if (!file_exists($filePath)) {
-            throw FileSystemException::fileNotFound($filePath);
-        }
+        return Path::join($this->context->getSourcePath(), $path);
     }
 }

@@ -14,6 +14,7 @@ use org\bovigo\vfs\vfsStreamDirectory;
 use OxidEsales\ConsistencyCheck\ImageManager\Exception\FileSystemException;
 use OxidEsales\ConsistencyCheck\ImageManager\Utils\FileSystemUtils;
 use OxidEsales\ConsistencyCheck\ImageManager\Utils\FileSystemUtilsInterface;
+use OxidEsales\EshopCommunity\Internal\Transition\Utility\ContextInterface;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Finder\Finder;
@@ -80,91 +81,26 @@ class FileSystemServiceTest extends TestCase
     }
 
     #[Test]
-    public function moveFileSuccessfully(): void
+    public function getAbsolutePathReturnsCorrectPath(): void
     {
-        $sut = $this->getSut();
-        $sourceDir = vfsStream::newDirectory(uniqid())->at($this->fileSystem);
-        $destinationDir = vfsStream::newDirectory(uniqid())->at($this->fileSystem);
+        $contextStub = $this->createStub(ContextInterface::class);
+        $contextStub->method('getSourcePath')->willReturn($basePath = uniqid());
 
-        $sourceFile = vfsStream::newFile($testFile = uniqid())->at($sourceDir);
-        $sourcePath = $sourceFile->url();
-        $destinationPath = $destinationDir->url() . '/' . $testFile;
+        $sut = $this->getSut($contextStub);
 
-        $sut->moveFile($sourcePath, $destinationPath);
+        $relativePath = uniqid();
+        $expectedAbsolutePath = $basePath . '/' . $relativePath;
 
-        $this->assertFalse(file_exists($sourcePath));
-        $this->assertTrue(file_exists($destinationPath));
+        $this->assertEquals($expectedAbsolutePath, $sut->getAbsolutePath($relativePath));
     }
 
-    #[Test]
-    public function moveNonExistingFileThrowsException(): void
-    {
-        $sut = $this->getSut();
-
-        $this->expectException(FileSystemException::class);
-        $this->expectExceptionMessage(sprintf(FileSystemException::FILE_NOT_FOUND, $nonExistingFile = uniqid()));
-
-        $sut->moveFile($nonExistingFile, uniqid());
-    }
-
-    #[Test]
-    public function moveFileThrowsExceptionWhenRenameFails(): void
-    {
-        $sut = $this->getSut();
-
-        $sourceDir = vfsStream::newDirectory(uniqid())->at($this->fileSystem);
-        $destinationDir = vfsStream::newDirectory(uniqid(), 0555)->at($this->fileSystem);
-
-        $sourceFile = vfsStream::newFile($testFile = uniqid())->at($sourceDir);
-        $sourcePath = $sourceFile->url();
-        $destinationPath = $destinationDir->url() . '/' . $testFile;
-
-        $this->expectException(FileSystemException::class);
-        $this->expectExceptionMessage(sprintf(FileSystemException::FILE_MOVE_FAILED, $sourcePath, $destinationPath));
-
-        $sut->moveFile($sourcePath, $destinationPath);
-    }
-
-    #[Test]
-    public function deleteFileSuccessfully(): void
-    {
-        $sut = $this->getSut();
-        $file = vfsStream::newFile(uniqid())->at($this->fileSystem);
-
-        $sut->deleteFile($file->url());
-
-        $this->assertFalse(file_exists($file->url()));
-    }
-
-    #[Test]
-    public function deleteNonExistingFileThrowsException(): void
-    {
-        $sut = $this->getSut();
-
-        $this->expectException(FileSystemException::class);
-        $this->expectExceptionMessage(sprintf(FileSystemException::FILE_NOT_FOUND, $nonExistingFile = uniqid()));
-
-        $sut->deleteFile($nonExistingFile);
-    }
-
-    #[Test]
-    public function testDeleteFileThrowsExceptionWhenUnlinkFails(): void
-    {
-        vfsStream::newFile(uniqid(), 0000)
-            ->withContent(uniqid())
-            ->at($this->fileSystem);
-        $file = $this->fileSystem->url();
-
-        $this->expectException(FileSystemException::class);
-        $this->expectExceptionMessage(sprintf(FileSystemException::FILE_DELETE_FAILED, $file));
-
-        $sut = $this->getSut();
-
-        $sut->deleteFile($file);
-    }
-
-    private function getSut(): FileSystemUtilsInterface
-    {
-        return new FileSystemUtils(new Finder());
+    private function getSut(
+        ?ContextInterface $context = null
+    ): FileSystemUtilsInterface {
+        $context ??= $this->createStub(ContextInterface::class);
+        return new FileSystemUtils(
+            finder: new Finder(),
+            context: $context,
+        );
     }
 }
