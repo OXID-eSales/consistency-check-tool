@@ -6,7 +6,7 @@ services:
       $name: 'Product'
       $table: 'oxarticles'
       $fieldName: 'OXPIC1'
-      $directory: /var/www/source/out/pictures/master/product/1
+      $directory: /out/pictures/master/product/1
     tags: ['oe.consistency_check.image_entity']
 
   oxid_esales.consistency_check.entity.image_entity.product.oxpic2:
@@ -15,7 +15,7 @@ services:
       $name: 'Product'
       $table: 'oxarticles'
       $fieldName: 'OXPIC2'
-      $directory: /var/www/source/out/pictures/master/product/2
+      $directory: /out/pictures/master/product/2
     tags: ['oe.consistency_check.image_entity']
 
   oxid_esales.consistency_check.entity.image_entity.product.oxpic3:
@@ -24,7 +24,7 @@ services:
       $name: 'Product'
       $table: 'oxarticles'
       $fieldName: 'OXPIC3'
-      $directory: /var/www/source/out/pictures/master/product/3
+      $directory: /out/pictures/master/product/3
     tags: ['oe.consistency_check.image_entity']
 
   oxid_esales.consistency_check.entity.image_entity.product.oxpic4:
@@ -33,7 +33,7 @@ services:
       $name: 'Product'
       $table: 'oxarticles'
       $fieldName: 'OXPIC4'
-      $directory: /var/www/source/out/pictures/master/product/4
+      $directory: /out/pictures/master/product/4
     tags: ['oe.consistency_check.image_entity']
 
   oxid_esales.consistency_check.entity.image_entity.product.oxpic5:
@@ -42,7 +42,7 @@ services:
       $name: 'Product'
       $table: 'oxarticles'
       $fieldName: 'OXPIC5'
-      $directory: /var/www/source/out/pictures/master/product/5
+      $directory: /out/pictures/master/product/5
     tags: ['oe.consistency_check.image_entity']
 
   oxid_esales.consistency_check.entity.image_entity.product.oxpic6:
@@ -51,7 +51,7 @@ services:
       $name: 'Product'
       $table: 'oxarticles'
       $fieldName: 'OXPIC6'
-      $directory: /var/www/source/out/pictures/master/product/6
+      $directory: /out/pictures/master/product/6
     tags: ['oe.consistency_check.image_entity']
 
   oxid_esales.consistency_check.entity.image_entity.product.oxpic7:
@@ -60,7 +60,7 @@ services:
       $name: 'Product'
       $table: 'oxarticles'
       $fieldName: 'OXPIC7'
-      $directory: /var/www/source/out/pictures/master/product/7
+      $directory: /out/pictures/master/product/7
     tags: ['oe.consistency_check.image_entity']
 
   oxid_esales.consistency_check.entity.image_entity.product.oxpic8:
@@ -69,7 +69,7 @@ services:
       $name: 'Product'
       $table: 'oxarticles'
       $fieldName: 'OXPIC8'
-      $directory: /var/www/source/out/pictures/master/product/8
+      $directory: /out/pictures/master/product/8
     tags: ['oe.consistency_check.image_entity']
 
   oxid_esales.consistency_check.entity.image_entity.product.oxpic9:
@@ -78,7 +78,7 @@ services:
       $name: 'Product'
       $table: 'oxarticles'
       $fieldName: 'OXPIC9'
-      $directory: /var/www/source/out/pictures/master/product/9
+      $directory: /out/pictures/master/product/9
     tags: ['oe.consistency_check.image_entity']
 
   oxid_esales.consistency_check.entity.image_entity.product.oxpic10:
@@ -87,7 +87,7 @@ services:
       $name: 'Product'
       $table: 'oxarticles'
       $fieldName: 'OXPIC10'
-      $directory: /var/www/source/out/pictures/master/product/10
+      $directory: /out/pictures/master/product/10
     tags: ['oe.consistency_check.image_entity']
 
   oxid_esales.consistency_check.entity.image_entity.product.oxpic11:
@@ -96,7 +96,7 @@ services:
       $name: 'Product'
       $table: 'oxarticles'
       $fieldName: 'OXPIC11'
-      $directory: /var/www/source/out/pictures/master/product/11
+      $directory: /out/pictures/master/product/11
     tags: ['oe.consistency_check.image_entity']
 
   oxid_esales.consistency_check.entity.image_entity.product.oxpic12:
@@ -105,7 +105,7 @@ services:
       $name: 'Product'
       $table: 'oxarticles'
       $fieldName: 'OXPIC12'
-      $directory: /var/www/source/out/pictures/master/product/12
+      $directory: /out/pictures/master/product/12
     tags: ['oe.consistency_check.image_entity']
 
   oxid_esales.consistency_check.entity.image_entity.product.oxicon:
@@ -114,7 +114,7 @@ services:
       $name: 'Product'
       $table: 'oxarticles'
       $fieldName: 'OXICON'
-      $directory: /var/www/source/out/pictures/master/product/icon
+      $directory: /out/pictures/master/product/icon
     tags: ['oe.consistency_check.image_entity']
 
   oxid_esales.consistency_check.entity.image_entity.product.oxthumb:
@@ -123,7 +123,7 @@ services:
       $name: 'Product'
       $table: 'oxarticles'
       $fieldName: 'OXTHUMB'
-      $directory: /var/www/source/out/pictures/master/product/thumb
+      $directory: /out/pictures/master/product/thumb
     tags: ['oe.consistency_check.image_entity']
 
   # Category Image Entities
@@ -133,7 +133,7 @@ services:
       $name: 'Category'
       $table: 'oxcategories'
       $fieldName: 'OXTHUMB'
-      $directory: /var/www/source/out/pictures/master/category/thumb
+      $directory: /out/pictures/master/category/thumb
     tags: ['oe.consistency_check.image_entity']
 
   oxid_esales.consistency_check.entity.image_entity.category.oxicon:
@@ -142,7 +142,7 @@ services:
       $name: 'Category'
       $table: 'oxcategories'
       $fieldName: 'OXICON'
-      $directory: /var/www/source/out/pictures/master/category/icon
+      $directory: /out/pictures/master/category/icon
     tags: ['oe.consistency_check.image_entity']
 
   oxid_esales.consistency_check.entity.image_entity.category.oxpromoicon:
@@ -151,7 +151,7 @@ services:
       $name: 'Category'
       $table: 'oxcategories'
       $fieldName: 'OXPROMOICON'
-      $directory: /var/www/source/out/pictures/master/category/promo_icon
+      $directory: /out/pictures/master/category/promo_icon
     tags: ['oe.consistency_check.image_entity']
 
   # Manufacturer Image Entities
@@ -162,7 +162,7 @@ services:
       $name: 'Manufacturer'
       $table: 'oxmanufacturers'
       $fieldName: 'OXICON'
-      $directory: /var/www/source/out/pictures/master/manufacturer/icon
+      $directory: /out/pictures/master/manufacturer/icon
     tags: ['oe.consistency_check.image_entity']
 
   oxid_esales.consistency_check.entity.image_entity.manufacturer.oxpicture:
@@ -171,7 +171,7 @@ services:
       $name: 'Manufacturer'
       $table: 'oxmanufacturers'
       $fieldName: 'OXPICTURE'
-      $directory: /var/www/source/out/pictures/master/manufacturer/picture
+      $directory: /out/pictures/master/manufacturer/picture
     tags: ['oe.consistency_check.image_entity']
 
   oxid_esales.consistency_check.entity.image_entity.manufacturer.oxpromotion_icon:
@@ -180,7 +180,7 @@ services:
       $name: 'Manufacturer'
       $table: 'oxmanufacturers'
       $fieldName: 'OXPROMOTION_ICON'
-      $directory: /var/www/source/out/pictures/master/manufacturer/promo_icon
+      $directory: /out/pictures/master/manufacturer/promo_icon
     tags: ['oe.consistency_check.image_entity']
 
   oxid_esales.consistency_check.entity.image_entity.manufacturer.oxthumbail:
@@ -189,5 +189,5 @@ services:
       $name: 'Manufacturer'
       $table: 'oxmanufacturers'
       $fieldName: 'OXTHUMBNAIL'
-      $directory: /var/www/source/out/pictures/master/manufacturer/thumb
+      $directory: /out/pictures/master/manufacturer/thumb
     tags: ['oe.consistency_check.image_entity']
