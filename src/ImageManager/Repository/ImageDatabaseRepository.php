@@ -46,6 +46,9 @@ class ImageDatabaseRepository implements ImageRepositoryInterface
 
             $imageCollection = $this->imageCollectionFactory->create();
             while ($data = $queryResult->fetchAssociative()) {
+                if (empty($data[$entity->getFieldName()])) {
+                    continue;
+                }
                 $imageCollection->add(
                     $this->imageDataTypeFactory->createFromFileDetails(
                         fieldName: $entity->getFieldName(),

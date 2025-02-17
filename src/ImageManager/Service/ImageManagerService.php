@@ -12,6 +12,7 @@ namespace OxidEsales\ConsistencyCheck\ImageManager\Service;
 use OxidEsales\ConsistencyCheck\ImageManager\DataTransferObject\ImageCollectionInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Utils\FileSystemUtilsInterface;
 use Psr\Log\LoggerInterface as PsrLoggerInterface;
+use OxidEsales\EshopCommunity\Internal\Framework\FileSystem\ImageHandlerInterface;
 
 class ImageManagerService implements ImageManagerServiceInterface
 {
@@ -24,16 +25,22 @@ class ImageManagerService implements ImageManagerServiceInterface
 
     public function __construct(
         private readonly FileSystemUtilsInterface $fileSystemUtils,
-        private readonly PsrLoggerInterface $logger
+        private readonly PsrLoggerInterface $logger,
+        private readonly ImageHandlerInterface $imageHandler,
     ) {
     }
+
     public function moveImages(ImageCollectionInterface $images, string $destination, bool $dryRun = false): int
     {
         $moveCount = 0;
 
         foreach ($images->getAll() as $image) {
             $sourcePath = rtrim($image->getDirectory(), '/') . '/' . $image->getImageName();
-            $destinationPath = rtrim($destination, '/') . '/' . $image->getImageName();
+
+            $destinationPath = rtrim($destination, '/') .
+                rtrim($image->getDirectory(), '/') .
+                '/' .
+                $image->getImageName();
 
             $entityDetails = sprintf('[%s:%s]', $image->getFieldName(), $image->getImageName());
 
@@ -42,7 +49,8 @@ class ImageManagerService implements ImageManagerServiceInterface
                 $moveCount++;
             } else {
                 try {
-                    $this->fileSystemUtils->moveFile($sourcePath, $destinationPath);
+                    $this->imageHandler->copy($this->fileSystemUtils->getAbsolutePath($sourcePath), $destinationPath);
+                    $this->imageHandler->remove($sourcePath);
                     $moveCount++;
                     $this->logger->info(
                         sprintf(
@@ -82,7 +90,7 @@ class ImageManagerService implements ImageManagerServiceInterface
                 $deletedCount++;
             } else {
                 try {
-                    $this->fileSystemUtils->deleteFile($filePath);
+                    $this->imageHandler->remove($filePath);
                     $deletedCount++;
                     $this->logger->info(
                         sprintf(

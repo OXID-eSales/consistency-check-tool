@@ -7,7 +7,7 @@
 
 namespace OxidEsales\ConsistencyCheck\ImageManager\Utils;
 
-use OxidEsales\ConsistencyCheck\ImageManager\Exception\FileSystemException;
+use OxidEsales\ConsistencyCheck\ImageManager\Exception\DirectoryNotFoundException;
 
 interface FileSystemUtilsInterface
 {
@@ -15,17 +15,9 @@ interface FileSystemUtilsInterface
 
     /**
      * @return array<string>
-     * @throws FileSystemException
+     * @throws DirectoryNotFoundException
      */
     public function getFilesInDirectory(string $directoryPath): array;
 
-    /**
-     * @throws FileSystemException
-     */
-    public function moveFile(string $source, string $destination): void;
-
-    /**
-     * @throws FileSystemException
-     */
-    public function deleteFile(string $filePath): void;
+    public function getAbsolutePath(string $path): string;
 }

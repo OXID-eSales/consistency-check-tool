@@ -27,6 +27,4 @@
     <rule ref="rulesets/naming.xml">
         <exclude name="LongVariable"/>
     </rule>
-
-    <exclude-pattern>*src/ImageManager/Utils/FileSystemUtils.php*</exclude-pattern>
 </ruleset>

@@ -27,6 +27,7 @@ abstract class AbstractUnusedImagesCommand extends Command
     protected const MESSAGE_PROCESSING = 'Processing unused images for entity: %s';
     protected const MESSAGE_NO_IMAGES = 'No unused images found for entity %s';
     protected const MESSAGE_ERROR = 'Error processing entity %s: %s';
+    protected const MESSAGE_ENTITY_EXCEPTION = 'Error processing entity %s: Check error log for details';
 
     public function __construct(
         /** @var ImageEntityInterface[] */
@@ -70,7 +71,11 @@ abstract class AbstractUnusedImagesCommand extends Command
         if ($unusedImages->getAll()) {
             $this->reportProcessing($entity, $output);
             $affectedImagesCount = $this->processImages($unusedImages, $input);
-            $this->reportProcessed($entity, $affectedImagesCount, $output);
+            if ($affectedImagesCount > 0) {
+                $this->reportProcessed($entity, $affectedImagesCount, $output);
+            } else {
+                $this->reportEntityException($entity, $output);
+            }
         } else {
             $this->reportNoImages($entity, $output);
         }
@@ -121,6 +126,14 @@ abstract class AbstractUnusedImagesCommand extends Command
     {
         $this->logger->info($this->getMessageCompletion());
         $output->writeln("\n" . $this->messageFormatter->formatInfo($this->getMessageCompletion()));
+    }
+
+    private function reportEntityException(ImageEntityInterface $entity, OutputInterface $output): void
+    {
+        $messageArgs = [$this->getEntityDetailsString($entity)];
+
+        $this->logger->error(sprintf(static::MESSAGE_ENTITY_EXCEPTION, ...$messageArgs));
+        $output->writeln("\n" . $this->messageFormatter->formatError(self::MESSAGE_ENTITY_EXCEPTION, ...$messageArgs));
     }
 
     private function getEntityDetailsString(ImageEntityInterface $entity): string

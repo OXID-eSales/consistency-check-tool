@@ -172,10 +172,59 @@ class MoveUnusedImagesCommandTest extends TestCase
         );
 
         $tester = new CommandTester($sut);
-        $tester->execute(['--type' => $entityNameToFilter, '--destination' => '/backup/images']);
+        $tester->execute(['--type' => $entityNameToFilter, '--destination' => uniqid()]);
 
         $output = $tester->getDisplay();
         $this->assertStringContainsString($exceptionMessage, $output);
+    }
+
+    #[Test]
+    public function itOutputsErrorWhenNoImagesAreProcessed(): void
+    {
+        $entityStub = $this->createEntityStub();
+        $unusedImages = $this->createStub(ImageCollectionInterface::class);
+        $unusedImages->method('getAll')->willReturn([$this->createStub(ImageEntityInterface::class)]);
+
+        $imageCheckerServiceStub = $this->createStub(ImageCheckerServiceInterface::class);
+        $imageCheckerServiceStub->method('getUnusedImages')->willReturn($unusedImages);
+
+        $imageManagerServiceStub = $this->createStub(ImageManagerServiceInterface::class);
+        $imageManagerServiceStub
+            ->method('moveImages')
+            ->willReturn(0);
+
+        $loggerMock = $this->createMock(LoggerInterface::class);
+        $loggerMock
+            ->expects(self::once())
+            ->method('error')
+            ->with(self::stringContains('Check error log for details'));
+
+        $entityFilterServiceSpy = $this->createStub(ImageEntityFilterServiceInterface::class);
+        $entityFilterServiceSpy
+            ->method('filterEntitiesByName')
+            ->willReturn([$entityStub]);
+
+        $formatterMock = $this->createMock(MessageFormatterServiceInterface::class);
+        $formatterMock
+            ->method('formatError')
+            ->willReturnCallback(function ($message, ...$args) {
+                return sprintf('<comment>' . $message . '</comment>', ...$args);
+            });
+
+        $sut = $this->getSut(
+            entities: [$entityStub],
+            imageCheckerService: $imageCheckerServiceStub,
+            imageManagerService: $imageManagerServiceStub,
+            imageEntityFilter: $entityFilterServiceSpy,
+            messageFormatter: $formatterMock,
+            logger: $loggerMock,
+        );
+
+        $tester = new CommandTester($sut);
+        $tester->execute(['--destination' => '/backup/images']);
+
+        $output = $tester->getDisplay();
+        $this->assertStringContainsString('Check error log for details', $output);
     }
 
     private function createEntityStub(string $name = null): ImageEntityInterface
