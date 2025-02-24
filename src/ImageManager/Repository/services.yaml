@@ -1,0 +1,8 @@
+services:
+  _defaults:
+    autowire: true
+    public: false
+
+  OxidEsales\ConsistencyCheck\ImageManager\Repository\ImageDirectoryRepository: ~
+
+  OxidEsales\ConsistencyCheck\ImageManager\Repository\ImageDatabaseRepository: ~

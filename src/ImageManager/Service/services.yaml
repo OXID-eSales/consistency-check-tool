@@ -1,0 +1,39 @@
+services:
+  _defaults:
+    autowire: true
+    public: false
+
+  OxidEsales\ConsistencyCheck\ImageManager\Logger:
+    class: Monolog\Logger
+    factory: [ '@OxidEsales\ConsistencyCheck\ImageManager\Logger\Factory', 'create' ]
+
+  OxidEsales\ConsistencyCheck\ImageManager\Logger\Factory:
+    class: OxidEsales\EshopCommunity\Internal\Framework\Logger\Factory\MonologLoggerFactory
+    arguments:
+      $configuration: '@OxidEsales\ConsistencyCheck\ImageManager\Logger\Configuration'
+
+  OxidEsales\ConsistencyCheck\ImageManager\Logger\Configuration:
+    class: OxidEsales\EshopCommunity\Internal\Framework\Logger\Configuration\MonologConfiguration
+    arguments:
+      $loggerName: 'Consistency Check Logger'
+      $logFilePath: '%app.log_file_path%'
+      $logLevel: !php/const Psr\Log\LogLevel::DEBUG
+
+  OxidEsales\ConsistencyCheck\ImageManager\Service\ImageCheckerServiceInterface:
+    class: OxidEsales\ConsistencyCheck\ImageManager\Service\ImageCheckerService
+    arguments:
+      $imageDatabaseRepository: '@OxidEsales\ConsistencyCheck\ImageManager\Repository\ImageDatabaseRepository'
+      $imageDirectoryRepository: '@OxidEsales\ConsistencyCheck\ImageManager\Repository\ImageDirectoryRepository'
+      $imageCollectionFactory: '@OxidEsales\ConsistencyCheck\ImageManager\Factory\ImageCollectionFactoryInterface'
+      $logger: '@OxidEsales\ConsistencyCheck\ImageManager\Logger'
+
+  OxidEsales\ConsistencyCheck\ImageManager\Service\ImageEntityFilterServiceInterface:
+    class: OxidEsales\ConsistencyCheck\ImageManager\Service\ImageEntityFilterService
+
+  OxidEsales\ConsistencyCheck\ImageManager\Service\ImageManagerServiceInterface:
+    class: OxidEsales\ConsistencyCheck\ImageManager\Service\ImageManagerService
+    arguments:
+      $logger: '@OxidEsales\ConsistencyCheck\ImageManager\Logger'
+
+  OxidEsales\ConsistencyCheck\ImageManager\Service\MessageFormatterServiceInterface:
+    class: OxidEsales\ConsistencyCheck\ImageManager\Service\MessageFormatterService

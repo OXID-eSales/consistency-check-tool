@@ -1,0 +1,13 @@
+services:
+  _defaults:
+    autowire: true
+    public: false
+
+  OxidEsales\ConsistencyCheck\ImageManager\Factory\ImageDataTypeFactoryInterface:
+    class: OxidEsales\ConsistencyCheck\ImageManager\Factory\ImageDataTypeFactory
+
+  OxidEsales\ConsistencyCheck\ImageManager\Factory\ImageCollectionFactoryInterface:
+    class: OxidEsales\ConsistencyCheck\ImageManager\Factory\ImageCollectionFactory
+
+  OxidEsales\ConsistencyCheck\ImageManager\Factory\ProgressBarFactoryInterface:
+    class: OxidEsales\ConsistencyCheck\ImageManager\Factory\ProgressBarFactory

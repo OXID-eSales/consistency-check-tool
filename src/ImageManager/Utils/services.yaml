@@ -1,0 +1,13 @@
+services:
+  _defaults:
+    autowire: true
+    public: false
+
+  OxidEsales\ConsistencyCheck\ImageManager\Utils\Finder:
+    class: Symfony\Component\Finder\Finder
+    factory: ['Symfony\Component\Finder\Finder', 'create']
+
+  OxidEsales\ConsistencyCheck\ImageManager\Utils\FileSystemUtilsInterface:
+    class: OxidEsales\ConsistencyCheck\ImageManager\Utils\FileSystemUtils
+    arguments:
+      $finder: '@OxidEsales\ConsistencyCheck\ImageManager\Utils\Finder'

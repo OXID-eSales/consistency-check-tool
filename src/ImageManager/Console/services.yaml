@@ -1,0 +1,16 @@
+services:
+  _defaults:
+    autowire: true
+    public: false
+
+  OxidEsales\ConsistencyCheck\ImageManager\Console\MoveUnusedImagesCommand:
+    arguments:
+      $entities: !tagged_iterator 'oe.consistency_check.image_entity'
+    tags:
+      - { name: 'console.command', command: 'oe:consistency_check:move-unused-images' }
+
+  OxidEsales\ConsistencyCheck\ImageManager\Console\DeleteUnusedImagesCommand:
+    arguments:
+      $entities: !tagged_iterator 'oe.consistency_check.image_entity'
+    tags:
+      - { name: 'console.command', command: 'oe:consistency_check:delete-unused-images' }
