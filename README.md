@@ -1,4 +1,4 @@
-# OXID eShop Consistency Check Tool
+# OXID eShop Consistency Check Component
 
 [![Development](https://github.com/OXID-eSales/consistency-check-tool/actions/workflows/trigger.yaml/badge.svg?branch=b-7.3.x)](https://github.com/OXID-eSales/consistency-check-tool/actions/workflows/trigger.yaml)
 [![Latest Version](https://img.shields.io/packagist/v/OXID-eSales/consistency-check-tool?logo=composer&label=latest&include_prereleases&color=orange)](https://packagist.org/packages/oxid-esales/consistency-check-tool )
@@ -9,13 +9,13 @@
 [![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=OXID-eSales_consistency-check-tool&metric=sqale_index)](https://sonarcloud.io/dashboard?id=OXID-eSales_consistency-check-tool)
 
 
-The OXID eSales Consistency Check Tool is designed to perform various consistency checks on your eShop. It primarily focuses on detecting unused images and provides multiple actions such as
+The OXID eSales Consistency Check component is designed to perform various consistency checks on your eShop. It primarily focuses on detecting unused images and provides multiple actions such as
 
 - Performing a dry-run to see how many images would be affected
 - Moving unused images to another location
 - Deleting unused images to free up storage
 
-This tool ensures that your eShop remains optimized by helping you remove or move unnecessary image files while keeping track of the changes.
+This component ensures that your eShop remains optimized by helping you remove or move unnecessary image files while keeping track of the changes.
 
 ## Features
 - Provides commands to move or delete unused images. 
@@ -27,6 +27,12 @@ This tool ensures that your eShop remains optimized by helping you remove or mov
 
 ## Compatibility
 This module assumes you have OXID eShop Compilation version 7.3.0 installed.
+
+## Installation
+To install this component in your OXID eShop environment, use Composer:
+```bash
+$ composer require oxid-esales/consistency-check-tool
+```
 
 ## Development installation
 
@@ -54,8 +60,13 @@ The tool provides several commands for managing unused images.
 ### Move Unused Images
 Move unused images to a specific directory (e.g., /backup/images)
 ```bash
-$ vendor/bin/oe-console oe:consistency_check:move-unused-images --destination=/backup/images
+$ vendor/bin/oe-console oe:consistency_check:move-unused-images --destination=out/pictures/backup/
 ```
+When specifying a destination folder for moving images, **note that paths are relative to the shop root**.
+
+For example:
+- If you set `destination` to `/`, the **source and target directories will be identical**.
+- To move images to `out/pictures/backup/`, simply provide `out/pictures/backup/` as the destination.
 
 ### Delete Unused Images
 Permanently delete unused images:
