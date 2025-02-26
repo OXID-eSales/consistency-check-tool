@@ -26,7 +26,7 @@ This component ensures that your eShop remains optimized by helping you remove o
 - Customizable directory paths for images.
 
 ## Compatibility
-This module assumes you have OXID eShop Compilation version 7.3.0 installed.
+This component assumes you have OXID eShop Compilation version 7.3.0 installed.
 
 ## Installation
 To install this component in your OXID eShop environment, use Composer:
@@ -48,7 +48,7 @@ $ composer config repositories.oxid-esales/consistency-check-tool \
   --json '{"type":"path", "url":"./dev-packages/consistency-check-tool", "options": {"symlink": true}}'
 ```
 
-Ensure you're in the shop root directory (the file `composer.json` and the directories `source/` and `vendor/` are located there) and require the module.
+Ensure you're in the shop root directory (the file `composer.json` and the directories `source/` and `vendor/` are located there) and require the component.
 
 ```bash
 $ composer require oxid-esales/consistency-check-tool
