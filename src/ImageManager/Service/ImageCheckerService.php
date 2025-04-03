@@ -28,14 +28,14 @@ class ImageCheckerService implements ImageCheckerServiceInterface
     public function getUnusedImages(ImageEntityInterface $entity): ImageCollectionInterface
     {
         try {
-            $databaseImageCollection = $this->imageDatabaseRepository->getImages($entity);
-            $directoryImageCollection = $this->imageDirectoryRepository->getImages($entity);
+            $usedImageCollection = $this->imageDatabaseRepository->getImages($entity);
+            $allImageCollection = $this->imageDirectoryRepository->getImages($entity);
 
             $unusedImages = $this->imageCollectionFactory->create();
 
-            foreach ($directoryImageCollection->getAll() as $directoryImage) {
-                if (!$databaseImageCollection->contains($directoryImage)) {
-                    $unusedImages->add($directoryImage);
+            foreach ($allImageCollection->getAll() as $image) {
+                if (!$usedImageCollection->contains($image)) {
+                    $unusedImages->add($image);
                 }
             }
 
