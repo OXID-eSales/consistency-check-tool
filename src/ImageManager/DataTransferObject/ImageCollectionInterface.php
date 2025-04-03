@@ -19,4 +19,6 @@ interface ImageCollectionInterface
     public function getAll(): array;
 
     public function contains(ImageDataTypeInterface $image): bool;
+
+    public function containsOriginalForWebP(ImageDataTypeInterface $webp): bool;
 }

@@ -11,6 +11,8 @@ namespace ImageManager\DataTransferObject;
 
 use OxidEsales\ConsistencyCheck\ImageManager\DataTransferObject\ImageCollectionInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\DataType\ImageDataType;
+use OxidEsales\ConsistencyCheck\ImageManager\DataType\ImageDataTypeInterface;
+use OxidEsales\Eshop\Core\Config;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use OxidEsales\ConsistencyCheck\ImageManager\DataTransferObject\ImageCollection;
@@ -79,8 +81,78 @@ class ImageCollectionTest extends TestCase
         $this->assertFalse($sut->contains($image2));
     }
 
-    private function getSut(): ImageCollectionInterface
+    #[Test]
+    public function containsOriginalForWebpReturnsTrueIfWebpEnabledAndOriginalExists(): void
     {
-        return new ImageCollection();
+        $configMock = $this->createConfigMock(true);
+
+        $originalImage = new ImageDataType(
+            $fieldName = uniqid(),
+            $originalName = uniqid(),
+            $directory = uniqid()
+        );
+
+        $sut = $this->getSut($configMock);
+        $sut->add($originalImage);
+
+        $webpImageStub = $this->createConfiguredStub(ImageDataTypeInterface::class, [
+            'getImageName' => $originalName . '.webp',
+            'getFieldName' => $fieldName,
+            'getDirectory' => $directory,
+        ]);
+
+        $this->assertTrue($sut->containsOriginalForWebP($webpImageStub));
+    }
+
+    #[Test]
+    public function containsOriginalForWebpReturnsFalseIfWebpEnabledButImageDoesNotEndWithWebp(): void
+    {
+        $configMock = $this->createConfigMock(true);
+
+        $imageStub = $this->createStub(ImageDataTypeInterface::class);
+        $imageStub->method('getImageName')->willReturn(uniqid());
+
+        $sut = $this->getMockBuilder(ImageCollection::class)
+            ->setConstructorArgs([$configMock])
+            ->onlyMethods(['contains'])
+            ->getMock();
+
+        $sut->expects($this->never())->method('contains');
+
+        $this->assertFalse($sut->containsOriginalForWebP($imageStub));
+    }
+
+    #[Test]
+    public function containsOriginalForWebpReturnsFalseIfWebpDisabledEvenIfImageEndsWithWebp(): void
+    {
+        $configMock = $this->createConfigMock(false);
+
+        $imageStub = $this->createStub(ImageDataTypeInterface::class);
+        $imageStub->method('getImageName')->willReturn(uniqid() . '.webp');
+
+        $sut = $this->getMockBuilder(ImageCollection::class)
+            ->setConstructorArgs([$configMock])
+            ->onlyMethods(['contains'])
+            ->getMock();
+
+        $sut->expects($this->never())->method('contains');
+
+        $this->assertFalse($sut->containsOriginalForWebP($imageStub));
+    }
+
+    private function createConfigMock(bool $webpEnabled): Config
+    {
+        $configMock = $this->createMock(Config::class);
+        $configMock->method('getConfigParam')
+            ->with('blConvertImagesToWebP')
+            ->willReturn($webpEnabled ? 1 : 0);
+
+        return $configMock;
+    }
+
+    private function getSut(
+        Config $config = null,
+    ): ImageCollectionInterface {
+        return new ImageCollection($config ?? $this->createStub(Config::class));
     }
 }

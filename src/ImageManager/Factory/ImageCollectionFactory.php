@@ -11,11 +11,17 @@ namespace OxidEsales\ConsistencyCheck\ImageManager\Factory;
 
 use OxidEsales\ConsistencyCheck\ImageManager\DataTransferObject\ImageCollection;
 use OxidEsales\ConsistencyCheck\ImageManager\DataTransferObject\ImageCollectionInterface;
+use OxidEsales\Eshop\Core\Config;
 
 class ImageCollectionFactory implements ImageCollectionFactoryInterface
 {
+    public function __construct(
+        private readonly Config $config,
+    ) {
+    }
+
     public function create(): ImageCollectionInterface
     {
-        return new ImageCollection();
+        return new ImageCollection($this->config);
     }
 }

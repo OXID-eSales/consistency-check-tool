@@ -9,7 +9,9 @@ declare(strict_types=1);
 
 namespace OxidEsales\ConsistencyCheck\ImageManager\DataTransferObject;
 
+use OxidEsales\ConsistencyCheck\ImageManager\DataType\ImageDataType;
 use OxidEsales\ConsistencyCheck\ImageManager\DataType\ImageDataTypeInterface;
+use OxidEsales\Eshop\Core\Config;
 
 class ImageCollection implements ImageCollectionInterface
 {
@@ -17,6 +19,11 @@ class ImageCollection implements ImageCollectionInterface
      * @var array<string, ImageDataTypeInterface>
      */
     private array $imageHashMap = [];
+
+    public function __construct(
+        private readonly Config $config
+    ) {
+    }
 
     /**
      * @inheritDoc
@@ -39,6 +46,25 @@ class ImageCollection implements ImageCollectionInterface
     {
         $hash = $this->hashImage($image);
         return isset($this->imageHashMap[$hash]);
+    }
+
+    public function containsOriginalForWebP(ImageDataTypeInterface $webp): bool
+    {
+        if ($this->isWebPEnabled() && str_ends_with($webp->getImageName(), '.webp')) {
+            $originalImage = new ImageDataType(
+                fieldName: $webp->getFieldName(),
+                imageName: str_replace('.webp', '', $webp->getImageName()),
+                directory: $webp->getDirectory()
+            );
+            return $this->contains($originalImage);
+        }
+
+        return false;
+    }
+
+    private function isWebPEnabled(): bool
+    {
+        return (bool) $this->config->getConfigParam('blConvertImagesToWebP');
     }
 
     private function hashImage(ImageDataTypeInterface $image): string
