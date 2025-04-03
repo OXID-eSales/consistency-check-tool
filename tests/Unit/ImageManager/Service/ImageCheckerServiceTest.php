@@ -146,6 +146,43 @@ class ImageCheckerServiceTest extends TestCase
         $this->assertSame($emptyImageCollectionStub, $actualImages);
     }
 
+    #[Test]
+    public function itDoesNotMarkWebpAsUnusedIfOriginalExists(): void
+    {
+        $originalImageStub = $this->createConfiguredStub(ImageDataTypeInterface::class, [
+            'getImageName' => $originalImage = uniqid(),
+            'getDirectory' => $directory = uniqid(),
+            'getFieldName' => $fieldName = uniqid(),
+        ]);
+
+        $webpImageStub = $this->createConfiguredStub(ImageDataTypeInterface::class, [
+            'getImageName' => $originalImage . '.webp',
+            'getDirectory' => $directory,
+            'getFieldName' => $fieldName,
+        ]);
+
+        $imageCollectionFactoryStub = $this->createStub(ImageCollectionFactoryInterface::class);
+        $emptyCollection = $this->createImageCollection([]);
+        $imageCollectionFactoryStub->method('create')->willReturn($emptyCollection);
+
+        $originalImages = $this->createImageCollection([$originalImageStub]);
+        $imageDatabaseRepositoryStub = $this->createStub(ImageRepositoryInterface::class);
+        $imageDatabaseRepositoryStub->method('getImages')->willReturn($originalImages);
+
+        $webpImages = $this->createImageCollection([$webpImageStub]);
+        $imageDirectoryRepositoryStub = $this->createStub(ImageRepositoryInterface::class);
+        $imageDirectoryRepositoryStub->method('getImages')->willReturn($webpImages);
+
+        $sut = $this->getSut(
+            imageDatabaseRepository: $imageDatabaseRepositoryStub,
+            imageDirectoryRepository: $imageDirectoryRepositoryStub,
+            imageCollectionFactory: $imageCollectionFactoryStub,
+        );
+
+        $result = $sut->getUnusedImages($this->createStub(ImageEntityInterface::class));
+        $this->assertCount(0, $result->getAll());
+    }
+
     private function createImageCollection(array $images): ImageCollectionInterface
     {
         $imageCollection = $this->createMock(ImageCollectionInterface::class);
@@ -154,6 +191,28 @@ class ImageCheckerServiceTest extends TestCase
         $imageCollection->method('contains')
             ->willReturnCallback(function ($image) use ($images) {
                 return in_array($image, $images, true);
+            });
+
+        $imageCollection->method('containsOriginalForWebP')
+            ->willReturnCallback(function ($image) use ($images) {
+                $imageName = $image->getImageName();
+                if (!str_ends_with($imageName, '.webp')) {
+                    return false;
+                }
+
+                $originalName = substr($imageName, 0, -5);
+
+                foreach ($images as $existingImage) {
+                    if (
+                        $existingImage->getImageName() === $originalName &&
+                        $existingImage->getDirectory() === $image->getDirectory() &&
+                        $existingImage->getFieldName() === $image->getFieldName()
+                    ) {
+                        return true;
+                    }
+                }
+
+                return false;
             });
 
         return $imageCollection;

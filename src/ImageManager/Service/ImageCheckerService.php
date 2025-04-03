@@ -34,7 +34,7 @@ class ImageCheckerService implements ImageCheckerServiceInterface
             $unusedImages = $this->imageCollectionFactory->create();
 
             foreach ($allImageCollection->getAll() as $image) {
-                if (!$usedImageCollection->contains($image)) {
+                if (!$usedImageCollection->contains($image) && !$usedImageCollection->containsOriginalForWebP($image)) {
                     $unusedImages->add($image);
                 }
             }
