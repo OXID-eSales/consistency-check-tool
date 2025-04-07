@@ -15,6 +15,7 @@ use OxidEsales\ConsistencyCheck\ImageManager\Factory\ProgressBarFactoryInterface
 use OxidEsales\ConsistencyCheck\ImageManager\Service\ImageCheckerServiceInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Service\ImageEntityFilterServiceInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Service\ImageManagerServiceInterface;
+use OxidEsales\ConsistencyCheck\ImageManager\Service\LogReaderInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Service\MessageFormatterServiceInterface;
 use OxidEsales\EshopCommunity\Tests\Integration\IntegrationTestCase;
 use PHPUnit\Framework\Attributes\Test;
@@ -53,7 +54,8 @@ class MoveUnusedImagesCommandTest extends IntegrationTestCase
             entityFilterService: $this->get(ImageEntityFilterServiceInterface::class),
             messageFormatter: $this->get(MessageFormatterServiceInterface::class),
             progressBarFactory: $this->get(ProgressBarFactoryInterface::class),
-            logger: $this->get(LoggerInterface::class)
+            logger: $this->get(LoggerInterface::class),
+            logReader: $this->get(LogReaderInterface::class),
         );
     }
 }

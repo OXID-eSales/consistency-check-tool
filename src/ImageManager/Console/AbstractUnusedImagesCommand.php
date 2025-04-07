@@ -16,6 +16,7 @@ use OxidEsales\ConsistencyCheck\ImageManager\Factory\ProgressBarFactoryInterface
 use OxidEsales\ConsistencyCheck\ImageManager\Service\ImageCheckerServiceInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Service\ImageEntityFilterServiceInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Service\ImageManagerServiceInterface;
+use OxidEsales\ConsistencyCheck\ImageManager\Service\LogReaderInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Service\MessageFormatterServiceInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
@@ -28,6 +29,9 @@ abstract class AbstractUnusedImagesCommand extends Command
     protected const MESSAGE_NO_IMAGES = 'No unused images found for entity %s';
     protected const MESSAGE_ERROR = 'Error processing entity %s: %s';
     protected const MESSAGE_ENTITY_EXCEPTION = 'Error processing entity %s: Check error log for details';
+    protected const MESSAGE_LOG_OUTPUT_START = '--- Log Output ---';
+    protected const MESSAGE_LOG_OUTPUT_END = '--- End of Log ---';
+    protected const MESSAGE_LOG_OUTPUT_EMPTY = '(Log file is empty or missing)';
 
     public function __construct(
         /** @var ImageEntityInterface[] */
@@ -37,7 +41,8 @@ abstract class AbstractUnusedImagesCommand extends Command
         protected readonly ImageEntityFilterServiceInterface $entityFilterService,
         protected readonly MessageFormatterServiceInterface $messageFormatter,
         protected readonly ProgressBarFactoryInterface $progressBarFactory,
-        protected readonly LoggerInterface $logger
+        protected readonly LoggerInterface $logger,
+        private readonly LogReaderInterface $logReader,
     ) {
         parent::__construct();
     }
@@ -59,6 +64,11 @@ abstract class AbstractUnusedImagesCommand extends Command
         }
 
         $progressBar->finish();
+
+        if ($output->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE) {
+            $this->outputLogToConsole($output);
+        }
+
         $this->reportSuccess($output);
 
         return Command::SUCCESS;
@@ -139,5 +149,29 @@ abstract class AbstractUnusedImagesCommand extends Command
     private function getEntityDetailsString(ImageEntityInterface $entity): string
     {
         return sprintf('[%s:%s]', $entity->getName(), $entity->getFieldName());
+    }
+
+    private function outputLogToConsole(OutputInterface $output): void
+    {
+        $output->writeln(
+            "\n" . $this->messageFormatter->formatInfo(self::MESSAGE_LOG_OUTPUT_START)
+        );
+
+        $lines = $this->logReader->readLines();
+
+        if (empty($lines)) {
+            $output->writeln(
+                "\n" . $this->messageFormatter->formatComment(self::MESSAGE_LOG_OUTPUT_EMPTY)
+            );
+            return;
+        }
+
+        foreach ($lines as $line) {
+            $output->writeln($line);
+        }
+
+        $output->writeln(
+            "\n" . $this->messageFormatter->formatInfo(self::MESSAGE_LOG_OUTPUT_END)
+        );
     }
 }
