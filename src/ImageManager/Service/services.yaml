@@ -37,3 +37,8 @@ services:
 
   OxidEsales\ConsistencyCheck\ImageManager\Service\MessageFormatterServiceInterface:
     class: OxidEsales\ConsistencyCheck\ImageManager\Service\MessageFormatterService
+
+  OxidEsales\ConsistencyCheck\ImageManager\Service\LogReaderInterface:
+    class: OxidEsales\ConsistencyCheck\ImageManager\Service\FileLogReader
+    arguments:
+      $logFilePath: '%app.log_file_path%'
