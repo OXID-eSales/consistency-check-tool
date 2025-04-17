@@ -156,28 +156,6 @@ class UnusedImageFinderServiceTest extends TestCase
                 return in_array($image, $images, true);
             });
 
-        $imageCollection->method('containsOriginalForWebP')
-            ->willReturnCallback(function ($image) use ($images) {
-                $imageName = $image->getImageName();
-                if (!str_ends_with($imageName, '.webp')) {
-                    return false;
-                }
-
-                $originalName = substr($imageName, 0, -5);
-
-                foreach ($images as $existingImage) {
-                    if (
-                        $existingImage->getImageName() === $originalName &&
-                        $existingImage->getDirectory() === $image->getDirectory() &&
-                        $existingImage->getFieldName() === $image->getFieldName()
-                    ) {
-                        return true;
-                    }
-                }
-
-                return false;
-            });
-
         return $imageCollection;
     }
 

@@ -34,7 +34,7 @@ class UnusedImageFinderService implements UnusedImageFinderServiceInterface
             $unusedImages = $this->imageCollectionFactory->create();
 
             foreach ($allImageCollection->getAll() as $image) {
-                if (!$usedImageCollection->contains($image) && !$usedImageCollection->containsOriginalForWebP($image)) {
+                if (!$usedImageCollection->contains($image)) {
                     $unusedImages->add($image);
                 }
             }
