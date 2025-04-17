@@ -42,3 +42,6 @@ services:
     class: OxidEsales\ConsistencyCheck\ImageManager\Service\FileLogReader
     arguments:
       $logFilePath: '%app.log_file_path%'
+
+  OxidEsales\ConsistencyCheck\ImageManager\Service\ImageUsageCheckerInterface:
+    class: OxidEsales\ConsistencyCheck\ImageManager\Service\ImageUsageChecker

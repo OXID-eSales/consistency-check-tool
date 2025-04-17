@@ -15,6 +15,7 @@ use OxidEsales\ConsistencyCheck\ImageManager\Entity\ImageEntityInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Exception\ImageDatabaseRepositoryException;
 use OxidEsales\ConsistencyCheck\ImageManager\Factory\ImageCollectionFactoryInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Repository\ImageRepositoryInterface;
+use OxidEsales\ConsistencyCheck\ImageManager\Service\ImageUsageCheckerInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Service\UnusedImageFinderService;
 use OxidEsales\ConsistencyCheck\ImageManager\Service\UnusedImageFinderServiceInterface;
 use PHPUnit\Framework\Attributes\Test;
@@ -57,10 +58,15 @@ class UnusedImageFinderServiceTest extends TestCase
             ->method('create')
             ->willReturn($unusedImagesMock);
 
+        $imageUsageCheckerStub = $this->createMock(ImageUsageCheckerInterface::class);
+        $imageUsageCheckerStub->method('isUsed')
+            ->willReturnCallback(fn($image) => $image !== $directoryImage3);
+
         $sut = $this->getSut(
             imageDatabaseRepository: $databaseRepositoryStub,
             imageDirectoryRepository: $imageDirectoryRepositoryStub,
-            imageCollectionFactory: $imageCollectionFactoryMock
+            imageCollectionFactory: $imageCollectionFactoryMock,
+            imageUsageChecker: $imageUsageCheckerStub,
         );
 
         $entityStub = $this->createStub(ImageEntityInterface::class);
@@ -97,10 +103,14 @@ class UnusedImageFinderServiceTest extends TestCase
             ->method('create')
             ->willReturn($emptyCollectionMock);
 
+        $imageUsageCheckerStub = $this->createStub(ImageUsageCheckerInterface::class);
+        $imageUsageCheckerStub->method('isUsed')->willReturn(true);
+
         $sut = $this->getSut(
             imageDatabaseRepository: $databaseRepositoryStub,
             imageDirectoryRepository: $imageDirectoryRepositoryStub,
-            imageCollectionFactory: $imageCollectionFactoryMock
+            imageCollectionFactory: $imageCollectionFactoryMock,
+            imageUsageChecker: $imageUsageCheckerStub,
         );
 
         $entityStub = $this->createStub(ImageEntityInterface::class);
@@ -150,12 +160,6 @@ class UnusedImageFinderServiceTest extends TestCase
     {
         $imageCollection = $this->createMock(ImageCollectionInterface::class);
         $imageCollection->method('getAll')->willReturn($images);
-
-        $imageCollection->method('contains')
-            ->willReturnCallback(function ($image) use ($images) {
-                return in_array($image, $images, true);
-            });
-
         return $imageCollection;
     }
 
@@ -163,16 +167,19 @@ class UnusedImageFinderServiceTest extends TestCase
         ?ImageRepositoryInterface $imageDatabaseRepository = null,
         ?ImageRepositoryInterface $imageDirectoryRepository = null,
         ?ImageCollectionFactoryInterface $imageCollectionFactory = null,
+        ?ImageUsageCheckerInterface $imageUsageChecker = null,
         ?PsrLoggerInterface $logger = null,
     ): UnusedImageFinderServiceInterface {
         $imageDatabaseRepository ??= $this->createStub(ImageRepositoryInterface::class);
         $imageDirectoryRepository ??= $this->createStub(ImageRepositoryInterface::class);
         $imageCollectionFactory ??= $this->createStub(ImageCollectionFactoryInterface::class);
+        $imageUsageChecker ??= $this->createStub(ImageUsageCheckerInterface::class);
         $logger ??= $this->createStub(PsrLoggerInterface::class);
         return new UnusedImageFinderService(
             imageDatabaseRepository: $imageDatabaseRepository,
             imageDirectoryRepository: $imageDirectoryRepository,
             imageCollectionFactory: $imageCollectionFactory,
+            imageUsageChecker: $imageUsageChecker,
             logger: $logger,
         );
     }

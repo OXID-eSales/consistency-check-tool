@@ -21,6 +21,7 @@ class UnusedImageFinderService implements UnusedImageFinderServiceInterface
         private readonly ImageRepositoryInterface $imageDatabaseRepository,
         private readonly ImageRepositoryInterface $imageDirectoryRepository,
         private readonly ImageCollectionFactoryInterface $imageCollectionFactory,
+        private readonly ImageUsageCheckerInterface $imageUsageChecker,
         private readonly PsrLoggerInterface $logger,
     ) {
     }
@@ -34,7 +35,7 @@ class UnusedImageFinderService implements UnusedImageFinderServiceInterface
             $unusedImages = $this->imageCollectionFactory->create();
 
             foreach ($allImageCollection->getAll() as $image) {
-                if (!$usedImageCollection->contains($image)) {
+                if (!$this->imageUsageChecker->isUsed($image, $usedImageCollection)) {
                     $unusedImages->add($image);
                 }
             }
