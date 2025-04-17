@@ -5,3 +5,4 @@ imports:
   - { resource: Console/services.yaml }
   - { resource: Utils/services.yaml }
   - { resource: Service/services.yaml }
+  - { resource: WebP/services.yaml }
