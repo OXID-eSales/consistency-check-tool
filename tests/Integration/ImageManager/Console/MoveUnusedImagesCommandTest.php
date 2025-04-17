@@ -12,7 +12,7 @@ namespace OxidEsales\ConsistencyCheck\ImageManager\Tests\Integration\ImageManage
 use OxidEsales\ConsistencyCheck\ImageManager\Console\MoveUnusedImagesCommand;
 use OxidEsales\ConsistencyCheck\ImageManager\Entity\ImageEntityInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Factory\ProgressBarFactoryInterface;
-use OxidEsales\ConsistencyCheck\ImageManager\Service\ImageCheckerServiceInterface;
+use OxidEsales\ConsistencyCheck\ImageManager\Service\UnusedImageFinderServiceInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Service\ImageEntityFilterServiceInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Service\ImageManagerServiceInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Service\LogReaderInterface;
@@ -49,7 +49,7 @@ class MoveUnusedImagesCommandTest extends IntegrationTestCase
     {
         return new MoveUnusedImagesCommand(
             entities: [$this->createStub(ImageEntityInterface::class)],
-            imageCheckerService: $this->get(ImageCheckerServiceInterface::class),
+            imageCheckerService: $this->get(UnusedImageFinderServiceInterface::class),
             imageManagerService: $this->get(ImageManagerServiceInterface::class),
             entityFilterService: $this->get(ImageEntityFilterServiceInterface::class),
             messageFormatter: $this->get(MessageFormatterServiceInterface::class),

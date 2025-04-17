@@ -15,7 +15,7 @@ use OxidEsales\ConsistencyCheck\ImageManager\Factory\ImageCollectionFactoryInter
 use OxidEsales\ConsistencyCheck\ImageManager\Repository\ImageRepositoryInterface;
 use Psr\Log\LoggerInterface as PsrLoggerInterface;
 
-class ImageCheckerService implements ImageCheckerServiceInterface
+class UnusedImageFinderService implements UnusedImageFinderServiceInterface
 {
     public function __construct(
         private readonly ImageRepositoryInterface $imageDatabaseRepository,

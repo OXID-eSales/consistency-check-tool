@@ -13,7 +13,7 @@ use Exception;
 use OxidEsales\ConsistencyCheck\ImageManager\DataTransferObject\ImageCollectionInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Entity\ImageEntityInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Factory\ProgressBarFactoryInterface;
-use OxidEsales\ConsistencyCheck\ImageManager\Service\ImageCheckerServiceInterface;
+use OxidEsales\ConsistencyCheck\ImageManager\Service\UnusedImageFinderServiceInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Service\ImageEntityFilterServiceInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Service\ImageManagerServiceInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Service\LogReaderInterface;
@@ -36,7 +36,7 @@ abstract class AbstractUnusedImagesCommand extends Command
     public function __construct(
         /** @var ImageEntityInterface[] */
         protected readonly iterable $entities,
-        protected readonly ImageCheckerServiceInterface $imageCheckerService,
+        protected readonly UnusedImageFinderServiceInterface $imageCheckerService,
         protected readonly ImageManagerServiceInterface $imageManagerService,
         protected readonly ImageEntityFilterServiceInterface $entityFilterService,
         protected readonly MessageFormatterServiceInterface $messageFormatter,

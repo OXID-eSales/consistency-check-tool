@@ -15,8 +15,8 @@ use OxidEsales\ConsistencyCheck\ImageManager\Entity\ImageEntityInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Exception\ImageDatabaseRepositoryException;
 use OxidEsales\ConsistencyCheck\ImageManager\Factory\ImageCollectionFactoryInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Repository\ImageRepositoryInterface;
-use OxidEsales\ConsistencyCheck\ImageManager\Service\ImageCheckerService;
-use OxidEsales\ConsistencyCheck\ImageManager\Service\ImageCheckerServiceInterface;
+use OxidEsales\ConsistencyCheck\ImageManager\Service\UnusedImageFinderService;
+use OxidEsales\ConsistencyCheck\ImageManager\Service\UnusedImageFinderServiceInterface;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface as PsrLoggerInterface;
@@ -223,12 +223,12 @@ class ImageCheckerServiceTest extends TestCase
         ?ImageRepositoryInterface $imageDirectoryRepository = null,
         ?ImageCollectionFactoryInterface $imageCollectionFactory = null,
         ?PsrLoggerInterface $logger = null,
-    ): ImageCheckerServiceInterface {
+    ): UnusedImageFinderServiceInterface {
         $imageDatabaseRepository ??= $this->createStub(ImageRepositoryInterface::class);
         $imageDirectoryRepository ??= $this->createStub(ImageRepositoryInterface::class);
         $imageCollectionFactory ??= $this->createStub(ImageCollectionFactoryInterface::class);
         $logger ??= $this->createStub(PsrLoggerInterface::class);
-        return new ImageCheckerService(
+        return new UnusedImageFinderService(
             imageDatabaseRepository: $imageDatabaseRepository,
             imageDirectoryRepository: $imageDirectoryRepository,
             imageCollectionFactory: $imageCollectionFactory,

@@ -13,7 +13,7 @@ use OxidEsales\ConsistencyCheck\ImageManager\Console\DeleteUnusedImagesCommand;
 use OxidEsales\ConsistencyCheck\ImageManager\DataTransferObject\ImageCollectionInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Entity\ImageEntityInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Factory\ProgressBarFactoryInterface;
-use OxidEsales\ConsistencyCheck\ImageManager\Service\ImageCheckerServiceInterface;
+use OxidEsales\ConsistencyCheck\ImageManager\Service\UnusedImageFinderServiceInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Service\ImageEntityFilterServiceInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Service\ImageManagerServiceInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Service\LogReaderInterface;
@@ -36,7 +36,7 @@ class DeleteUnusedImagesCommandTest extends TestCase
         $unusedImages = $this->createStub(ImageCollectionInterface::class);
         $unusedImages->method('getAll')->willReturn([$this->createStub(ImageEntityInterface::class)]);
 
-        $imageCheckerServiceStub = $this->createStub(ImageCheckerServiceInterface::class);
+        $imageCheckerServiceStub = $this->createStub(UnusedImageFinderServiceInterface::class);
         $imageCheckerServiceStub
             ->method('getUnusedImages')
             ->willReturn($unusedImages);
@@ -84,7 +84,7 @@ class DeleteUnusedImagesCommandTest extends TestCase
         $unusedImages = $this->createStub(ImageCollectionInterface::class);
         $unusedImages->method('getAll')->willReturn([]);
 
-        $imageCheckerServiceStub = $this->createStub(ImageCheckerServiceInterface::class);
+        $imageCheckerServiceStub = $this->createStub(UnusedImageFinderServiceInterface::class);
         $imageCheckerServiceStub->method('getUnusedImages')->willReturn($unusedImages);
 
         $imageManagerServiceStub = $this->createStub(ImageManagerServiceInterface::class);
@@ -125,7 +125,7 @@ class DeleteUnusedImagesCommandTest extends TestCase
     {
         $entityMock = $this->createEntityStub($entityNameToFilter = uniqid());
 
-        $imageCheckerServiceStub = $this->createStub(ImageCheckerServiceInterface::class);
+        $imageCheckerServiceStub = $this->createStub(UnusedImageFinderServiceInterface::class);
         $imageCheckerServiceStub
             ->method('getUnusedImages')
             ->willThrowException(new \RuntimeException());
@@ -169,7 +169,7 @@ class DeleteUnusedImagesCommandTest extends TestCase
         $unusedImages = $this->createStub(ImageCollectionInterface::class);
         $unusedImages->method('getAll')->willReturn([$this->createStub(ImageEntityInterface::class)]);
 
-        $imageCheckerServiceStub = $this->createStub(ImageCheckerServiceInterface::class);
+        $imageCheckerServiceStub = $this->createStub(UnusedImageFinderServiceInterface::class);
         $imageCheckerServiceStub->method('getUnusedImages')->willReturn($unusedImages);
 
         $imageManagerServiceStub = $this->createStub(ImageManagerServiceInterface::class);
@@ -216,7 +216,7 @@ class DeleteUnusedImagesCommandTest extends TestCase
     {
         $entityStub = $this->createEntityStub($entityNameToFilter = uniqid());
 
-        $imageCheckerServiceStub = $this->createStub(ImageCheckerServiceInterface::class);
+        $imageCheckerServiceStub = $this->createStub(UnusedImageFinderServiceInterface::class);
         $imageCheckerServiceStub
             ->method('getUnusedImages')
             ->willReturn($this->createStub(ImageCollectionInterface::class));
@@ -294,14 +294,14 @@ class DeleteUnusedImagesCommandTest extends TestCase
 
     private function getSut(
         array $entities = [],
-        ?ImageCheckerServiceInterface $imageCheckerService = null,
+        ?UnusedImageFinderServiceInterface $imageCheckerService = null,
         ?ImageManagerServiceInterface $imageManagerService = null,
         ?ImageEntityFilterServiceInterface $imageEntityFilter = null,
         ?MessageFormatterServiceInterface $messageFormatter = null,
         ?LoggerInterface $logger = null,
         ?LogReaderInterface $logReader = null,
     ): DeleteUnusedImagesCommand {
-        $imageCheckerService ??= $this->createStub(ImageCheckerServiceInterface::class);
+        $imageCheckerService ??= $this->createStub(UnusedImageFinderServiceInterface::class);
         $imageManagerService ??= $this->createStub(ImageManagerServiceInterface::class);
         $imageEntityFilter ??= $this->createStub(ImageEntityFilterServiceInterface::class);
         $messageFormatter ??= $this->createStub(MessageFormatterServiceInterface::class);
