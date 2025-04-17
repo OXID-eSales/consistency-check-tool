@@ -15,13 +15,8 @@ use OxidEsales\Eshop\Core\Config;
 
 class ImageCollectionFactory implements ImageCollectionFactoryInterface
 {
-    public function __construct(
-        private readonly Config $config,
-    ) {
-    }
-
     public function create(): ImageCollectionInterface
     {
-        return new ImageCollection($this->config);
+        return new ImageCollection();
     }
 }
