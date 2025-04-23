@@ -45,3 +45,6 @@ services:
 
   OxidEsales\ConsistencyCheck\ImageManager\Service\ImageUsageCheckerInterface:
     class: OxidEsales\ConsistencyCheck\ImageManager\Service\ImageUsageChecker
+
+  OxidEsales\ConsistencyCheck\ImageManager\Service\PostCommandLoggerInterface:
+    class: OxidEsales\ConsistencyCheck\ImageManager\Service\VerboseConsoleLogReporter

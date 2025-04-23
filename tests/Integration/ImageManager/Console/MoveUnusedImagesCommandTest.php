@@ -12,10 +12,10 @@ namespace OxidEsales\ConsistencyCheck\ImageManager\Tests\Integration\ImageManage
 use OxidEsales\ConsistencyCheck\ImageManager\Console\MoveUnusedImagesCommand;
 use OxidEsales\ConsistencyCheck\ImageManager\Entity\ImageEntityInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Factory\ProgressBarFactoryInterface;
+use OxidEsales\ConsistencyCheck\ImageManager\Service\PostCommandLoggerInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Service\UnusedImageFinderServiceInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Service\ImageEntityFilterServiceInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Service\ImageManagerServiceInterface;
-use OxidEsales\ConsistencyCheck\ImageManager\Service\LogReaderInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Service\MessageFormatterServiceInterface;
 use OxidEsales\EshopCommunity\Tests\Integration\IntegrationTestCase;
 use PHPUnit\Framework\Attributes\Test;
@@ -55,7 +55,7 @@ class MoveUnusedImagesCommandTest extends IntegrationTestCase
             messageFormatter: $this->get(MessageFormatterServiceInterface::class),
             progressBarFactory: $this->get(ProgressBarFactoryInterface::class),
             logger: $this->get(LoggerInterface::class),
-            logReader: $this->get(LogReaderInterface::class),
+            postCommandLogger: $this->get(PostCommandLoggerInterface::class),
         );
     }
 }
