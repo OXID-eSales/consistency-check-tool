@@ -2,9 +2,10 @@ services:
   _defaults:
     autowire: true
     public: false
+    bind:
+      OxidEsales\Eshop\Core\Config: '@=service("OxidEsales\\ConsistencyCheck\\Core\\Registry").getConfig()'
 
   OxidEsales\ConsistencyCheck\ImageManager\WebP\WebPImageUsageChecker:
     decorates: OxidEsales\ConsistencyCheck\ImageManager\Service\ImageUsageCheckerInterface
     arguments:
       $originalChecker: '@.inner'
-      $config: '@OxidEsales\Eshop\Core\Config'
