@@ -18,7 +18,7 @@ use OxidEsales\Eshop\Core\Config;
 class WebPImageUsageChecker implements ImageUsageCheckerInterface
 {
     public function __construct(
-        private readonly ImageUsageCheckerInterface $inner,
+        private readonly ImageUsageCheckerInterface $originalChecker,
         private readonly Config $config
     ) {
     }
@@ -28,7 +28,7 @@ class WebPImageUsageChecker implements ImageUsageCheckerInterface
         $imageName = $image->getImageName();
 
         if (!$this->isWebp($imageName)) {
-            return $this->inner->isUsed($image, $usedImages);
+            return $this->originalChecker->isUsed($image, $usedImages);
         }
 
         if (!$this->isWebpEnabled()) {
@@ -41,7 +41,7 @@ class WebPImageUsageChecker implements ImageUsageCheckerInterface
             $image->getDirectory()
         );
 
-        return $this->inner->isUsed($baseImage, $usedImages);
+        return $this->originalChecker->isUsed($baseImage, $usedImages);
     }
 
     private function isWebp(string $filename): bool

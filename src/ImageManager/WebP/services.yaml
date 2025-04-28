@@ -6,5 +6,5 @@ services:
   OxidEsales\ConsistencyCheck\ImageManager\WebP\WebPImageUsageChecker:
     decorates: OxidEsales\ConsistencyCheck\ImageManager\Service\ImageUsageCheckerInterface
     arguments:
-      $inner: '@OxidEsales\ConsistencyCheck\ImageManager\WebP\WebPImageUsageChecker.inner'
+      $originalChecker: '@.inner'
       $config: '@OxidEsales\Eshop\Core\Config'
