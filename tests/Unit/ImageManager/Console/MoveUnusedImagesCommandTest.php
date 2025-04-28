@@ -13,7 +13,8 @@ use OxidEsales\ConsistencyCheck\ImageManager\Console\MoveUnusedImagesCommand;
 use OxidEsales\ConsistencyCheck\ImageManager\DataTransferObject\ImageCollectionInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Entity\ImageEntityInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Factory\ProgressBarFactoryInterface;
-use OxidEsales\ConsistencyCheck\ImageManager\Service\ImageCheckerServiceInterface;
+use OxidEsales\ConsistencyCheck\ImageManager\Service\PostCommandLoggerInterface;
+use OxidEsales\ConsistencyCheck\ImageManager\Service\UnusedImageFinderServiceInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Service\ImageEntityFilterServiceInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Service\ImageManagerServiceInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Service\MessageFormatterServiceInterface;
@@ -23,6 +24,7 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Output\NullOutput;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Tester\CommandTester;
 
 class MoveUnusedImagesCommandTest extends TestCase
@@ -38,7 +40,11 @@ class MoveUnusedImagesCommandTest extends TestCase
                 return sprintf('<error>' . $message . '</error>', ...$args);
             });
 
-        $sut = $this->getSut(messageFormatter: $formatterMock);
+        $postLoggerMock = $this->createMock(PostCommandLoggerInterface::class);
+        $postLoggerMock->expects($this->never())
+            ->method('after');
+
+        $sut = $this->getSut(messageFormatter: $formatterMock, postCommandLogger: $postLoggerMock);
         $commandTester = new CommandTester($sut);
         $commandTester->execute(['--destination' => '']);
 
@@ -53,7 +59,7 @@ class MoveUnusedImagesCommandTest extends TestCase
         $unusedImagesMock = $this->createMock(ImageCollectionInterface::class);
         $unusedImagesMock->method('getAll')->willReturn([$this->createMock(ImageEntityInterface::class)]);
 
-        $imageCheckerServiceStub = $this->createStub(ImageCheckerServiceInterface::class);
+        $imageCheckerServiceStub = $this->createStub(UnusedImageFinderServiceInterface::class);
         $imageCheckerServiceStub
             ->method('getUnusedImages')
             ->willReturn($unusedImagesMock);
@@ -101,7 +107,7 @@ class MoveUnusedImagesCommandTest extends TestCase
         $unusedImagesMock = $this->createMock(ImageCollectionInterface::class);
         $unusedImagesMock->method('getAll')->willReturn([]);
 
-        $imageCheckerServiceStub = $this->createStub(ImageCheckerServiceInterface::class);
+        $imageCheckerServiceStub = $this->createStub(UnusedImageFinderServiceInterface::class);
         $imageCheckerServiceStub->method('getUnusedImages')->willReturn($unusedImagesMock);
 
         $imageManagerServiceStub = $this->createStub(ImageManagerServiceInterface::class);
@@ -142,7 +148,7 @@ class MoveUnusedImagesCommandTest extends TestCase
     {
         $entityStub = $this->createEntityStub($entityNameToFilter = uniqid());
 
-        $imageCheckerServiceStub = $this->createStub(ImageCheckerServiceInterface::class);
+        $imageCheckerServiceStub = $this->createStub(UnusedImageFinderServiceInterface::class);
         $imageCheckerServiceStub
             ->method('getUnusedImages')
             ->willThrowException(new \RuntimeException('Test Exception'));
@@ -185,7 +191,7 @@ class MoveUnusedImagesCommandTest extends TestCase
         $unusedImages = $this->createStub(ImageCollectionInterface::class);
         $unusedImages->method('getAll')->willReturn([$this->createStub(ImageEntityInterface::class)]);
 
-        $imageCheckerServiceStub = $this->createStub(ImageCheckerServiceInterface::class);
+        $imageCheckerServiceStub = $this->createStub(UnusedImageFinderServiceInterface::class);
         $imageCheckerServiceStub->method('getUnusedImages')->willReturn($unusedImages);
 
         $imageManagerServiceStub = $this->createStub(ImageManagerServiceInterface::class);
@@ -246,20 +252,32 @@ class MoveUnusedImagesCommandTest extends TestCase
         return $progressBarFactory;
     }
 
+    private function createPostCommandLoggerMock(): PostCommandLoggerInterface
+    {
+        $postLoggerMock = $this->createMock(PostCommandLoggerInterface::class);
+        $postLoggerMock->expects($this->once())
+            ->method('after')
+            ->with($this->isInstanceOf(OutputInterface::class));
+
+        return $postLoggerMock;
+    }
+
     private function getSut(
         array $entities = [],
-        ?ImageCheckerServiceInterface $imageCheckerService = null,
+        ?UnusedImageFinderServiceInterface $imageCheckerService = null,
         ?ImageManagerServiceInterface $imageManagerService = null,
         ?ImageEntityFilterServiceInterface $imageEntityFilter = null,
         ?MessageFormatterServiceInterface $messageFormatter = null,
         ?LoggerInterface $logger = null,
+        ?PostCommandLoggerInterface $postCommandLogger = null,
     ): MoveUnusedImagesCommand {
-        $imageCheckerService ??= $this->createStub(ImageCheckerServiceInterface::class);
+        $imageCheckerService ??= $this->createStub(UnusedImageFinderServiceInterface::class);
         $imageManagerService ??= $this->createStub(ImageManagerServiceInterface::class);
         $imageEntityFilter ??= $this->createStub(ImageEntityFilterServiceInterface::class);
         $messageFormatter ??= $this->createStub(MessageFormatterServiceInterface::class);
         $progressBar = $this->createProgressBarFactoryStub();
         $logger ??= $this->createStub(LoggerInterface::class);
+        $postCommandLogger ??= $this->createPostCommandLoggerMock();
 
         return new MoveUnusedImagesCommand(
             entities: $entities,
@@ -268,7 +286,8 @@ class MoveUnusedImagesCommandTest extends TestCase
             entityFilterService: $imageEntityFilter,
             messageFormatter: $messageFormatter,
             progressBarFactory: $progressBar,
-            logger: $logger
+            logger: $logger,
+            postCommandLogger: $postCommandLogger,
         );
     }
 }

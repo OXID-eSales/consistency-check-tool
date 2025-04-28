@@ -3,3 +3,13 @@ parameters:
 
 imports:
   - { resource: src/ImageManager/services.yaml }
+
+services:
+
+  _defaults:
+    public: false
+    autowire: true
+
+  OxidEsales\ConsistencyCheck\Core\Registry:
+    class: OxidEsales\Eshop\Core\Registry
+    public: true

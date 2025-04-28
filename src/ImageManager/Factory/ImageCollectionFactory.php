@@ -11,6 +11,7 @@ namespace OxidEsales\ConsistencyCheck\ImageManager\Factory;
 
 use OxidEsales\ConsistencyCheck\ImageManager\DataTransferObject\ImageCollection;
 use OxidEsales\ConsistencyCheck\ImageManager\DataTransferObject\ImageCollectionInterface;
+use OxidEsales\Eshop\Core\Config;
 
 class ImageCollectionFactory implements ImageCollectionFactoryInterface
 {

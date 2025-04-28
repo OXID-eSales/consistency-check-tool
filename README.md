@@ -81,6 +81,14 @@ $ vendor/bin/oe-console oe:consistency_check:delete-unused-images --dry-run
 $ vendor/bin/oe-console oe:consistency_check:move-unused-images --destination=/path/to/backup --dry-run
 ```
 
+### Verbose Output (-v)
+To view detailed logs of affected files (e.g., which images would be deleted or moved), you can pass the `-v` flag along with your command:
+```bash
+$ vendor/bin/oe-console oe:consistency_check:delete-unused-images --dry-run -v
+$ vendor/bin/oe-console oe:consistency_check:move-unused-images --destination=/path/to/backup --dry-run -v
+```
+When `-v` is enabled, the command displays relevant entries from the consistency check log file directly in the console output. This is especially useful for shop owners who want to inspect which images are impacted before taking action.
+
 ### Filter by Entity Type (optional)
 Process specific entity types (e.g., product, category, manufacturer):
 ```bash

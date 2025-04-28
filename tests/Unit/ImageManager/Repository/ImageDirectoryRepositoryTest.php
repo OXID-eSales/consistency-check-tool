@@ -16,6 +16,7 @@ use OxidEsales\ConsistencyCheck\ImageManager\Factory\ImageDataTypeFactoryInterfa
 use OxidEsales\ConsistencyCheck\ImageManager\Repository\ImageDirectoryRepository;
 use OxidEsales\ConsistencyCheck\ImageManager\Repository\ImageRepositoryInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Utils\FileSystemUtilsInterface;
+use OxidEsales\Eshop\Core\Config;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
@@ -42,7 +43,7 @@ class ImageDirectoryRepositoryTest extends TestCase
         $imageCollectionFactoryMock = $this->createMock(ImageCollectionFactoryInterface::class);
         $imageCollectionFactoryMock->expects($this->once())
             ->method('create')
-            ->willReturn(new ImageCollection());
+            ->willReturn(new ImageCollection($this->createStub(Config::class)));
 
         $imageFactoryMock = $this->createMock(ImageDataTypeFactoryInterface::class);
         $imageFactoryMock->expects($this->exactly(2))
@@ -90,7 +91,7 @@ class ImageDirectoryRepositoryTest extends TestCase
         $imageCollectionFactoryMock = $this->createMock(ImageCollectionFactoryInterface::class);
         $imageCollectionFactoryMock->expects($this->once())
             ->method('create')
-            ->willReturn(new ImageCollection());
+            ->willReturn(new ImageCollection($this->createStub(Config::class)));
 
 
         $imageFactoryMock = $this->createMock(ImageDataTypeFactoryInterface::class);

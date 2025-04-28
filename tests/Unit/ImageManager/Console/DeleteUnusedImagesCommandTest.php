@@ -13,7 +13,8 @@ use OxidEsales\ConsistencyCheck\ImageManager\Console\DeleteUnusedImagesCommand;
 use OxidEsales\ConsistencyCheck\ImageManager\DataTransferObject\ImageCollectionInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Entity\ImageEntityInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Factory\ProgressBarFactoryInterface;
-use OxidEsales\ConsistencyCheck\ImageManager\Service\ImageCheckerServiceInterface;
+use OxidEsales\ConsistencyCheck\ImageManager\Service\PostCommandLoggerInterface;
+use OxidEsales\ConsistencyCheck\ImageManager\Service\UnusedImageFinderServiceInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Service\ImageEntityFilterServiceInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Service\ImageManagerServiceInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Service\MessageFormatterServiceInterface;
@@ -23,6 +24,7 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\LoggerInterface as PsrLoggerInterface;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Output\NullOutput;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Tester\CommandTester;
 
 class DeleteUnusedImagesCommandTest extends TestCase
@@ -34,7 +36,7 @@ class DeleteUnusedImagesCommandTest extends TestCase
         $unusedImages = $this->createStub(ImageCollectionInterface::class);
         $unusedImages->method('getAll')->willReturn([$this->createStub(ImageEntityInterface::class)]);
 
-        $imageCheckerServiceStub = $this->createStub(ImageCheckerServiceInterface::class);
+        $imageCheckerServiceStub = $this->createStub(UnusedImageFinderServiceInterface::class);
         $imageCheckerServiceStub
             ->method('getUnusedImages')
             ->willReturn($unusedImages);
@@ -82,7 +84,7 @@ class DeleteUnusedImagesCommandTest extends TestCase
         $unusedImages = $this->createStub(ImageCollectionInterface::class);
         $unusedImages->method('getAll')->willReturn([]);
 
-        $imageCheckerServiceStub = $this->createStub(ImageCheckerServiceInterface::class);
+        $imageCheckerServiceStub = $this->createStub(UnusedImageFinderServiceInterface::class);
         $imageCheckerServiceStub->method('getUnusedImages')->willReturn($unusedImages);
 
         $imageManagerServiceStub = $this->createStub(ImageManagerServiceInterface::class);
@@ -123,7 +125,7 @@ class DeleteUnusedImagesCommandTest extends TestCase
     {
         $entityMock = $this->createEntityStub($entityNameToFilter = uniqid());
 
-        $imageCheckerServiceStub = $this->createStub(ImageCheckerServiceInterface::class);
+        $imageCheckerServiceStub = $this->createStub(UnusedImageFinderServiceInterface::class);
         $imageCheckerServiceStub
             ->method('getUnusedImages')
             ->willThrowException(new \RuntimeException());
@@ -167,7 +169,7 @@ class DeleteUnusedImagesCommandTest extends TestCase
         $unusedImages = $this->createStub(ImageCollectionInterface::class);
         $unusedImages->method('getAll')->willReturn([$this->createStub(ImageEntityInterface::class)]);
 
-        $imageCheckerServiceStub = $this->createStub(ImageCheckerServiceInterface::class);
+        $imageCheckerServiceStub = $this->createStub(UnusedImageFinderServiceInterface::class);
         $imageCheckerServiceStub->method('getUnusedImages')->willReturn($unusedImages);
 
         $imageManagerServiceStub = $this->createStub(ImageManagerServiceInterface::class);
@@ -209,7 +211,6 @@ class DeleteUnusedImagesCommandTest extends TestCase
         $this->assertStringContainsString('Check error log for details', $output);
     }
 
-
     private function createEntityStub(string $name = null): ImageEntityInterface
     {
         $entityStub = $this->createStub(ImageEntityInterface::class);
@@ -229,20 +230,32 @@ class DeleteUnusedImagesCommandTest extends TestCase
         return $progressBarFactory;
     }
 
+    private function createPostCommandLoggerMock(): PostCommandLoggerInterface
+    {
+        $postLoggerMock = $this->createMock(PostCommandLoggerInterface::class);
+        $postLoggerMock->expects($this->once())
+            ->method('after')
+            ->with($this->isInstanceOf(OutputInterface::class));
+
+        return $postLoggerMock;
+    }
+
     private function getSut(
         array $entities = [],
-        ?ImageCheckerServiceInterface $imageCheckerService = null,
+        ?UnusedImageFinderServiceInterface $imageCheckerService = null,
         ?ImageManagerServiceInterface $imageManagerService = null,
         ?ImageEntityFilterServiceInterface $imageEntityFilter = null,
         ?MessageFormatterServiceInterface $messageFormatter = null,
         ?LoggerInterface $logger = null,
+        ?PostCommandLoggerInterface $postCommandLogger = null,
     ): DeleteUnusedImagesCommand {
-        $imageCheckerService ??= $this->createStub(ImageCheckerServiceInterface::class);
+        $imageCheckerService ??= $this->createStub(UnusedImageFinderServiceInterface::class);
         $imageManagerService ??= $this->createStub(ImageManagerServiceInterface::class);
         $imageEntityFilter ??= $this->createStub(ImageEntityFilterServiceInterface::class);
         $messageFormatter ??= $this->createStub(MessageFormatterServiceInterface::class);
         $progressBar = $this->createProgressBarFactoryStub();
         $logger ??= $this->createStub(LoggerInterface::class);
+        $postCommandLogger ??= $this->createPostCommandLoggerMock();
 
         return new DeleteUnusedImagesCommand(
             entities: $entities,
@@ -251,7 +264,8 @@ class DeleteUnusedImagesCommandTest extends TestCase
             entityFilterService: $imageEntityFilter,
             messageFormatter: $messageFormatter,
             progressBarFactory: $progressBar,
-            logger: $logger
+            logger: $logger,
+            postCommandLogger: $postCommandLogger,
         );
     }
 }

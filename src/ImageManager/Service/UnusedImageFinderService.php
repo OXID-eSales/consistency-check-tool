@@ -15,12 +15,13 @@ use OxidEsales\ConsistencyCheck\ImageManager\Factory\ImageCollectionFactoryInter
 use OxidEsales\ConsistencyCheck\ImageManager\Repository\ImageRepositoryInterface;
 use Psr\Log\LoggerInterface as PsrLoggerInterface;
 
-class ImageCheckerService implements ImageCheckerServiceInterface
+class UnusedImageFinderService implements UnusedImageFinderServiceInterface
 {
     public function __construct(
         private readonly ImageRepositoryInterface $imageDatabaseRepository,
         private readonly ImageRepositoryInterface $imageDirectoryRepository,
         private readonly ImageCollectionFactoryInterface $imageCollectionFactory,
+        private readonly ImageUsageCheckerInterface $imageUsageChecker,
         private readonly PsrLoggerInterface $logger,
     ) {
     }
@@ -28,14 +29,14 @@ class ImageCheckerService implements ImageCheckerServiceInterface
     public function getUnusedImages(ImageEntityInterface $entity): ImageCollectionInterface
     {
         try {
-            $databaseImageCollection = $this->imageDatabaseRepository->getImages($entity);
-            $directoryImageCollection = $this->imageDirectoryRepository->getImages($entity);
+            $usedImageCollection = $this->imageDatabaseRepository->getImages($entity);
+            $allImageCollection = $this->imageDirectoryRepository->getImages($entity);
 
             $unusedImages = $this->imageCollectionFactory->create();
 
-            foreach ($directoryImageCollection->getAll() as $directoryImage) {
-                if (!$databaseImageCollection->contains($directoryImage)) {
-                    $unusedImages->add($directoryImage);
+            foreach ($allImageCollection->getAll() as $image) {
+                if (!$this->imageUsageChecker->isUsed($image, $usedImageCollection)) {
+                    $unusedImages->add($image);
                 }
             }
 

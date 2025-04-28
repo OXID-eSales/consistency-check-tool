@@ -19,8 +19,8 @@ services:
       $logFilePath: '%app.log_file_path%'
       $logLevel: !php/const Psr\Log\LogLevel::DEBUG
 
-  OxidEsales\ConsistencyCheck\ImageManager\Service\ImageCheckerServiceInterface:
-    class: OxidEsales\ConsistencyCheck\ImageManager\Service\ImageCheckerService
+  OxidEsales\ConsistencyCheck\ImageManager\Service\UnusedImageFinderServiceInterface:
+    class: OxidEsales\ConsistencyCheck\ImageManager\Service\UnusedImageFinderService
     arguments:
       $imageDatabaseRepository: '@OxidEsales\ConsistencyCheck\ImageManager\Repository\ImageDatabaseRepository'
       $imageDirectoryRepository: '@OxidEsales\ConsistencyCheck\ImageManager\Repository\ImageDirectoryRepository'
@@ -37,3 +37,14 @@ services:
 
   OxidEsales\ConsistencyCheck\ImageManager\Service\MessageFormatterServiceInterface:
     class: OxidEsales\ConsistencyCheck\ImageManager\Service\MessageFormatterService
+
+  OxidEsales\ConsistencyCheck\ImageManager\Service\LogReaderInterface:
+    class: OxidEsales\ConsistencyCheck\ImageManager\Service\FileLogReader
+    arguments:
+      $logFilePath: '%app.log_file_path%'
+
+  OxidEsales\ConsistencyCheck\ImageManager\Service\ImageUsageCheckerInterface:
+    class: OxidEsales\ConsistencyCheck\ImageManager\Service\ImageUsageChecker
+
+  OxidEsales\ConsistencyCheck\ImageManager\Service\PostCommandLoggerInterface:
+    class: OxidEsales\ConsistencyCheck\ImageManager\Service\VerboseConsoleLogReporter

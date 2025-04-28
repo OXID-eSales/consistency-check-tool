@@ -13,7 +13,8 @@ use Exception;
 use OxidEsales\ConsistencyCheck\ImageManager\DataTransferObject\ImageCollectionInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Entity\ImageEntityInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Factory\ProgressBarFactoryInterface;
-use OxidEsales\ConsistencyCheck\ImageManager\Service\ImageCheckerServiceInterface;
+use OxidEsales\ConsistencyCheck\ImageManager\Service\PostCommandLoggerInterface;
+use OxidEsales\ConsistencyCheck\ImageManager\Service\UnusedImageFinderServiceInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Service\ImageEntityFilterServiceInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Service\ImageManagerServiceInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Service\MessageFormatterServiceInterface;
@@ -32,12 +33,13 @@ abstract class AbstractUnusedImagesCommand extends Command
     public function __construct(
         /** @var ImageEntityInterface[] */
         protected readonly iterable $entities,
-        protected readonly ImageCheckerServiceInterface $imageCheckerService,
+        protected readonly UnusedImageFinderServiceInterface $imageCheckerService,
         protected readonly ImageManagerServiceInterface $imageManagerService,
         protected readonly ImageEntityFilterServiceInterface $entityFilterService,
         protected readonly MessageFormatterServiceInterface $messageFormatter,
         protected readonly ProgressBarFactoryInterface $progressBarFactory,
-        protected readonly LoggerInterface $logger
+        protected readonly LoggerInterface $logger,
+        protected readonly PostCommandLoggerInterface $postCommandLogger,
     ) {
         parent::__construct();
     }
@@ -59,6 +61,9 @@ abstract class AbstractUnusedImagesCommand extends Command
         }
 
         $progressBar->finish();
+
+        $this->postCommandLogger->after($output);
+
         $this->reportSuccess($output);
 
         return Command::SUCCESS;

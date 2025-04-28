@@ -12,7 +12,8 @@ namespace OxidEsales\ConsistencyCheck\ImageManager\Tests\Integration\ImageManage
 use OxidEsales\ConsistencyCheck\ImageManager\Console\DeleteUnusedImagesCommand;
 use OxidEsales\ConsistencyCheck\ImageManager\Entity\ImageEntityInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Factory\ProgressBarFactoryInterface;
-use OxidEsales\ConsistencyCheck\ImageManager\Service\ImageCheckerServiceInterface;
+use OxidEsales\ConsistencyCheck\ImageManager\Service\PostCommandLoggerInterface;
+use OxidEsales\ConsistencyCheck\ImageManager\Service\UnusedImageFinderServiceInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Service\ImageEntityFilterServiceInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Service\ImageManagerServiceInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Service\MessageFormatterServiceInterface;
@@ -45,12 +46,13 @@ class DeleteUnusedImagesCommandTest extends IntegrationTestCase
     {
         return new DeleteUnusedImagesCommand(
             entities: [$this->createStub(ImageEntityInterface::class)],
-            imageCheckerService: $this->get(ImageCheckerServiceInterface::class),
+            imageCheckerService: $this->get(UnusedImageFinderServiceInterface::class),
             imageManagerService: $this->get(ImageManagerServiceInterface::class),
             entityFilterService: $this->get(ImageEntityFilterServiceInterface::class),
             messageFormatter: $this->get(MessageFormatterServiceInterface::class),
             progressBarFactory: $this->get(ProgressBarFactoryInterface::class),
-            logger: $this->get(LoggerInterface::class)
+            logger: $this->get(LoggerInterface::class),
+            postCommandLogger: $this->get(PostCommandLoggerInterface::class),
         );
     }
 }
