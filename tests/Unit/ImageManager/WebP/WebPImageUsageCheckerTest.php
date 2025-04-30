@@ -50,14 +50,17 @@ final class WebPImageUsageCheckerTest extends TestCase
 
         $usedImageCollectionStub = $this->createStub(ImageCollectionInterface::class);
 
-        $imageUsageCheckerSpy = $this->createMock(ImageUsageCheckerInterface::class);
-        $imageUsageCheckerSpy->expects($this->never())->method('isUsed');
+        $imageUsageCheckerMock = $this->createMock(ImageUsageCheckerInterface::class);
+        $imageUsageCheckerMock->expects($this->once())
+            ->method('isUsed')
+            ->with($imageDataTypeStub, $usedImageCollectionStub)
+            ->willReturn(false);
 
         $configMock = $this->createStub(Config::class);
         $configMock->method('getConfigParam')->with('blConvertImagesToWebP')->willReturn(false);
 
         $sut = $this->getSut(
-            originalChecker: $imageUsageCheckerSpy,
+            originalChecker: $imageUsageCheckerMock,
             config: $configMock
         );
         $this->assertFalse($sut->isUsed($imageDataTypeStub, $usedImageCollectionStub));
@@ -80,19 +83,10 @@ final class WebPImageUsageCheckerTest extends TestCase
         $usedImageCollectionStub = $this->createStub(ImageCollectionInterface::class);
 
         $originalChecker = $this->createMock(ImageUsageCheckerInterface::class);
-        $originalChecker->expects($this->once())
-            ->method('isUsed')
-            ->with(
-                $this->callback(
-                    function (ImageDataTypeInterface $baseImage) use ($baseName, $directory, $fieldName) {
-                        return $baseImage->getImageName() === $baseName
-                            && $baseImage->getDirectory() === $directory
-                            && $baseImage->getFieldName() === $fieldName;
-                    }
-                ),
-                $usedImageCollectionStub
-            )
-            ->willReturn(true);
+        $originalChecker->method('isUsed')
+            ->willReturnCallback(function (ImageDataTypeInterface $image) use ($baseName) {
+                return $image->getImageName() === $baseName;
+            });
 
         $configMock = $this->createStub(Config::class);
         $configMock->method('getConfigParam')->with('blConvertImagesToWebP')->willReturn(true);
@@ -103,6 +97,28 @@ final class WebPImageUsageCheckerTest extends TestCase
         );
 
         $this->assertTrue($sut->isUsed($imageDataTypeStub, $usedImageCollectionStub));
+    }
+
+    #[Test]
+    public function itReturnsTrueIfWebpImageIsExplicitlyUsed()
+    {
+        $imageDataTypeStub = $this->createConfiguredStub(ImageDataTypeInterface::class, [
+            'getImageName' => uniqid()
+        ]);
+
+        $collection = $this->createStub(ImageCollectionInterface::class);
+
+        $checker = $this->createMock(ImageUsageCheckerInterface::class);
+        $checker->expects($this->once())
+            ->method('isUsed')
+            ->with($imageDataTypeStub, $collection)
+            ->willReturn(true);
+
+        $config = $this->createStub(Config::class);
+
+        $sut = $this->getSut(originalChecker: $checker, config: $config);
+
+        $this->assertTrue($sut->isUsed($imageDataTypeStub, $collection));
     }
 
     private function getSut(

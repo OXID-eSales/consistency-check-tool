@@ -25,10 +25,14 @@ class WebPImageUsageChecker implements ImageUsageCheckerInterface
 
     public function isUsed(ImageDataTypeInterface $image, ImageCollectionInterface $usedImages): bool
     {
+        if ($this->originalChecker->isUsed($image, $usedImages)) {
+            return true;
+        }
+
         $imageName = $image->getImageName();
 
         if (!$this->isWebp($imageName)) {
-            return $this->originalChecker->isUsed($image, $usedImages);
+            return false;
         }
 
         if (!$this->isWebpEnabled()) {
