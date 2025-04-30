@@ -22,9 +22,7 @@ final class WebPImageUsageCheckerTest extends TestCase
     #[Test]
     public function itDefersToInnerCheckerForNonWebpImages(): void
     {
-        $imageDataTypeStub = $this->createConfiguredStub(ImageDataTypeInterface::class, [
-            'getImageName' => uniqid()
-        ]);
+        $imageDataTypeStub = $this->getImageDataTypeStub();
 
         $usedImageCollectionStub = $this->createStub(ImageCollectionInterface::class);
 
@@ -44,9 +42,7 @@ final class WebPImageUsageCheckerTest extends TestCase
     #[Test]
     public function itReturnsFalseIfWebpIsDisabled(): void
     {
-        $imageDataTypeStub = $this->createConfiguredStub(ImageDataTypeInterface::class, [
-            'getImageName' => uniqid() . '.webp'
-        ]);
+        $imageDataTypeStub = $this->getImageDataTypeStub(imageName: uniqid() . '.webp');
 
         $usedImageCollectionStub = $this->createStub(ImageCollectionInterface::class);
 
@@ -74,11 +70,11 @@ final class WebPImageUsageCheckerTest extends TestCase
         $baseName = uniqid();
         $webpName = $baseName . '.webp';
 
-        $imageDataTypeStub = $this->createConfiguredStub(ImageDataTypeInterface::class, [
-            'getImageName' => $webpName,
-            'getFieldName' => $fieldName,
-            'getDirectory' => $directory,
-        ]);
+        $imageDataTypeStub = $this->getImageDataTypeStub(
+            imageName: $webpName,
+            fieldName: $fieldName,
+            directory: $directory
+        );
 
         $usedImageCollectionStub = $this->createStub(ImageCollectionInterface::class);
 
@@ -102,9 +98,7 @@ final class WebPImageUsageCheckerTest extends TestCase
     #[Test]
     public function itReturnsTrueIfWebpImageIsExplicitlyUsed()
     {
-        $imageDataTypeStub = $this->createConfiguredStub(ImageDataTypeInterface::class, [
-            'getImageName' => uniqid()
-        ]);
+        $imageDataTypeStub = $this->getImageDataTypeStub();
 
         $collection = $this->createStub(ImageCollectionInterface::class);
 
@@ -119,6 +113,18 @@ final class WebPImageUsageCheckerTest extends TestCase
         $sut = $this->getSut(originalChecker: $checker, config: $config);
 
         $this->assertTrue($sut->isUsed($imageDataTypeStub, $collection));
+    }
+
+    private function getImageDataTypeStub(
+        ?string $imageName = null,
+        ?string $fieldName = null,
+        ?string $directory = null
+    ): ImageDataTypeInterface {
+        return $this->createConfiguredStub(ImageDataTypeInterface::class, [
+            'getImageName' => $imageName ?? uniqid(),
+            'getFieldName' => $fieldName ?? uniqid(),
+            'getDirectory' => $directory ?? uniqid(),
+        ]);
     }
 
     private function getSut(
