@@ -99,20 +99,17 @@ final class WebPImageUsageCheckerTest extends TestCase
     public function itReturnsTrueIfWebpImageIsExplicitlyUsed()
     {
         $imageDataTypeStub = $this->getImageDataTypeStub();
+        $usedImageCollectionStub = $this->createStub(ImageCollectionInterface::class);
 
-        $collection = $this->createStub(ImageCollectionInterface::class);
-
-        $checker = $this->createMock(ImageUsageCheckerInterface::class);
-        $checker->expects($this->once())
+        $originalCheckerMock = $this->createMock(ImageUsageCheckerInterface::class);
+        $originalCheckerMock->expects($this->once())
             ->method('isUsed')
-            ->with($imageDataTypeStub, $collection)
+            ->with($imageDataTypeStub, $usedImageCollectionStub)
             ->willReturn(true);
 
-        $config = $this->createStub(Config::class);
+        $sut = $this->getSut(originalChecker: $originalCheckerMock);
 
-        $sut = $this->getSut(originalChecker: $checker, config: $config);
-
-        $this->assertTrue($sut->isUsed($imageDataTypeStub, $collection));
+        $this->assertTrue($sut->isUsed($imageDataTypeStub, $usedImageCollectionStub));
     }
 
     private function getImageDataTypeStub(
