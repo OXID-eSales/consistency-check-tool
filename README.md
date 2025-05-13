@@ -34,6 +34,20 @@ To install this component in your OXID eShop environment, use Composer:
 $ composer require oxid-esales/consistency-check-tool
 ```
 
+## Installation from OXID packages server
+
+1. Register the packages server you have access to, for example, the OXID eShop Enterprise Edition packages server:
+
+```bash
+composer config repositories.oxid-esales/consistency-check-tool composer https://enterprise-edition.packages.oxid-esales.com/
+```
+
+2. Run the following commands to install this component:
+
+```bash
+composer require oxid-esales/consistency-check-tool
+```
+
 ## Development installation
 
 To install from github as a source, first clone the repository.
