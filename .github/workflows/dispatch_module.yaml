@@ -1,5 +1,4 @@
 name: Manual trigger
-# Matrix workflow using re-usable github actions
 
 on:
   workflow_dispatch:
@@ -8,10 +7,12 @@ on:
         type: choice
         options:
           - 'no'
+          - 'PHP8.2/MySQL5.7'
           - 'PHP8.2/MySQL8.0'
-          - 'PHP8.2/MariaDB11'
+          - 'PHP8.2/MariaDb11'
+          - 'PHP8.3/MySQL5.7'
           - 'PHP8.3/MySQL8.0'
-          - 'PHP8.3/MariaDB11'
+          - 'PHP8.3/MariaDb11'
           - 'PHP8.4/MySQL8.0'
           - 'PHP8.4/MariaDb11'
         default: 'PHP8.3/MySQL8.0'
@@ -24,27 +25,29 @@ on:
 
 jobs:
   build_testplan:
-    runs-on: ["self-hosted", "x64"]
+    runs-on: ["arc-runner-set"]
     outputs:
       testplan: '${{ steps.build_testplan.outputs.testplan }}'
     steps:
       - name: 'Build testplan'
         id: build_testplan
         run: |
-          # Build testplan
           # shellcheck disable=SC2088
           case "${{ inputs.limit }}" in
             "no") LIMIT='';;
+            "PHP8.2/MySQL5.7") LIMIT='~/defaults/php8.2_mysql5.7_only.yaml,' ;;
             "PHP8.2/MySQL8.0") LIMIT='~/defaults/php8.2_mysql8.0_only.yaml,' ;;
-            "PHP8.2/MariaDB11") LIMIT='~/defaults/php8.2_mariadb11_only.yaml,' ;;
+            "PHP8.2/MariaDb11") LIMIT='~/defaults/php8.2_mariadb11_only.yaml,' ;;
+            "PHP8.3/MySQL5.7") LIMIT='~/defaults/php8.3_mysql5.7_only.yaml,' ;;
             "PHP8.3/MySQL8.0") LIMIT='~/defaults/php8.3_mysql8.0_only.yaml,' ;;
-            "PHP8.3/MariaDB11") LIMIT='~/defaults/php8.3_mariadb11_only.yaml,' ;;
+            "PHP8.3/MariaDb11") LIMIT='~/defaults/php8.3_mariadb11_only.yaml,' ;;
             "PHP8.4/MySQL8.0") LIMIT='~/defaults/php8.4_mysql8.0_only.yaml,' ;;
             "PHP8.4/MariaDb11") LIMIT='~/defaults/php8.4_mariadb11_only.yaml,' ;;
             *) echo "Illegal choice, fix the workflow"
               exit 1
               ;;
           esac
+          
           # shellcheck disable=SC2088
           TESTPLAN="~/defaults/7.3.x.yaml,${LIMIT}~/consistency-check-tool.yaml"
           echo "testplan=${TESTPLAN}" | tee -a "${GITHUB_OUTPUT}"
@@ -55,7 +58,7 @@ jobs:
     uses: oxid-eSales/github-actions/.github/workflows/universal_workflow_light.yaml@v4
     with:
       testplan: ${{ needs.build_testplan.outputs.testplan }}
-      runs_on: '["self-hosted", "x64"]'
+      runs_on: '["arc-runner-set"]'
       defaults: 'v4'
       plan_folder: '.github/oxid-esales'
     secrets:
@@ -74,7 +77,7 @@ jobs:
     uses: oxid-eSales/github-actions/.github/workflows/universal_workflow_light.yaml@v0
     with:
       testplan: ${{ needs.build_testplan.outputs.testplan }}
-      runs_on: '["self-hosted", "x64"]'
+      runs_on: '["arc-runner-set"]'
       defaults: 'v0'
       plan_folder: '.github/oxid-esales'
     secrets:

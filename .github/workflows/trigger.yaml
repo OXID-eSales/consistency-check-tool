@@ -12,7 +12,7 @@ jobs:
     uses: oxid-eSales/github-actions/.github/workflows/universal_workflow_light.yaml@v4
     with:
       testplan: '~/defaults/7.3.x.yaml,~/defaults/php8.4_mysql8.0_only.yaml,~/consistency-check-tool.yaml'
-      runs_on: '["self-hosted", "x64"]'
+      runs_on: '["arc-runner-set"]'
       defaults: 'v4'
       plan_folder: '.github/oxid-esales'
     secrets:

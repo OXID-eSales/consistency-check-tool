@@ -1,7 +1,13 @@
-install_shop_with_modules:
+install:
   cache:
     prepared_shop: false
+  git:
+    repository: 'OXID-eSales/consistency-check-tool'
+    ref: &ref '{{ .Github.RefName }}'
+    shop_url: 'https://github.com/OXID-eSales/consistency-check-tool.git'
+    shop_ref: *ref
   composer:
+    root_url: ''
     transform: |
       {
           "require": {
@@ -12,15 +18,9 @@ install_shop_with_modules:
               "oxid-esales/twig-component-pe": "{{ .Data.global.composer.dev_ref }}",
               "oxid-esales/twig-component-ee": "{{ .Data.global.composer.dev_ref }}",
               "oxid-esales/twig-admin-theme": "{{ .Data.global.composer.dev_ref }}",
-              "oxid-esales/apex-theme": "{{ .Data.global.composer.dev_ref }}",
-              "oxid-esales/developer-tools": "{{ .Data.global.composer.dev_ref }}",
-              "oxid-esales/consistency-check-tool": "dev-{{ .Github.RefName }}"
+              "oxid-esales/apex-theme": "{{ .Data.global.composer.dev_ref }}"
           },
           "repositories": {
-            "oxid-esales/consistency-check-tool": {
-              "type": "git",
-              "url": "https://github.com/OXID-eSales/consistency-check-tool.git"
-            },
             "oxid-esales/oxideshop-ee": {
               "type": "git",
               "url": "https://github.com/OXID-eSales/oxideshop_ee.git"
@@ -40,8 +40,14 @@ install_shop_with_modules:
           }
       }
   custom_script_container: |
+    sh -c 'echo "  -\n    resource: ../../services.yaml" >> var/generated/generated_services.yaml'
     vendor/bin/oe-console oe:database:reset --db-host=mysql --db-port=3306 --db-name=example --db-user=root --db-password=root --force
     vendor/bin/oe-console oe:theme:activate apex
+    vendor/bin/oe-console oe:cache:clear
+
+install_shop_with_modules:
+  composer:
+    root_url: ''
 
 runscript: &runscript
   matrix:
@@ -53,7 +59,7 @@ runscript: &runscript
   composer:
     early: true
   consistency_check_tool:
-    path: 'vendor/oxid-esales/consistency-check-tool'
+    path: ''
 
 runslim:
   <<: *runscript
@@ -68,7 +74,7 @@ runslim:
 sonarcloud:
   matrix:
     testplan: '["-"]'
-  strip_path: '/var/www/vendor/oxid-esales/consistency-check-tool/'
+  strip_path: '/var/www/'
   project_key: 'OXID-eSales_consistency-check-tool'
   project_name: 'oxid-esales/consistency-check-tool'
   organization: 'oxid-esales'

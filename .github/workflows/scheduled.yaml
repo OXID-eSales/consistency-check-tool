@@ -8,11 +8,10 @@ on:
 
 jobs:
   schedule_matrix:
-    if: always()
     uses: oxid-eSales/github-actions/.github/workflows/universal_workflow_light.yaml@v4
     with:
       testplan: '~/defaults/7.3.x.yaml,~/consistency-check-tool.yaml'
-      runs_on: '["self-hosted", "x64"]'
+      runs_on: '["arc-runner-set"]'
       defaults: 'v4'
       plan_folder: '.github/oxid-esales'
       use_scheduled_slack_channel: true
