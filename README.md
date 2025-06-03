@@ -117,21 +117,38 @@ log/oe_consistency_check.log
 ```
 This log file helps you track the changes and verify actions performed by the tool.
 
-## Configuration
-If you are using custom directory paths for storing images (products, categories, manufacturers), update the paths in:
+## Customizable parameters
+
+There are several parameters in the `services.yaml` that can be customized for the module:
+* `app.log_file_path` - Path to the log file where the consistency check results will be stored.
+
+To modify the parameters, create the `configurable_services.yaml` file in the `var/configuration` folder as 
+described in the [Documentation](https://docs.oxid-esales.com/developer/en/latest/development/tell_me_about/service_container.html#replacing-oxid-eshop-services-in-a-project), 
+and overwrite the parameters you want to change. Ex.:
+
+```yaml
+parameters:
+  app.log_file_path: '/my/custom/filepath/to.log'
 ```
-src/ImageManager/Entity/services.yaml
+
+### Custom file paths for images
+
+If you are using custom directory paths for storing images (products, categories, manufacturers), overwrite the 
+services defined in `src/ImageManager/Entity/services.yaml` by using the same procedure described in the 
+[Documentation](https://docs.oxid-esales.com/developer/en/latest/development/tell_me_about/service_container.html#replacing-oxid-eshop-services-in-a-project) 
+for service overriding - use already mentioned `configurable_services.yaml` file in the `var/configuration` folder.:
+
+Example override for product images:
 ```
-Example configuration:
-```
-oxid_esales.consistency_check.entity.image_entity.product.oxpic1:
-  class: OxidEsales\ConsistencyCheck\ImageManager\Entity\ImageEntity
-  arguments:
-    $name: 'Product'
-    $table: 'oxarticles'
-    $fieldName: 'OXPIC1'
-    $directory: 'pictures/master/products/1'
-  tags: ['oe.consistency_check.image_entity']
+services:
+  oxid_esales.consistency_check.entity.image_entity.product.oxpic1:
+    class: OxidEsales\ConsistencyCheck\ImageManager\Entity\ImageEntity
+    arguments:
+      $name: 'Product'
+      $table: 'oxarticles'
+      $fieldName: 'OXPIC1'
+      $directory: 'custom/directory/to/pictures/master/products/1'
+    tags: ['oe.consistency_check.image_entity']
 ```
 
 ## Testing
@@ -159,3 +176,14 @@ $ ./vendor/bin/phpunit -c vendor/oxid-esales/consistency-check-tool/tests/phpuni
 $ ./vendor/bin/phpunit --bootstrap=./source/bootstrap.php -c vendor/oxid-esales/consistency-check-tool/tests/phpintegration.xml
 ```
 
+## Troubleshooting
+
+### Wrong log file path
+
+This tool uses a default log path `/var/www/source/log/oe_consistency_check.log` in a standard OXID eShop
+directory structure. However, if your project uses a different structure (e.g. `/var/www/custom/source/log`), this
+directory may not exist, and you may encounter an error like:
+```
+There is no existing directory at "/var/www/source/log" and its not buildable: Permission denied.
+```
+Refer to the "Customizable parameters" section to learn how to change the log file path.
