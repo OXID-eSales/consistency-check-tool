@@ -50,23 +50,28 @@ composer require oxid-esales/consistency-check-tool
 
 ## Development installation
 
-To install from github as a source, first clone the repository.
+The installation instructions below are shown for the current [SDK](https://github.com/OXID-eSales/docker-eshop-sdk)
+for shop 7.3. Make sure your system meets the requirements of the SDK.
 
-```bash
-$ git clone https://github.com/OXID-eSales/consistency-check-tool ./dev-packages/consistency-check-tool
-```
-Set the repository up in composer.json
+0. Ensure all docker containers are down to avoid port conflicts
 
-```bash
-$ composer config repositories.oxid-esales/consistency-check-tool \
-  --json '{"type":"path", "url":"./dev-packages/consistency-check-tool", "options": {"symlink": true}}'
+1. Clone the SDK for the new project
+```shell
+echo MyProject && git clone https://github.com/OXID-eSales/docker-eshop-sdk.git $_ && cd $_
 ```
 
-Ensure you're in the shop root directory (the file `composer.json` and the directories `source/` and `vendor/` are located there) and require the component.
-
-```bash
-$ composer require oxid-esales/consistency-check-tool
+2. Clone the repository to the source directory
+```shell
+git clone --recurse-submodules https://github.com/OXID-eSales/consistency-check-tool.git --branch=b-7.3.x ./source
 ```
+
+3. Run the recipe to setup the development environment
+```shell
+./source/recipes/setup-development.sh
+```
+
+You should be able to access the shop with http://localhost.local and the admin panel with http://localhost.local/admin
+(credentials: noreply@oxid-esales.com / admin)
 
 ## Usage
 The tool provides several commands for managing unused images.
@@ -184,6 +189,6 @@ This tool uses a default log path `/var/www/source/log/oe_consistency_check.log`
 directory structure. However, if your project uses a different structure (e.g. `/var/www/custom/source/log`), this
 directory may not exist, and you may encounter an error like:
 ```
-There is no existing directory at "/var/www/source/log" and its not buildable: Permission denied.
+There is no existing directory at "/var/www/custom/source/log" and its not buildable: Permission denied.
 ```
 Refer to the "Customizable parameters" section to learn how to change the log file path.
