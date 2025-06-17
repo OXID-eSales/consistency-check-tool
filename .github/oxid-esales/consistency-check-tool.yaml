@@ -12,31 +12,9 @@ install:
       {
           "require": {
               "oxid-esales/oxideshop-ce": "{{ .Data.global.composer.dev_ref }}",
-              "oxid-esales/oxideshop-pe": "{{ .Data.global.composer.dev_ref }}",
-              "oxid-esales/oxideshop-ee": "{{ .Data.global.composer.dev_ref }}",
               "oxid-esales/twig-component": "{{ .Data.global.composer.dev_ref }}",
-              "oxid-esales/twig-component-pe": "{{ .Data.global.composer.dev_ref }}",
-              "oxid-esales/twig-component-ee": "{{ .Data.global.composer.dev_ref }}",
               "oxid-esales/twig-admin-theme": "{{ .Data.global.composer.dev_ref }}",
               "oxid-esales/apex-theme": "{{ .Data.global.composer.dev_ref }}"
-          },
-          "repositories": {
-            "oxid-esales/oxideshop-ee": {
-              "type": "git",
-              "url": "https://github.com/OXID-eSales/oxideshop_ee.git"
-            },
-            "oxid-esales/oxideshop-pe": {
-              "type": "git",
-              "url": "https://github.com/OXID-eSales/oxideshop_pe.git"
-            },
-            "oxid-esales/twig-component-pe": {
-              "type": "git",
-              "url": "https://github.com/OXID-eSales/twig-component-pe.git"
-            },
-            "oxid-esales/twig-component-ee": {
-              "type": "git",
-              "url": "https://github.com/OXID-eSales/twig-component-ee.git"
-            }
           }
       }
   custom_script_container: |
