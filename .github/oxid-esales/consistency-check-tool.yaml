@@ -1,20 +1,16 @@
 install:
   cache:
     prepared_shop: false
-  git:
-    repository: 'OXID-eSales/consistency-check-tool'
-    ref: &ref '{{ .Github.RefName }}'
-    shop_url: 'https://github.com/OXID-eSales/consistency-check-tool.git'
-    shop_ref: *ref
   composer:
     root_url: ''
     transform: |
       {
           "require": {
-              "oxid-esales/oxideshop-ce": "{{ .Data.global.composer.dev_ref }}",
-              "oxid-esales/twig-component": "{{ .Data.global.composer.dev_ref }}",
-              "oxid-esales/twig-admin-theme": "{{ .Data.global.composer.dev_ref }}",
-              "oxid-esales/apex-theme": "{{ .Data.global.composer.dev_ref }}"
+              "oxid-esales/oxideshop-ce": "{{ .Data.install.composer.dev_ref }}",
+              "oxid-esales/twig-component": "{{ .Data.install.composer.dev_ref }}",
+              "oxid-esales/twig-admin-theme": "{{ .Data.install.composer.dev_ref }}",
+              "oxid-esales/apex-theme": "{{ .Data.install.composer.dev_ref }}",
+              "oxid-esales/developer-tools": "{{ .Data.install.composer.dev_ref }}"
           }
       }
   custom_script_container: |
@@ -53,15 +49,15 @@ sonarcloud:
   matrix:
     testplan: '["-"]'
   strip_path: '/var/www/'
+  organization: 'oxid-esales'
   project_key: 'OXID-eSales_consistency-check-tool'
   project_name: 'oxid-esales/consistency-check-tool'
-  organization: 'oxid-esales'
-  parameters: |
-    -Dsonar.language=php \
-    -Dsonar.scm.provider=git \
-    -Dsonar.sources=src \
-    -Dsonar.tests=tests \
-    -Dsonar.php.phpstan.reportPaths=coverage-reports/phpstan.report.json
+  target_branch: 'b-7.4.x'
+  parameters: >
+    -Dsonar.language=php
+    -Dsonar.scm.provider=git
+    -Dsonar.sources=src
+    -Dsonar.tests=tests
 
 finish:
-  slack_title: 'Component consistency check tool  ({{ .Data.global.git.shop_ref }}) by {{ .Github.Actor }}'
+  slack_title: 'Component consistency check tool ({{ .Data.install.git.ref }}) by {{ .Github.Actor }}'
