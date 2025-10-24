@@ -22,4 +22,3 @@ jobs:
       enterprise_github_token: ${{ secrets.enterprise_github_token }}
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-      SLACK_SCHEDULED_WEBHOOK_URL: ${{ secrets.SLACK_SCHEDULED_WEBHOOK_URL }}
