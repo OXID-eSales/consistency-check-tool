@@ -19,30 +19,27 @@ install:
     vendor/bin/oe-console oe:theme:activate apex
     vendor/bin/oe-console oe:cache:clear
 
-install_shop_with_modules:
-  composer:
-    root_url: ''
-
 runscript: &runscript
   matrix:
     script: |
       [
-        "consistency_check_tool:tests-unit",
-        "consistency_check_tool:tests-integration"
+        "report:tests-unit",
+        "report:tests-integration"
       ]
-  composer:
-    early: true
-  consistency_check_tool:
+  report:
     path: ''
+  no_report:
+    path: ''
+    coverage_prefix: ''
 
 runslim:
   <<: *runscript
   matrix:
     script: |
       [
-        "consistency_check_tool:phpcs-report",
-        "consistency_check_tool:phpmd-report",
-        "consistency_check_tool:phpstan-report"
+        "report:phpstan-report",
+        "no_report:phpmd-report",
+        "no_report:phpcs-report"
       ]
 
 sonarcloud:
@@ -60,4 +57,4 @@ sonarcloud:
     -Dsonar.tests=tests
 
 finish:
-  slack_title: 'Component consistency check tool ({{ .Data.install.git.ref }}) by {{ .Github.Actor }}'
+  slack_title: 'consistency-check-tool ({{ .Data.install.git.ref }}) by {{ .Github.Actor }}'
