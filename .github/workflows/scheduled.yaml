@@ -2,8 +2,9 @@ name: Scheduled weekly run
 # Matrix workflow using re-usable github actions
 
 on:
-  pull_request: {}
-  push: {}
+  schedule:
+    # This cron job runs at 1:16 AM every 7th day of the month, every month of the year.
+    - cron: '16 1 */7 * *'
 
 jobs:
   schedule_matrix:
