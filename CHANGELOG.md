@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [1.1.0] - unreleased
 
 ### Changed
-- Update module to work with OXID eShop 7.4
+- Update component to work with OXID eShop 7.4
 
 ## [1.0.0] - 2025-06-11
 
