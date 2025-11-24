@@ -14,7 +14,7 @@ use org\bovigo\vfs\vfsStreamDirectory;
 use OxidEsales\ConsistencyCheck\ImageManager\Exception\DirectoryNotFoundException;
 use OxidEsales\ConsistencyCheck\ImageManager\Utils\FileSystemUtils;
 use OxidEsales\ConsistencyCheck\ImageManager\Utils\FileSystemUtilsInterface;
-use OxidEsales\EshopCommunity\Internal\Transition\Utility\ContextInterface;
+use OxidEsales\ConsistencyCheck\Shared\Service\PathResolverInterface;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Finder\Finder;
@@ -22,10 +22,15 @@ use Symfony\Component\Finder\Finder;
 class FileSystemServiceTest extends TestCase
 {
     private vfsStreamDirectory $fileSystem;
+    private PathResolverInterface $pathResolverStub;
 
     protected function setUp(): void
     {
         $this->fileSystem = vfsStream::setup();
+
+        $this->pathResolverStub = $this->createStub(PathResolverInterface::class);
+        $this->pathResolverStub->method('getAbsolutePath')
+            ->willReturnCallback(fn(string $path) => $path);
     }
 
     #[Test]
@@ -83,24 +88,27 @@ class FileSystemServiceTest extends TestCase
     #[Test]
     public function getAbsolutePathReturnsCorrectPath(): void
     {
-        $contextStub = $this->createStub(ContextInterface::class);
-        $contextStub->method('getSourcePath')->willReturn($basePath = uniqid());
-
-        $sut = $this->getSut($contextStub);
-
+        $basePath = uniqid();
         $relativePath = uniqid();
         $expectedAbsolutePath = $basePath . '/' . $relativePath;
+
+        $pathResolverStub = $this->createStub(PathResolverInterface::class);
+        $pathResolverStub->method('getAbsolutePath')
+            ->with($relativePath)
+            ->willReturn($expectedAbsolutePath);
+
+        $sut = $this->getSut($pathResolverStub);
 
         $this->assertEquals($expectedAbsolutePath, $sut->getAbsolutePath($relativePath));
     }
 
     private function getSut(
-        ?ContextInterface $context = null
+        ?PathResolverInterface $pathResolver = null
     ): FileSystemUtilsInterface {
-        $context ??= $this->createStub(ContextInterface::class);
+        $pathResolver ??= $this->pathResolverStub;
         return new FileSystemUtils(
             finder: new Finder(),
-            context: $context,
+            pathResolver: $pathResolver,
         );
     }
 }
