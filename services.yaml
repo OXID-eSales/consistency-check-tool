@@ -3,6 +3,7 @@ parameters:
 
 imports:
   - { resource: src/ImageManager/services.yaml }
+  - { resource: src/Shared/services.yaml }
 
 services:
 

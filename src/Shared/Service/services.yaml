@@ -1,0 +1,7 @@
+services:
+  _defaults:
+    autowire: true
+    public: false
+
+  OxidEsales\ConsistencyCheck\Shared\Service\PathResolverInterface:
+    class: OxidEsales\ConsistencyCheck\Shared\Service\PathResolver
