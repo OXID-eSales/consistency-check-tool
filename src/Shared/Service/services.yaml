@@ -8,3 +8,6 @@ services:
 
   OxidEsales\ConsistencyCheck\Shared\Service\CsvExportServiceInterface:
     class: OxidEsales\ConsistencyCheck\Shared\Service\CsvExportService
+
+  OxidEsales\ConsistencyCheck\Shared\Service\CsvReaderServiceInterface:
+    class: OxidEsales\ConsistencyCheck\Shared\Service\CsvReaderService
