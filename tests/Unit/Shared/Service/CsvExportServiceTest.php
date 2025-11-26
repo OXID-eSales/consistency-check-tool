@@ -12,7 +12,7 @@ namespace OxidEsales\ConsistencyCheck\Tests\Unit\Shared\Service;
 use League\Csv\Writer;
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
-use OxidEsales\ConsistencyCheck\Shared\Exception\InvalidFileFormatException;
+use OxidEsales\ConsistencyCheck\Shared\Exception\CsvExportException;
 use OxidEsales\ConsistencyCheck\Shared\Factory\CsvWriterFactoryInterface;
 use OxidEsales\ConsistencyCheck\Shared\Mapper\CsvMapperInterface;
 use OxidEsales\ConsistencyCheck\Shared\Service\CsvExportService;
@@ -46,9 +46,10 @@ final class CsvExportServiceTest extends TestCase
 
         $mapperStub = $this->createStub(CsvMapperInterface::class);
         $mapperStub->method('getHeaders')->willReturn(['field1', 'field2']);
-        $mapperStub->method('toArray')->willReturnOnConsecutiveCalls(
-            ['field1' => $value1, 'field2' => $value2],
-            ['field1' => $value3, 'field2' => $value4]
+        $mapperStub->method('toArray')->willReturnCallback(
+            fn($dto) => $dto === $dto1
+                ? ['field1' => $value1, 'field2' => $value2]
+                : ['field1' => $value3, 'field2' => $value4]
         );
 
         $sut = $this->getSut(
@@ -86,8 +87,8 @@ final class CsvExportServiceTest extends TestCase
             writerFactory: $this->createWriterFactoryStub()
         );
 
-        $this->expectException(InvalidFileFormatException::class);
-        $this->expectExceptionMessage('Cannot write CSV file');
+        $this->expectException(CsvExportException::class);
+        $this->expectExceptionMessage($filename);
 
         $sut->exportToCsv($data, $filename, $mapperStub);
     }

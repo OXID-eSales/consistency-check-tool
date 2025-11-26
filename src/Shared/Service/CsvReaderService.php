@@ -9,8 +9,8 @@ declare(strict_types=1);
 
 namespace OxidEsales\ConsistencyCheck\Shared\Service;
 
-use League\Csv\Exception as CsvException;
-use OxidEsales\ConsistencyCheck\Shared\Exception\InvalidFileFormatException;
+use League\Csv\UnableToProcessCsv;
+use OxidEsales\ConsistencyCheck\Shared\Exception\CsvReadException;
 use OxidEsales\ConsistencyCheck\Shared\Factory\CsvReaderFactoryInterface;
 use OxidEsales\ConsistencyCheck\Shared\Mapper\CsvMapperInterface;
 
@@ -36,12 +36,8 @@ final class CsvReaderService implements CsvReaderServiceInterface
             }
 
             return $dtos;
-        } catch (CsvException $e) {
-            throw new InvalidFileFormatException(
-                "Cannot read CSV file: {$filepath}. Error: {$e->getMessage()}",
-                0,
-                $e
-            );
+        } catch (UnableToProcessCsv $e) {
+            throw new CsvReadException($filepath, $e);
         }
     }
 }

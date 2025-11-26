@@ -9,14 +9,14 @@ declare(strict_types=1);
 
 namespace OxidEsales\ConsistencyCheck\Shared\Service;
 
-use OxidEsales\ConsistencyCheck\Shared\Exception\InvalidFileFormatException;
+use OxidEsales\ConsistencyCheck\Shared\Exception\CsvExportException;
 use OxidEsales\ConsistencyCheck\Shared\Mapper\CsvMapperInterface;
 
 interface CsvExportServiceInterface
 {
     /**
      * @param array<object> $data
-     * @throws InvalidFileFormatException
+     * @throws CsvExportException
      */
     public function exportToCsv(
         array $data,

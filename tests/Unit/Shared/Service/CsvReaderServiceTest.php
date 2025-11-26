@@ -12,7 +12,7 @@ namespace OxidEsales\ConsistencyCheck\Tests\Unit\Shared\Service;
 use League\Csv\Reader;
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
-use OxidEsales\ConsistencyCheck\Shared\Exception\InvalidFileFormatException;
+use OxidEsales\ConsistencyCheck\Shared\Exception\CsvReadException;
 use OxidEsales\ConsistencyCheck\Shared\Factory\CsvReaderFactoryInterface;
 use OxidEsales\ConsistencyCheck\Shared\Mapper\CsvMapperInterface;
 use OxidEsales\ConsistencyCheck\Shared\Service\CsvReaderService;
@@ -44,8 +44,11 @@ final class CsvReaderServiceTest extends TestCase
         $dto2 = new \stdClass();
 
         $mapperStub = $this->createStub(CsvMapperInterface::class);
+        $callCount = 0;
         $mapperStub->method('fromArray')
-            ->willReturnOnConsecutiveCalls($dto1, $dto2);
+            ->willReturnCallback(function () use ($dto1, $dto2, &$callCount) {
+                return $callCount++ === 0 ? $dto1 : $dto2;
+            });
 
         $readerFactoryStub = $this->createStub(CsvReaderFactoryInterface::class);
         $readerFactoryStub->method('create')
@@ -78,8 +81,8 @@ final class CsvReaderServiceTest extends TestCase
             readerFactory: $readerFactoryStub
         );
 
-        $this->expectException(InvalidFileFormatException::class);
-        $this->expectExceptionMessage("Cannot read CSV file: {$filename}");
+        $this->expectException(CsvReadException::class);
+        $this->expectExceptionMessage($filename);
 
         $sut->readFromCsv($filename, $mapperStub);
     }
