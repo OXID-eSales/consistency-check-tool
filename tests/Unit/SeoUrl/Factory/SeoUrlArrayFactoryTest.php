@@ -1,0 +1,76 @@
+<?php
+
+/**
+ * Copyright © OXID eSales AG. All rights reserved.
+ * See LICENSE file for license details.
+ */
+
+declare(strict_types=1);
+
+namespace OxidEsales\ConsistencyCheck\Tests\Unit\SeoUrl\Factory;
+
+use OxidEsales\ConsistencyCheck\SeoUrl\Dto\SeoUrlDtoInterface;
+use OxidEsales\ConsistencyCheck\SeoUrl\Factory\SeoUrlArrayFactory;
+use OxidEsales\ConsistencyCheck\Shared\Dto\ExportableDtoInterface;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\TestCase;
+
+final class SeoUrlArrayFactoryTest extends TestCase
+{
+    #[Test]
+    public function createFromDto(): void
+    {
+        $objectId = uniqid();
+        $ident = uniqid();
+        $shopId = rand();
+        $langId = rand();
+        $stdUrl = uniqid();
+        $seoUrl = uniqid();
+        $type = uniqid();
+        $fixed = rand();
+        $expired = rand();
+        $params = uniqid();
+        $timestamp = uniqid();
+
+        $dtoStub = $this->createStub(SeoUrlDtoInterface::class);
+        $dtoStub->method('getObjectId')->willReturn($objectId);
+        $dtoStub->method('getIdent')->willReturn($ident);
+        $dtoStub->method('getShopId')->willReturn($shopId);
+        $dtoStub->method('getLanguageId')->willReturn($langId);
+        $dtoStub->method('getStdUrl')->willReturn($stdUrl);
+        $dtoStub->method('getSeoUrl')->willReturn($seoUrl);
+        $dtoStub->method('getType')->willReturn($type);
+        $dtoStub->method('getFixed')->willReturn($fixed);
+        $dtoStub->method('getExpired')->willReturn($expired);
+        $dtoStub->method('getParams')->willReturn($params);
+        $dtoStub->method('getTimestamp')->willReturn($timestamp);
+
+        $sut = new SeoUrlArrayFactory();
+        $result = $sut->createFromDto($dtoStub);
+
+        $this->assertSame($objectId, $result['OXOBJECTID']);
+        $this->assertSame($ident, $result['OXIDENT']);
+        $this->assertSame($shopId, $result['OXSHOPID']);
+        $this->assertSame($langId, $result['OXLANG']);
+        $this->assertSame($stdUrl, $result['OXSTDURL']);
+        $this->assertSame($seoUrl, $result['OXSEOURL']);
+        $this->assertSame($type, $result['OXTYPE']);
+        $this->assertSame($fixed, $result['OXFIXED']);
+        $this->assertSame($expired, $result['OXEXPIRED']);
+        $this->assertSame($params, $result['OXPARAMS']);
+        $this->assertSame($timestamp, $result['OXTIMESTAMP']);
+    }
+
+    #[Test]
+    public function createFromDtoThrowsExceptionForInvalidDto(): void
+    {
+        $invalidDto = $this->createStub(ExportableDtoInterface::class);
+
+        $sut = new SeoUrlArrayFactory();
+
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Expected SeoUrlDtoInterface');
+
+        $sut->createFromDto($invalidDto);
+    }
+}

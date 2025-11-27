@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\ConsistencyCheck\SeoUrl\DTO;
+namespace OxidEsales\ConsistencyCheck\SeoUrl\Dto;
 
 final class SeoUrlDto implements SeoUrlDtoInterface
 {

@@ -7,9 +7,11 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\ConsistencyCheck\SeoUrl\DTO;
+namespace OxidEsales\ConsistencyCheck\SeoUrl\Dto;
 
-interface SeoUrlDtoInterface
+use OxidEsales\ConsistencyCheck\Shared\Dto\ExportableDtoInterface;
+
+interface SeoUrlDtoInterface extends ExportableDtoInterface
 {
     public function getObjectId(): string;
 

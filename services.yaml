@@ -4,6 +4,8 @@ parameters:
 imports:
   - { resource: src/ImageManager/services.yaml }
   - { resource: src/Shared/services.yaml }
+  - { resource: src/Export/services.yaml }
+  - { resource: src/SeoUrl/services.yaml }
 
 services:
 
