@@ -9,7 +9,9 @@ declare(strict_types=1);
 
 namespace OxidEsales\ConsistencyCheck\Tests\Unit\SeoUrl\Factory;
 
+use OxidEsales\ConsistencyCheck\Export\Factory\ArrayFactoryInterface;
 use OxidEsales\ConsistencyCheck\SeoUrl\Dto\SeoUrlDtoInterface;
+use OxidEsales\ConsistencyCheck\SeoUrl\Exception\InvalidDtoTypeException;
 use OxidEsales\ConsistencyCheck\SeoUrl\Factory\SeoUrlArrayFactory;
 use OxidEsales\ConsistencyCheck\Shared\Dto\ExportableDtoInterface;
 use PHPUnit\Framework\Attributes\Test;
@@ -45,7 +47,7 @@ final class SeoUrlArrayFactoryTest extends TestCase
         $dtoStub->method('getParams')->willReturn($params);
         $dtoStub->method('getTimestamp')->willReturn($timestamp);
 
-        $sut = new SeoUrlArrayFactory();
+        $sut = $this->getSut();
         $result = $sut->createFromDto($dtoStub);
 
         $this->assertSame($objectId, $result['OXOBJECTID']);
@@ -66,11 +68,16 @@ final class SeoUrlArrayFactoryTest extends TestCase
     {
         $invalidDto = $this->createStub(ExportableDtoInterface::class);
 
-        $sut = new SeoUrlArrayFactory();
+        $sut = $this->getSut();
 
-        $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('Expected SeoUrlDtoInterface');
+        $this->expectException(InvalidDtoTypeException::class);
+        $this->expectExceptionMessage('Invalid DTO type provided. Expected ' . SeoUrlDtoInterface::class);
 
         $sut->createFromDto($invalidDto);
+    }
+
+    private function getSut(): ArrayFactoryInterface
+    {
+        return new SeoUrlArrayFactory();
     }
 }

@@ -11,6 +11,7 @@ namespace OxidEsales\ConsistencyCheck\SeoUrl\Factory;
 
 use OxidEsales\ConsistencyCheck\Export\Factory\ArrayFactoryInterface;
 use OxidEsales\ConsistencyCheck\SeoUrl\Dto\SeoUrlDtoInterface;
+use OxidEsales\ConsistencyCheck\SeoUrl\Exception\InvalidDtoTypeException;
 use OxidEsales\ConsistencyCheck\Shared\Dto\ExportableDtoInterface;
 
 final class SeoUrlArrayFactory implements ArrayFactoryInterface
@@ -18,7 +19,7 @@ final class SeoUrlArrayFactory implements ArrayFactoryInterface
     public function createFromDto(ExportableDtoInterface $dto): array
     {
         if (!$dto instanceof SeoUrlDtoInterface) {
-            throw new \InvalidArgumentException('Expected SeoUrlDtoInterface');
+            throw new InvalidDtoTypeException($dto, SeoUrlDtoInterface::class);
         }
 
         return [
