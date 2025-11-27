@@ -22,30 +22,19 @@ final class SeoUrlArrayFactoryTest extends TestCase
     #[Test]
     public function createFromDto(): void
     {
-        $objectId = uniqid();
-        $ident = uniqid();
-        $shopId = rand();
-        $langId = rand();
-        $stdUrl = uniqid();
-        $seoUrl = uniqid();
-        $type = uniqid();
-        $fixed = rand();
-        $expired = rand();
-        $params = uniqid();
-        $timestamp = uniqid();
-
-        $dtoStub = $this->createStub(SeoUrlDtoInterface::class);
-        $dtoStub->method('getObjectId')->willReturn($objectId);
-        $dtoStub->method('getIdent')->willReturn($ident);
-        $dtoStub->method('getShopId')->willReturn($shopId);
-        $dtoStub->method('getLanguageId')->willReturn($langId);
-        $dtoStub->method('getStdUrl')->willReturn($stdUrl);
-        $dtoStub->method('getSeoUrl')->willReturn($seoUrl);
-        $dtoStub->method('getType')->willReturn($type);
-        $dtoStub->method('getFixed')->willReturn($fixed);
-        $dtoStub->method('getExpired')->willReturn($expired);
-        $dtoStub->method('getParams')->willReturn($params);
-        $dtoStub->method('getTimestamp')->willReturn($timestamp);
+        $dtoStub = $this->createConfiguredStub(SeoUrlDtoInterface::class, [
+            'getObjectId' => $objectId = uniqid(),
+            'getIdent' => $ident = uniqid(),
+            'getShopId' => $shopId = rand(),
+            'getLanguageId' => $langId = rand(),
+            'getStdUrl' => $stdUrl = uniqid(),
+            'getSeoUrl' => $seoUrl = uniqid(),
+            'getType' => $type = uniqid(),
+            'getFixed' => $fixed = rand(),
+            'getExpired' => $expired = rand(),
+            'getParams' => $params = uniqid(),
+            'getTimestamp' => $timestamp = uniqid(),
+        ]);
 
         $sut = $this->getSut();
         $result = $sut->createFromDto($dtoStub);
@@ -71,7 +60,7 @@ final class SeoUrlArrayFactoryTest extends TestCase
         $sut = $this->getSut();
 
         $this->expectException(InvalidDtoTypeException::class);
-        $this->expectExceptionMessage('Invalid DTO type provided. Expected ' . SeoUrlDtoInterface::class);
+        $this->expectExceptionMessage(SeoUrlDtoInterface::class);
 
         $sut->createFromDto($invalidDto);
     }

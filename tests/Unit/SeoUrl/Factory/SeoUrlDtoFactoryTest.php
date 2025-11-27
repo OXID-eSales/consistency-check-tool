@@ -19,30 +19,18 @@ final class SeoUrlDtoFactoryTest extends TestCase
     #[Test]
     public function createFromArray(): void
     {
-        $objectId = uniqid();
-        $ident = uniqid();
-        $shopId = rand();
-        $langId = rand();
-        $stdUrl = uniqid();
-        $seoUrl = uniqid();
-        $type = uniqid();
-        $fixed = rand();
-        $expired = rand();
-        $params = uniqid();
-        $timestamp = uniqid();
-
         $data = [
-            'OXOBJECTID' => $objectId,
-            'OXIDENT' => $ident,
-            'OXSHOPID' => $shopId,
-            'OXLANG' => $langId,
-            'OXSTDURL' => $stdUrl,
-            'OXSEOURL' => $seoUrl,
-            'OXTYPE' => $type,
-            'OXFIXED' => $fixed,
-            'OXEXPIRED' => $expired,
-            'OXPARAMS' => $params,
-            'OXTIMESTAMP' => $timestamp,
+            'OXOBJECTID' => $objectId = uniqid(),
+            'OXIDENT' => $ident = uniqid(),
+            'OXSHOPID' => $shopId = rand(),
+            'OXLANG' => $langId = rand(),
+            'OXSTDURL' => $stdUrl = uniqid(),
+            'OXSEOURL' => $seoUrl = uniqid(),
+            'OXTYPE' => $type = uniqid(),
+            'OXFIXED' => $fixed = rand(),
+            'OXEXPIRED' => $expired = rand(),
+            'OXPARAMS' => $params = uniqid(),
+            'OXTIMESTAMP' => $timestamp = uniqid(),
         ];
 
         $sut = new SeoUrlDtoFactory();

@@ -43,8 +43,6 @@ final class CsvExportServiceTest extends TestCase
         $dto1 = $this->createStub(ExportableDtoInterface::class);
         $dto2 = $this->createStub(ExportableDtoInterface::class);
 
-        $filepath = uniqid() . '.csv';
-
         $arrayFactoryStub = $this->createStub(ArrayFactoryInterface::class);
         $arrayFactoryStub->method('createFromDto')->willReturnCallback(
             fn($dto) => $dto === $dto1
@@ -52,11 +50,12 @@ final class CsvExportServiceTest extends TestCase
                 : ['field1' => $value3, 'field2' => $value4]
         );
 
-        $configurationStub = $this->createStub(ExportConfigurationInterface::class);
-        $configurationStub->method('getHeaders')->willReturn(['field1', 'field2']);
-        $configurationStub->method('getItems')->willReturn([$dto1, $dto2]);
-        $configurationStub->method('getArrayFactory')->willReturn($arrayFactoryStub);
-        $configurationStub->method('getFilePath')->willReturn($filepath);
+        $configurationStub = $this->createConfiguredStub(ExportConfigurationInterface::class, [
+            'getHeaders' => ['field1', 'field2'],
+            'getItems' => [$dto1, $dto2],
+            'getArrayFactory' => $arrayFactoryStub,
+            'getFilePath' => $filepath = uniqid() . '.csv',
+        ]);
 
         $sut = $this->getSut(
             pathResolver: $this->createPathResolverStub(),
@@ -76,18 +75,17 @@ final class CsvExportServiceTest extends TestCase
     #[Test]
     public function exportThrowsExceptionWhenFileCannotBeOpened(): void
     {
-        $filename = uniqid() . '.csv';
-
         $dto = $this->createStub(ExportableDtoInterface::class);
 
         $arrayFactoryStub = $this->createStub(ArrayFactoryInterface::class);
         $arrayFactoryStub->method('createFromDto')->willReturn(['col1' => 'value1']);
 
-        $configurationStub = $this->createStub(ExportConfigurationInterface::class);
-        $configurationStub->method('getHeaders')->willReturn(['col1']);
-        $configurationStub->method('getItems')->willReturn([$dto]);
-        $configurationStub->method('getArrayFactory')->willReturn($arrayFactoryStub);
-        $configurationStub->method('getFilePath')->willReturn($filename);
+        $configurationStub = $this->createConfiguredStub(ExportConfigurationInterface::class, [
+            'getHeaders' => ['col1'],
+            'getItems' => [$dto],
+            'getArrayFactory' => $arrayFactoryStub,
+            'getFilePath' => $filename = uniqid() . '.csv',
+        ]);
 
         // Create a directory where file should be (blocks file creation)
         vfsStream::newDirectory($filename)->at($this->fileSystem);

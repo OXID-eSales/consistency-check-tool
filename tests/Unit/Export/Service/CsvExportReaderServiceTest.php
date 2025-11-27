@@ -35,10 +35,9 @@ final class CsvExportReaderServiceTest extends TestCase
     #[Test]
     public function read(): void
     {
-        $filename = uniqid() . '.csv';
         $csvContent = "col1,col2\nvalue1,value2\nvalue3,value4\n";
 
-        vfsStream::newFile($filename)
+        vfsStream::newFile($filename = uniqid() . '.csv')
             ->withContent($csvContent)
             ->at($this->fileSystem);
 
@@ -52,9 +51,10 @@ final class CsvExportReaderServiceTest extends TestCase
                 return $callCount++ === 0 ? $dto1 : $dto2;
             });
 
-        $configurationStub = $this->createStub(ExportReaderConfigurationInterface::class);
-        $configurationStub->method('getFilePath')->willReturn($filename);
-        $configurationStub->method('getDtoFactory')->willReturn($dtoFactoryStub);
+        $configurationStub = $this->createConfiguredStub(ExportReaderConfigurationInterface::class, [
+            'getFilePath' => $filename,
+            'getDtoFactory' => $dtoFactoryStub,
+        ]);
 
         $readerFactoryStub = $this->createStub(CsvReaderFactoryInterface::class);
         $readerFactoryStub->method('create')
@@ -75,13 +75,12 @@ final class CsvExportReaderServiceTest extends TestCase
     #[Test]
     public function readThrowsExceptionWhenFileCannotBeRead(): void
     {
-        $filename = uniqid() . '.csv';
-
         $dtoFactoryStub = $this->createStub(DtoFactoryInterface::class);
 
-        $configurationStub = $this->createStub(ExportReaderConfigurationInterface::class);
-        $configurationStub->method('getFilePath')->willReturn($filename);
-        $configurationStub->method('getDtoFactory')->willReturn($dtoFactoryStub);
+        $configurationStub = $this->createConfiguredStub(ExportReaderConfigurationInterface::class, [
+            'getFilePath' => $filename = uniqid() . '.csv',
+            'getDtoFactory' => $dtoFactoryStub,
+        ]);
 
         $readerFactoryStub = $this->createStub(CsvReaderFactoryInterface::class);
         $readerFactoryStub->method('create')
