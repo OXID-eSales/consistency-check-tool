@@ -1,0 +1,4 @@
+services:
+  OxidEsales\ConsistencyCheck\SeoUrl\Repository\SeoUrlRepositoryInterface:
+    class: OxidEsales\ConsistencyCheck\SeoUrl\Repository\SeoUrlRepository
+    public: true
