@@ -11,9 +11,13 @@ namespace OxidEsales\ConsistencyCheck\SeoUrl\Configuration;
 
 use OxidEsales\ConsistencyCheck\Export\Configuration\ExportConfigurationInterface;
 use OxidEsales\ConsistencyCheck\Export\Factory\ArrayFactoryInterface;
+use OxidEsales\ConsistencyCheck\Shared\Dto\ExportableDtoInterface;
 
 final class SeoUrlExportConfiguration implements ExportConfigurationInterface
 {
+    /**
+     * @param array<ExportableDtoInterface> $items
+     */
     public function __construct(
         private readonly array $items,
         private readonly ArrayFactoryInterface $arrayFactory,
