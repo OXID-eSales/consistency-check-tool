@@ -7,12 +7,12 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\ConsistencyCheck\Tests\Integration\Shared\Factory;
+namespace OxidEsales\ConsistencyCheck\Tests\Integration\Export\Factory;
 
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
-use OxidEsales\ConsistencyCheck\Shared\Factory\CsvWriterFactory;
-use OxidEsales\ConsistencyCheck\Shared\Factory\CsvWriterFactoryInterface;
+use OxidEsales\ConsistencyCheck\Export\Factory\CsvWriterFactory;
+use OxidEsales\ConsistencyCheck\Export\Factory\CsvWriterFactoryInterface;
 use OxidEsales\EshopCommunity\Tests\Integration\IntegrationTestCase;
 use PHPUnit\Framework\Attributes\Test;
 
