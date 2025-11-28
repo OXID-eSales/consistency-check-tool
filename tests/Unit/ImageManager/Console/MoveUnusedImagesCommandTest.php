@@ -64,8 +64,8 @@ class MoveUnusedImagesCommandTest extends TestCase
             ->method('getUnusedImages')
             ->willReturn($unusedImagesMock);
 
-        $imageManagerServiceStub = $this->createStub(ImageManagerServiceInterface::class);
-        $imageManagerServiceStub
+        $imageManagerServiceMock = $this->createMock(ImageManagerServiceInterface::class);
+        $imageManagerServiceMock
             ->expects(self::once())
             ->method('moveImages')
             ->willReturn(1);
@@ -86,7 +86,7 @@ class MoveUnusedImagesCommandTest extends TestCase
         $sut = $this->getSut(
             entities: [$entityStub],
             imageCheckerService: $imageCheckerServiceStub,
-            imageManagerService: $imageManagerServiceStub,
+            imageManagerService: $imageManagerServiceMock,
             imageEntityFilter: $entityFilterServiceStub,
             messageFormatter: $formatterMock,
         );
@@ -110,8 +110,8 @@ class MoveUnusedImagesCommandTest extends TestCase
         $imageCheckerServiceStub = $this->createStub(UnusedImageFinderServiceInterface::class);
         $imageCheckerServiceStub->method('getUnusedImages')->willReturn($unusedImagesMock);
 
-        $imageManagerServiceStub = $this->createStub(ImageManagerServiceInterface::class);
-        $imageManagerServiceStub
+        $imageManagerServiceMock = $this->createMock(ImageManagerServiceInterface::class);
+        $imageManagerServiceMock
             ->expects(self::never())
             ->method('moveImages');
 
@@ -131,7 +131,7 @@ class MoveUnusedImagesCommandTest extends TestCase
         $sut = $this->getSut(
             entities: [$entityStub],
             imageCheckerService: $imageCheckerServiceStub,
-            imageManagerService: $imageManagerServiceStub,
+            imageManagerService: $imageManagerServiceMock,
             imageEntityFilter: $entityFilterServiceStub,
             messageFormatter: $formatterMock,
         );

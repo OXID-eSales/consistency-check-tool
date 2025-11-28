@@ -22,15 +22,15 @@ final class VerboseConsoleLogReporterTest extends TestCase
     #[Test]
     public function itSkipsLogOutputWhenVerbosityIsTooLow(): void
     {
-        $logReaderStub = $this->createStub(LogReaderInterface::class);
-        $logReaderStub->expects($this->never())->method('readLines');
+        $logReaderMock = $this->createMock(LogReaderInterface::class);
+        $logReaderMock->expects($this->never())->method('readLines');
 
-        $formatterStub = $this->createStub(MessageFormatterServiceInterface::class);
-        $formatterStub->expects($this->never())->method('formatInfo');
+        $formatterMock = $this->createMock(MessageFormatterServiceInterface::class);
+        $formatterMock->expects($this->never())->method('formatInfo');
 
         $output = new BufferedOutput(OutputInterface::VERBOSITY_NORMAL);
 
-        $sut = new VerboseConsoleLogReporter($logReaderStub, $formatterStub);
+        $sut = new VerboseConsoleLogReporter($logReaderMock, $formatterMock);
         $sut->after($output);
 
         $this->assertSame('', $output->fetch());
