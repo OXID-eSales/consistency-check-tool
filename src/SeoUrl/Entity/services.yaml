@@ -1,0 +1,40 @@
+services:
+  # Article SEO Entity
+  seo_entity.article:
+    class: OxidEsales\ConsistencyCheck\SeoUrl\Entity\SeoEntity
+    arguments:
+      $seoType: 'oxarticle'
+      $referenceTable: 'oxarticles'
+    tags: ['seo_entity']
+
+  # Category SEO Entity
+  seo_entity.category:
+    class: OxidEsales\ConsistencyCheck\SeoUrl\Entity\SeoEntity
+    arguments:
+      $seoType: 'oxcategory'
+      $referenceTable: 'oxcategories'
+    tags: ['seo_entity']
+
+  # Manufacturer SEO Entity
+  seo_entity.manufacturer:
+    class: OxidEsales\ConsistencyCheck\SeoUrl\Entity\SeoEntity
+    arguments:
+      $seoType: 'oxmanufacturer'
+      $referenceTable: 'oxmanufacturers'
+    tags: ['seo_entity']
+
+  # Vendor SEO Entity
+  seo_entity.vendor:
+    class: OxidEsales\ConsistencyCheck\SeoUrl\Entity\SeoEntity
+    arguments:
+      $seoType: 'oxvendor'
+      $referenceTable: 'oxvendor'
+    tags: ['seo_entity']
+
+  # Content SEO Entity
+  seo_entity.content:
+    class: OxidEsales\ConsistencyCheck\SeoUrl\Entity\SeoEntity
+    arguments:
+      $seoType: 'oxcontent'
+      $referenceTable: 'oxcontents'
+    tags: ['seo_entity']
