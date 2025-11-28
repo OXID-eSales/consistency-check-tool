@@ -7,9 +7,9 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\ConsistencyCheck\Tests\Unit\SeoUrl\DTO;
+namespace OxidEsales\ConsistencyCheck\Tests\Unit\SeoUrl\Dto;
 
-use OxidEsales\ConsistencyCheck\SeoUrl\DTO\SeoUrlDto;
+use OxidEsales\ConsistencyCheck\SeoUrl\Dto\SeoUrlDto;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
