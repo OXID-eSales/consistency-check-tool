@@ -1,0 +1,11 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: false
+    bind:
+      OxidEsales\Eshop\Core\Config: '@=service("OxidEsales\\ConsistencyCheck\\Core\\Registry").getConfig()'
+
+  OxidEsales\ConsistencyCheck\SeoUrl\Service\SeoUrlServiceInterface:
+    class: OxidEsales\ConsistencyCheck\SeoUrl\Service\SeoUrlService
+    public: true
