@@ -9,3 +9,6 @@ services:
   OxidEsales\ConsistencyCheck\SeoUrl\Service\SeoUrlServiceInterface:
     class: OxidEsales\ConsistencyCheck\SeoUrl\Service\SeoUrlService
     public: true
+
+  OxidEsales\ConsistencyCheck\SeoUrl\Service\SeoUrlTableRendererInterface:
+    class: OxidEsales\ConsistencyCheck\SeoUrl\Service\SeoUrlTableRenderer
