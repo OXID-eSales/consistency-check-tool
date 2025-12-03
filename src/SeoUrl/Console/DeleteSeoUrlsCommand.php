@@ -13,6 +13,7 @@ use OxidEsales\ConsistencyCheck\Export\Factory\ExportReaderConfigurationFactoryI
 use OxidEsales\ConsistencyCheck\Export\Service\ExportReaderServiceInterface;
 use OxidEsales\ConsistencyCheck\SeoUrl\Dto\SeoUrlDtoInterface;
 use OxidEsales\ConsistencyCheck\SeoUrl\Service\SeoUrlServiceInterface;
+use OxidEsales\ConsistencyCheck\SeoUrl\Service\SeoUrlTableRendererInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -24,11 +25,13 @@ final class DeleteSeoUrlsCommand extends Command
 
     private const COMMAND_DESCRIPTION = 'Delete SEO URLs from CSV file (batch operation)';
     private const COMMAND_OPTION_FILE = 'Path to CSV file containing URLs to delete';
+    private const COMMAND_OPTION_DRY_RUN = 'Perform a dry run without actual deletions';
 
     public function __construct(
         private readonly SeoUrlServiceInterface $service,
         private readonly ExportReaderServiceInterface $csvReaderService,
         private readonly ExportReaderConfigurationFactoryInterface $readerConfigurationFactory,
+        private readonly SeoUrlTableRendererInterface $tableRenderer,
     ) {
         parent::__construct();
     }
@@ -37,7 +40,8 @@ final class DeleteSeoUrlsCommand extends Command
     {
         $this
             ->setDescription(self::COMMAND_DESCRIPTION)
-            ->addOption('file', null, InputOption::VALUE_REQUIRED, self::COMMAND_OPTION_FILE);
+            ->addOption('file', null, InputOption::VALUE_REQUIRED, self::COMMAND_OPTION_FILE)
+            ->addOption('dry-run', null, InputOption::VALUE_NONE, self::COMMAND_OPTION_DRY_RUN);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -60,10 +64,23 @@ final class DeleteSeoUrlsCommand extends Command
             return Command::SUCCESS;
         }
 
+        // Display table with all URLs
+        /** @var array<SeoUrlDtoInterface> $dtos */
+        $this->tableRenderer->render($dtos, $output);
+
+        $isDryRun = $input->getOption('dry-run');
+
+        if ($isDryRun) {
+            $output->writeln(sprintf(
+                '<comment>Dry run: Would delete %d SEO URLs (no actual deletion performed)</comment>',
+                count($dtos)
+            ));
+            return Command::SUCCESS;
+        }
+
         $output->writeln(sprintf('<info>Processing %d SEO URLs...</info>', count($dtos)));
 
         // Extract OXOBJECTID from DTOs
-        /** @var array<SeoUrlDtoInterface> $dtos */
         $oxids = array_map(fn($dto) => $dto->getObjectId(), $dtos);
 
         $deletedCount = $this->service->deleteUrls($oxids);

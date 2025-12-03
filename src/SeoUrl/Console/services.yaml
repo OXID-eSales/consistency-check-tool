@@ -9,6 +9,9 @@ services:
       $seoEntities: !tagged_iterator 'seo_entity'
       $exportService: '@OxidEsales\ConsistencyCheck\Export\Service\ExportServiceInterface'
       $configurationFactory: '@OxidEsales\ConsistencyCheck\SeoUrl\Factory\SeoUrlExportConfigurationFactory'
+      $tableRenderer: '@OxidEsales\ConsistencyCheck\SeoUrl\Service\SeoUrlTableRendererInterface'
+      $exportDirectoryPath: '%app.export_directory_path%'
+      $exportFilePrefix: '%app.unused_seo_urls_file%'
     tags:
       - { name: 'console.command', command: 'oe:consistency_check:check-unused-seo-urls' }
 
@@ -17,6 +20,9 @@ services:
       $seoEntities: !tagged_iterator 'seo_entity'
       $exportService: '@OxidEsales\ConsistencyCheck\Export\Service\ExportServiceInterface'
       $configurationFactory: '@OxidEsales\ConsistencyCheck\SeoUrl\Factory\SeoUrlExportConfigurationFactory'
+      $tableRenderer: '@OxidEsales\ConsistencyCheck\SeoUrl\Service\SeoUrlTableRendererInterface'
+      $exportDirectoryPath: '%app.export_directory_path%'
+      $exportFilePrefix: '%app.duplicate_seo_urls_file%'
     tags:
       - { name: 'console.command', command: 'oe:consistency_check:check-duplicate-seo-urls' }
 
@@ -24,5 +30,6 @@ services:
     arguments:
       $csvReaderService: '@OxidEsales\ConsistencyCheck\Export\Service\ExportReaderServiceInterface'
       $readerConfigurationFactory: '@OxidEsales\ConsistencyCheck\SeoUrl\Factory\SeoUrlExportReaderConfigurationFactory'
+      $tableRenderer: '@OxidEsales\ConsistencyCheck\SeoUrl\Service\SeoUrlTableRendererInterface'
     tags:
       - { name: 'console.command' , command: 'oe:consistency_check:delete-seo-urls'}

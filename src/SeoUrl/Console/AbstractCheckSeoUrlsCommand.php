@@ -13,9 +13,10 @@ use OxidEsales\ConsistencyCheck\Export\Factory\ExportConfigurationFactoryInterfa
 use OxidEsales\ConsistencyCheck\Export\Service\ExportServiceInterface;
 use OxidEsales\ConsistencyCheck\SeoUrl\Dto\SeoUrlDtoInterface;
 use OxidEsales\ConsistencyCheck\SeoUrl\Entity\SeoEntityInterface;
+use OxidEsales\ConsistencyCheck\SeoUrl\Exception\ExportDirectoryNotFoundException;
 use OxidEsales\ConsistencyCheck\SeoUrl\Service\SeoUrlServiceInterface;
+use OxidEsales\ConsistencyCheck\SeoUrl\Service\SeoUrlTableRendererInterface;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -32,6 +33,9 @@ abstract class AbstractCheckSeoUrlsCommand extends Command
         protected readonly iterable $seoEntities,
         private readonly ExportServiceInterface $exportService,
         private readonly ExportConfigurationFactoryInterface $configurationFactory,
+        private readonly SeoUrlTableRendererInterface $tableRenderer,
+        private readonly string $exportDirectoryPath,
+        private readonly string $exportFilePrefix,
     ) {
         parent::__construct();
     }
@@ -40,7 +44,7 @@ abstract class AbstractCheckSeoUrlsCommand extends Command
     {
         $this
             ->setDescription($this->getCommandDescription())
-            ->addOption('export', null, InputOption::VALUE_REQUIRED, self::COMMAND_OPTION_EXPORT);
+            ->addOption('export', null, InputOption::VALUE_NONE, self::COMMAND_OPTION_EXPORT);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -53,11 +57,11 @@ abstract class AbstractCheckSeoUrlsCommand extends Command
         }
 
         // Display results in table
-        $this->displayTable($allResults, $output);
+        $this->tableRenderer->render($allResults, $output);
 
         // Export if requested
-        $exportFile = $input->getOption('export');
-        if ($exportFile) {
+        if ($input->getOption('export')) {
+            $exportFile = $this->generateExportPath();
             $configuration = $this->configurationFactory->create($allResults, $exportFile);
             $this->exportService->export($configuration);
             $output->writeln(sprintf('<info>Exported %d URLs to %s</info>', count($allResults), $exportFile));
@@ -81,23 +85,18 @@ abstract class AbstractCheckSeoUrlsCommand extends Command
 
     abstract protected function getResultsMessage(int $count): string;
 
-    /**
-     * @param array<SeoUrlDtoInterface> $results
-     */
-    private function displayTable(array $results, OutputInterface $output): void
+    private function generateExportPath(): string
     {
-        $table = new Table($output);
-        $table->setHeaders(['OXID', 'Type', 'SEO URL', 'Object ID']);
-
-        foreach ($results as $dto) {
-            $table->addRow([
-                $dto->getIdent(),
-                $dto->getType(),
-                $dto->getSeoUrl(),
-                $dto->getObjectId(),
-            ]);
+        if (!is_dir($this->exportDirectoryPath)) {
+            throw new ExportDirectoryNotFoundException($this->exportDirectoryPath);
         }
 
-        $table->render();
+        $timestamp = date('Y-m-d_H-i-s');
+        return sprintf(
+            '%s/%s-%s.csv',
+            $this->exportDirectoryPath,
+            $this->exportFilePrefix,
+            $timestamp
+        );
     }
 }

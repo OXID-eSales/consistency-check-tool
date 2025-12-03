@@ -38,10 +38,12 @@ final class DeleteSeoUrlsCommandTest extends IntegrationTestCase
     #[Test]
     public function itSuccessfullyDeletesSeoUrlsFromCsv(): void
     {
+        $objectId1 = uniqid();
+        $objectId2 = uniqid();
         $csvContent = <<<CSV
 OXOBJECTID,OXIDENT,OXSHOPID,OXLANG,OXSTDURL,OXSEOURL,OXTYPE,OXFIXED,OXEXPIRED,OXPARAMS,OXTIMESTAMP
-test-object-1,test-ident-1,1,0,standard-url-1,seo-url-1,oxarticle,0,0,params1,2024-01-01 00:00:00
-test-object-2,test-ident-2,1,0,standard-url-2,seo-url-2,oxcategory,0,0,params2,2024-01-02 00:00:00
+{$objectId1},ident-{$objectId1},1,0,standard-url-{$objectId1},seo-url-{$objectId1},oxarticle,0,0,params1,2024-01-01 00:00:00
+{$objectId2},ident-{$objectId2},1,0,standard-url-{$objectId2},seo-url-{$objectId2},oxcategory,0,0,params2,2024-01-02 00:00:00
 CSV;
         $filename = uniqid() . '.csv';
         $filepath = $this->tempDir . '/' . $filename;
@@ -60,6 +62,75 @@ CSV;
         $this->assertStringContainsString('Reading CSV file', $output);
         $this->assertStringContainsString('Processing 2 SEO URLs', $output);
         $this->assertStringContainsString('Deleted', $output);
+    }
+
+    #[Test]
+    public function itPerformsDryRunWithoutActualDeletion(): void
+    {
+        $objectId1 = uniqid();
+        $objectId2 = uniqid();
+        $csvContent = <<<CSV
+OXOBJECTID,OXIDENT,OXSHOPID,OXLANG,OXSTDURL,OXSEOURL,OXTYPE,OXFIXED,OXEXPIRED,OXPARAMS,OXTIMESTAMP
+{$objectId1},ident-{$objectId1},1,0,standard-url-{$objectId1},seo-url-{$objectId1},oxarticle,0,0,params1,2024-01-01 00:00:00
+{$objectId2},ident-{$objectId2},1,0,standard-url-{$objectId2},seo-url-{$objectId2},oxcategory,0,0,params2,2024-01-02 00:00:00
+CSV;
+        $filename = uniqid() . '.csv';
+        $filepath = $this->tempDir . '/' . $filename;
+        file_put_contents($filepath, $csvContent);
+
+        $sut = $this->getSut();
+
+        $application = new Application();
+        $application->add($sut);
+
+        $commandTester = new CommandTester($application->find('oe:consistency_check:delete-seo-urls'));
+        $exitCode = $commandTester->execute(['--file' => $filepath, '--dry-run' => true]);
+
+        $output = $commandTester->getDisplay();
+        $this->assertSame(0, $exitCode);
+        $this->assertStringContainsString('Reading CSV file', $output);
+        $this->assertStringContainsString('Dry run: Would delete 2 SEO URLs', $output);
+        $this->assertStringNotContainsString('Processing', $output);
+        $this->assertStringNotContainsString('Deleted', $output);
+    }
+
+    #[Test]
+    public function itDisplaysTableInDryRunMode(): void
+    {
+        $objectId = uniqid();
+        $seoUrl = 'seo-url-' . uniqid();
+        $csvContent = <<<CSV
+OXOBJECTID,OXIDENT,OXSHOPID,OXLANG,OXSTDURL,OXSEOURL,OXTYPE,OXFIXED,OXEXPIRED,OXPARAMS,OXTIMESTAMP
+{$objectId},ident-{$objectId},1,0,standard-url-{$objectId},{$seoUrl},oxarticle,0,0,params1,2024-01-01 00:00:00
+CSV;
+        $filename = uniqid() . '.csv';
+        $filepath = $this->tempDir . '/' . $filename;
+        file_put_contents($filepath, $csvContent);
+
+        $sut = $this->getSut();
+
+        $application = new Application();
+        $application->add($sut);
+
+        $commandTester = new CommandTester($application->find('oe:consistency_check:delete-seo-urls'));
+        $exitCode = $commandTester->execute(['--file' => $filepath, '--dry-run' => true]);
+
+        $output = $commandTester->getDisplay();
+        $this->assertSame(0, $exitCode);
+        $this->assertStringContainsString($objectId, $output);
+        $this->assertStringContainsString($seoUrl, $output);
+        $this->assertStringContainsString('OXOBJECTID', $output);
+    }
+
+    #[Test]
+    public function itHasDryRunOption(): void
+    {
+        $sut = $this->getSut();
+        $definition = $sut->getDefinition();
+
+        $this->assertTrue($definition->hasOption('dry-run'));
+        $dryRunOption = $definition->getOption('dry-run');
+        $this->assertSame('Perform a dry run without actual deletions', $dryRunOption->getDescription());
     }
 
     #[Test]

@@ -52,7 +52,8 @@ final class CheckDuplicateSeoUrlsCommandTest extends IntegrationTestCase
     #[Test]
     public function itFindsNoDuplicatesWhenNoneExist(): void
     {
-        $exitCode = $this->commandTester->execute(['--suffix' => 'oxid']);
+        $uniqueSuffix = '-nonexistent-suffix-' . uniqid();
+        $exitCode = $this->commandTester->execute(['--suffix' => $uniqueSuffix]);
 
         $this->assertSame(0, $exitCode);
         $this->assertStringContainsString('No duplicate SEO URLs found', $this->commandTester->getDisplay());
@@ -62,9 +63,9 @@ final class CheckDuplicateSeoUrlsCommandTest extends IntegrationTestCase
     public function itFindsDuplicatesWithSuffixInUrl(): void
     {
         $suffix = '-oxid';
-        $urlWithSuffix = 'test-product' . $suffix . '.html';
+        $urlWithSuffix = 'test-product-' . uniqid() . $suffix . '.html';
         $this->insertSeoUrl(uniqid(), $urlWithSuffix, 'oxarticle');
-        $this->insertSeoUrl(uniqid(), 'other-product.html', 'oxarticle');
+        $this->insertSeoUrl(uniqid(), 'other-product-' . uniqid() . '.html', 'oxarticle');
 
         $exitCode = $this->commandTester->execute(['--suffix' => $suffix]);
 
@@ -87,10 +88,8 @@ final class CheckDuplicateSeoUrlsCommandTest extends IntegrationTestCase
     #[Test]
     public function itExportsResultsToCSV(): void
     {
-        $filepath = $this->tempDir . '/' . uniqid() . '.csv';
-
         $exitCode = $this->commandTester->execute([
-            '--export' => $filepath,
+            '--export' => true,
             '--suffix' => 'oxid',
         ]);
 
@@ -101,7 +100,6 @@ final class CheckDuplicateSeoUrlsCommandTest extends IntegrationTestCase
             $this->assertStringContainsString('No duplicate SEO URLs found', $output);
         } else {
             $this->assertStringContainsString('Exported', $output);
-            $this->assertFileExists($filepath);
         }
     }
 

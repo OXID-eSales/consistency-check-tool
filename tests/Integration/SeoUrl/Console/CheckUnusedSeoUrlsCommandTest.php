@@ -65,16 +65,13 @@ final class CheckUnusedSeoUrlsCommandTest extends IntegrationTestCase
     #[Test]
     public function itExportsToCSV(): void
     {
-        $filename = uniqid() . '.csv';
-        $filepath = $this->tempDir . '/' . $filename;
-
         $sut = $this->getSut();
 
         $application = new Application();
         $application->add($sut);
 
         $commandTester = new CommandTester($application->find('oe:consistency_check:check-unused-seo-urls'));
-        $exitCode = $commandTester->execute(['--export' => $filepath]);
+        $exitCode = $commandTester->execute(['--export' => true]);
 
         $output = $commandTester->getDisplay();
         $this->assertSame(0, $exitCode);
@@ -83,7 +80,6 @@ final class CheckUnusedSeoUrlsCommandTest extends IntegrationTestCase
             $this->assertStringContainsString('No unused SEO URLs found', $output);
         } else {
             $this->assertStringContainsString('Exported', $output);
-            $this->assertFileExists($filepath);
         }
     }
 
@@ -123,7 +119,7 @@ final class CheckUnusedSeoUrlsCommandTest extends IntegrationTestCase
     public function itDisplaysTableWhenUnusedUrlsAreFound(): void
     {
         $orphanedObjectId = uniqid();
-        $orphanedSeoUrl = 'orphaned-product.html';
+        $orphanedSeoUrl = 'orphaned-product-' . uniqid() . '.html';
 
         $this->insertSeoUrl($orphanedObjectId, $orphanedSeoUrl, 'oxarticle');
 
@@ -163,15 +159,15 @@ final class CheckUnusedSeoUrlsCommandTest extends IntegrationTestCase
     public function itSkipsEntitiesWithNullReferenceTable(): void
     {
         $orphanedStaticUrlObjectId = uniqid();
-        $orphanedStaticUrl = 'static-orphaned.html';
+        $orphanedStaticUrl = 'static-orphaned-' . uniqid() . '.html';
         $this->insertSeoUrl($orphanedStaticUrlObjectId, $orphanedStaticUrl, 'static');
 
         $orphanedDynamicUrlObjectId = uniqid();
-        $orphanedDynamicUrl = 'dynamic-orphaned.html';
+        $orphanedDynamicUrl = 'dynamic-orphaned-' . uniqid() . '.html';
         $this->insertSeoUrl($orphanedDynamicUrlObjectId, $orphanedDynamicUrl, 'dynamic');
 
         $orphanedArticleObjectId = uniqid();
-        $orphanedArticleUrl = 'article-orphaned.html';
+        $orphanedArticleUrl = 'article-orphaned-' . uniqid() . '.html';
         $this->insertSeoUrl($orphanedArticleObjectId, $orphanedArticleUrl, 'oxarticle');
 
         $sut = $this->getSut();
