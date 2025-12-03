@@ -2,6 +2,7 @@ imports:
   - { resource: Configuration/services.yaml }
   - { resource: Infrastructure/services.yaml }
   - { resource: Service/services.yaml }
+  - { resource: Console/services.yaml }
   - { resource: Factory/services.yaml }
 
 services:

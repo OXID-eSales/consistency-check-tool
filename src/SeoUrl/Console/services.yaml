@@ -1,0 +1,28 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: false
+
+  OxidEsales\ConsistencyCheck\SeoUrl\Console\CheckUnusedSeoUrlsCommand:
+    arguments:
+      $seoEntities: !tagged_iterator 'seo_entity'
+      $exportService: '@OxidEsales\ConsistencyCheck\Export\Service\ExportServiceInterface'
+      $configurationFactory: '@OxidEsales\ConsistencyCheck\SeoUrl\Factory\SeoUrlExportConfigurationFactory'
+    tags:
+      - { name: 'console.command', command: 'oe:consistency_check:check-unused-seo-urls' }
+
+  OxidEsales\ConsistencyCheck\SeoUrl\Console\CheckDuplicateSeoUrlsCommand:
+    arguments:
+      $seoEntities: !tagged_iterator 'seo_entity'
+      $exportService: '@OxidEsales\ConsistencyCheck\Export\Service\ExportServiceInterface'
+      $configurationFactory: '@OxidEsales\ConsistencyCheck\SeoUrl\Factory\SeoUrlExportConfigurationFactory'
+    tags:
+      - { name: 'console.command', command: 'oe:consistency_check:check-duplicate-seo-urls' }
+
+  OxidEsales\ConsistencyCheck\SeoUrl\Console\DeleteSeoUrlsCommand:
+    arguments:
+      $csvReaderService: '@OxidEsales\ConsistencyCheck\Export\Service\ExportReaderServiceInterface'
+      $readerConfigurationFactory: '@OxidEsales\ConsistencyCheck\SeoUrl\Factory\SeoUrlExportReaderConfigurationFactory'
+    tags:
+      - { name: 'console.command' , command: 'oe:consistency_check:delete-seo-urls'}
