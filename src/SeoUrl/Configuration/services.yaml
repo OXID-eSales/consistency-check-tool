@@ -1,0 +1,9 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: true
+
+  OxidEsales\ConsistencyCheck\SeoUrl\Factory\SeoUrlExportConfigurationFactory:
+    arguments:
+      $arrayFactory: '@OxidEsales\ConsistencyCheck\SeoUrl\Factory\SeoUrlArrayFactory'

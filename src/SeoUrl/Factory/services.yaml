@@ -1,0 +1,9 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: false
+
+  OxidEsales\ConsistencyCheck\SeoUrl\Factory\SeoUrlExportReaderConfigurationFactory:
+    arguments:
+      $dtoFactory: '@OxidEsales\ConsistencyCheck\Export\Factory\DtoFactoryInterface'
