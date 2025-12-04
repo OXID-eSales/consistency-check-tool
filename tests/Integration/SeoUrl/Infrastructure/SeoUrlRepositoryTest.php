@@ -72,6 +72,30 @@ final class SeoUrlRepositoryTest extends IntegrationTestCase
     }
 
     #[Test]
+    public function findUnusedUrlsExcludesRootObjectId(): void
+    {
+        $this->insertSeoUrl(
+            objectId: 'root',
+            seoUrl: uniqid() . '.html',
+            type: 'oxarticle'
+        );
+
+        $orphanedObjectId = uniqid();
+        $this->insertSeoUrl(
+            objectId: $orphanedObjectId,
+            seoUrl: uniqid() . '.html',
+            type: 'oxarticle'
+        );
+
+        $result = $this->getSut()->findUnusedUrls();
+
+        $objectIds = array_map(fn($dto) => $dto->getObjectId(), $result);
+
+        $this->assertNotContains('root', $objectIds);
+        $this->assertContains($orphanedObjectId, $objectIds);
+    }
+
+    #[Test]
     public function findDuplicateUrls(): void
     {
         $suffix = uniqid();

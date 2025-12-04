@@ -20,6 +20,8 @@ use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInt
  */
 final class SeoUrlRepository implements SeoUrlRepositoryInterface
 {
+    private const ROOT_OBJECT_ID = 'root';
+
     /**
      * @param iterable<SeoTypeTableMappingInterface> $mappings
      */
@@ -53,7 +55,9 @@ final class SeoUrlRepository implements SeoUrlRepositoryInterface
             ->leftJoin('s', $mapping->getReferenceTable(), 'r', 's.OXOBJECTID = r.OXID')
             ->where('s.OXTYPE = :type')
             ->andWhere('r.OXID IS NULL')
-            ->setParameter('type', $mapping->getSeoType());
+            ->andWhere('s.OXOBJECTID != :rootId')
+            ->setParameter('type', $mapping->getSeoType())
+            ->setParameter('rootId', self::ROOT_OBJECT_ID);
 
         /** @var Result<array> $result */
         $result = $queryBuilder->execute();
