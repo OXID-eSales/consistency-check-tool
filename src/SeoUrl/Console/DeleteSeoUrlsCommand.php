@@ -14,6 +14,7 @@ use OxidEsales\ConsistencyCheck\Export\Service\ExportReaderServiceInterface;
 use OxidEsales\ConsistencyCheck\SeoUrl\Dto\SeoUrlDtoInterface;
 use OxidEsales\ConsistencyCheck\SeoUrl\Service\SeoUrlServiceInterface;
 use OxidEsales\ConsistencyCheck\SeoUrl\Service\SeoUrlTableRendererInterface;
+use OxidEsales\ConsistencyCheck\Shared\Service\MessageFormatterServiceInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -41,6 +42,7 @@ final class DeleteSeoUrlsCommand extends Command
         private readonly ExportReaderServiceInterface $csvReaderService,
         private readonly ExportReaderConfigurationFactoryInterface $readerConfigurationFactory,
         private readonly SeoUrlTableRendererInterface $tableRenderer,
+        private readonly MessageFormatterServiceInterface $messageFormatter,
         private readonly LoggerInterface $logger,
     ) {
         parent::__construct();
@@ -59,12 +61,12 @@ final class DeleteSeoUrlsCommand extends Command
         $file = $input->getOption('file');
 
         if (!$file) {
-            $output->writeln('<error>' . self::MESSAGE_FILE_REQUIRED . '</error>');
+            $output->writeln($this->messageFormatter->formatError(self::MESSAGE_FILE_REQUIRED));
             return Command::FAILURE;
         }
 
         $this->logger->info(sprintf(self::MESSAGE_READING_CSV, $file));
-        $output->writeln(sprintf('<info>' . self::MESSAGE_READING_CSV . '</info>', $file));
+        $output->writeln($this->messageFormatter->formatInfo(self::MESSAGE_READING_CSV, $file));
 
         $configuration = $this->readerConfigurationFactory->create($file);
 
@@ -72,7 +74,7 @@ final class DeleteSeoUrlsCommand extends Command
 
         if (empty($dtos)) {
             $this->logger->info(self::MESSAGE_NO_URLS_IN_CSV);
-            $output->writeln('<info>' . self::MESSAGE_NO_URLS_IN_CSV . '</info>');
+            $output->writeln($this->messageFormatter->formatInfo(self::MESSAGE_NO_URLS_IN_CSV));
             return Command::SUCCESS;
         }
 
@@ -84,11 +86,11 @@ final class DeleteSeoUrlsCommand extends Command
 
         if ($isDryRun) {
             $this->logger->info(sprintf(self::MESSAGE_DRY_RUN, count($dtos)));
-            $output->writeln(sprintf('<comment>' . self::MESSAGE_DRY_RUN . '</comment>', count($dtos)));
+            $output->writeln($this->messageFormatter->formatComment(self::MESSAGE_DRY_RUN, count($dtos)));
             return Command::SUCCESS;
         }
 
-        $output->writeln(sprintf('<info>' . self::MESSAGE_PROCESSING . '</info>', count($dtos)));
+        $output->writeln($this->messageFormatter->formatInfo(self::MESSAGE_PROCESSING, count($dtos)));
 
         // Extract OXOBJECTID from DTOs
         $oxids = array_map(fn($dto) => $dto->getObjectId(), $dtos);
@@ -97,7 +99,7 @@ final class DeleteSeoUrlsCommand extends Command
         $deletedCount = $this->service->deleteUrls($oxids);
         $this->logger->info(sprintf(self::MESSAGE_DELETE_SUCCESS, $deletedCount));
 
-        $output->writeln(sprintf('<info>' . self::MESSAGE_DELETE_SUCCESS . '</info>', $deletedCount));
+        $output->writeln($this->messageFormatter->formatInfo(self::MESSAGE_DELETE_SUCCESS, $deletedCount));
 
         return Command::SUCCESS;
     }

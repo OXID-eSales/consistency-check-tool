@@ -46,11 +46,11 @@ final class CheckDuplicateSeoUrlsCommand extends AbstractCheckSeoUrlsCommand
 
     protected function getNoResultsMessage(): string
     {
-        return '<info>' . self::MESSAGE_NO_RESULTS . '</info>';
+        return $this->messageFormatter->formatInfo(self::MESSAGE_NO_RESULTS);
     }
 
     protected function getResultsMessage(int $count): string
     {
-        return sprintf('<comment>' . self::MESSAGE_RESULTS . '</comment>', $count);
+        return $this->messageFormatter->formatComment(self::MESSAGE_RESULTS, $count);
     }
 }

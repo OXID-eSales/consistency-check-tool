@@ -7,6 +7,7 @@ services:
     arguments:
       $entities: !tagged_iterator 'oe.consistency_check.image_entity'
       $logger: '@OxidEsales\ConsistencyCheck\ImageManager\Logger'
+      $messageFormatter: '@OxidEsales\ConsistencyCheck\Shared\Service\MessageFormatterServiceInterface'
     tags:
       - { name: 'console.command', command: 'oe:consistency_check:move-unused-images' }
 
@@ -14,5 +15,6 @@ services:
     arguments:
       $entities: !tagged_iterator 'oe.consistency_check.image_entity'
       $logger: '@OxidEsales\ConsistencyCheck\ImageManager\Logger'
+      $messageFormatter: '@OxidEsales\ConsistencyCheck\Shared\Service\MessageFormatterServiceInterface'
     tags:
       - { name: 'console.command', command: 'oe:consistency_check:delete-unused-images' }

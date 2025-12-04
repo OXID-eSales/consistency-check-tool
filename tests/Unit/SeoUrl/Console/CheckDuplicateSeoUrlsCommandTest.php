@@ -16,6 +16,7 @@ use OxidEsales\ConsistencyCheck\SeoUrl\Dto\SeoUrlDtoInterface;
 use OxidEsales\ConsistencyCheck\SeoUrl\Exception\ExportDirectoryNotFoundException;
 use OxidEsales\ConsistencyCheck\SeoUrl\Service\SeoUrlServiceInterface;
 use OxidEsales\ConsistencyCheck\SeoUrl\Service\SeoUrlTableRendererInterface;
+use OxidEsales\ConsistencyCheck\Shared\Service\MessageFormatterServiceInterface;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
@@ -50,6 +51,7 @@ final class CheckDuplicateSeoUrlsCommandTest extends TestCase
             $this->createStub(ExportServiceInterface::class),
             $this->createStub(ExportConfigurationFactoryInterface::class),
             $this->createStub(SeoUrlTableRendererInterface::class),
+            $this->createStub(MessageFormatterServiceInterface::class),
             $this->createStub(LoggerInterface::class),
             '/non/existent/directory/' . uniqid(),
             'Duplicate-Seo-Urls',

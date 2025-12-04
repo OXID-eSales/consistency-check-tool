@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\ConsistencyCheck\ImageManager\Service;
+namespace OxidEsales\ConsistencyCheck\Shared\Service;
 
 class MessageFormatterService implements MessageFormatterServiceInterface
 {

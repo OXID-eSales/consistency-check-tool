@@ -17,7 +17,7 @@ use OxidEsales\ConsistencyCheck\ImageManager\Service\PostCommandLoggerInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Service\UnusedImageFinderServiceInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Service\ImageEntityFilterServiceInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Service\ImageManagerServiceInterface;
-use OxidEsales\ConsistencyCheck\ImageManager\Service\MessageFormatterServiceInterface;
+use OxidEsales\ConsistencyCheck\Shared\Service\MessageFormatterServiceInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;

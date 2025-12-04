@@ -7,10 +7,10 @@
 
 declare(strict_types=1);
 
-namespace ImageManager\Service;
+namespace OxidEsales\ConsistencyCheck\Tests\Unit\Shared\Service;
 
-use OxidEsales\ConsistencyCheck\ImageManager\Service\MessageFormatterService;
-use OxidEsales\ConsistencyCheck\ImageManager\Service\MessageFormatterServiceInterface;
+use OxidEsales\ConsistencyCheck\Shared\Service\MessageFormatterService;
+use OxidEsales\ConsistencyCheck\Shared\Service\MessageFormatterServiceInterface;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 

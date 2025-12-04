@@ -10,7 +10,7 @@ declare(strict_types=1);
 namespace OxidEsales\ConsistencyCheck\ImageManager\Tests\Unit\ImageManager\Service;
 
 use OxidEsales\ConsistencyCheck\ImageManager\Service\LogReaderInterface;
-use OxidEsales\ConsistencyCheck\ImageManager\Service\MessageFormatterServiceInterface;
+use OxidEsales\ConsistencyCheck\Shared\Service\MessageFormatterServiceInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Service\VerboseConsoleLogReporter;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

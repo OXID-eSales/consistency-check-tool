@@ -16,6 +16,7 @@ use OxidEsales\ConsistencyCheck\SeoUrl\Entity\SeoEntityInterface;
 use OxidEsales\ConsistencyCheck\SeoUrl\Exception\ExportDirectoryNotFoundException;
 use OxidEsales\ConsistencyCheck\SeoUrl\Service\SeoUrlServiceInterface;
 use OxidEsales\ConsistencyCheck\SeoUrl\Service\SeoUrlTableRendererInterface;
+use OxidEsales\ConsistencyCheck\Shared\Service\MessageFormatterServiceInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -40,6 +41,7 @@ abstract class AbstractCheckSeoUrlsCommand extends Command
         private readonly ExportServiceInterface $exportService,
         private readonly ExportConfigurationFactoryInterface $configurationFactory,
         private readonly SeoUrlTableRendererInterface $tableRenderer,
+        protected readonly MessageFormatterServiceInterface $messageFormatter,
         protected readonly LoggerInterface $logger,
         private readonly string $exportDirectoryPath,
         private readonly string $exportFilePrefix,
@@ -75,8 +77,9 @@ abstract class AbstractCheckSeoUrlsCommand extends Command
             $configuration = $this->configurationFactory->create($allResults, $exportFile);
             $this->exportService->export($configuration);
             $this->logger->info(sprintf(static::MESSAGE_EXPORT_SUCCESS, count($allResults), $exportFile));
-            $message = sprintf(static::MESSAGE_EXPORT_SUCCESS, count($allResults), $exportFile);
-            $output->writeln('<info>' . $message . '</info>');
+            $output->writeln(
+                $this->messageFormatter->formatInfo(static::MESSAGE_EXPORT_SUCCESS, count($allResults), $exportFile)
+            );
         }
 
         $output->writeln($this->getResultsMessage(count($allResults)));

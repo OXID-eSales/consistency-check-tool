@@ -5,3 +5,6 @@ services:
 
   OxidEsales\ConsistencyCheck\Shared\Service\PathResolverInterface:
     class: OxidEsales\ConsistencyCheck\Shared\Service\PathResolver
+
+  OxidEsales\ConsistencyCheck\Shared\Service\MessageFormatterServiceInterface:
+    class: OxidEsales\ConsistencyCheck\Shared\Service\MessageFormatterService
