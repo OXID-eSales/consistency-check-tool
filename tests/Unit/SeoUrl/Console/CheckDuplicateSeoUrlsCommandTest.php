@@ -18,6 +18,7 @@ use OxidEsales\ConsistencyCheck\SeoUrl\Service\SeoUrlServiceInterface;
 use OxidEsales\ConsistencyCheck\SeoUrl\Service\SeoUrlTableRendererInterface;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Tester\CommandTester;
 
 final class CheckDuplicateSeoUrlsCommandTest extends TestCase
@@ -49,6 +50,7 @@ final class CheckDuplicateSeoUrlsCommandTest extends TestCase
             $this->createStub(ExportServiceInterface::class),
             $this->createStub(ExportConfigurationFactoryInterface::class),
             $this->createStub(SeoUrlTableRendererInterface::class),
+            $this->createStub(LoggerInterface::class),
             '/non/existent/directory/' . uniqid(),
             'Duplicate-Seo-Urls',
         );

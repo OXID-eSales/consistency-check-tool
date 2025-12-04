@@ -17,7 +17,10 @@ final class CheckDuplicateSeoUrlsCommand extends AbstractCheckSeoUrlsCommand
 {
     protected static $defaultName = 'oe:consistency_check:check-duplicate-seo-urls';
 
+    private const COMMAND_DESCRIPTION = 'Check for duplicate SEO URLs with collision suffixes';
     private const COMMAND_OPTION_SUFFIX = 'Custom suffix to search for (overrides shop config)';
+    private const MESSAGE_NO_RESULTS = 'No duplicate SEO URLs found';
+    private const MESSAGE_RESULTS = 'Found %d duplicate SEO URLs';
 
     protected function configure(): void
     {
@@ -38,16 +41,16 @@ final class CheckDuplicateSeoUrlsCommand extends AbstractCheckSeoUrlsCommand
 
     protected function getCommandDescription(): string
     {
-        return 'Check for duplicate SEO URLs with collision suffixes';
+        return self::COMMAND_DESCRIPTION;
     }
 
     protected function getNoResultsMessage(): string
     {
-        return '<info>No duplicate SEO URLs found</info>';
+        return '<info>' . self::MESSAGE_NO_RESULTS . '</info>';
     }
 
     protected function getResultsMessage(int $count): string
     {
-        return sprintf('<comment>Found %d duplicate SEO URLs</comment>', $count);
+        return sprintf('<comment>' . self::MESSAGE_RESULTS . '</comment>', $count);
     }
 }

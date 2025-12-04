@@ -14,6 +14,7 @@ use OxidEsales\ConsistencyCheck\Export\Service\ExportReaderServiceInterface;
 use OxidEsales\ConsistencyCheck\SeoUrl\Dto\SeoUrlDtoInterface;
 use OxidEsales\ConsistencyCheck\SeoUrl\Service\SeoUrlServiceInterface;
 use OxidEsales\ConsistencyCheck\SeoUrl\Service\SeoUrlTableRendererInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -27,11 +28,20 @@ final class DeleteSeoUrlsCommand extends Command
     private const COMMAND_OPTION_FILE = 'Path to CSV file containing URLs to delete';
     private const COMMAND_OPTION_DRY_RUN = 'Perform a dry run without actual deletions';
 
+    private const MESSAGE_FILE_REQUIRED = '--file option is required';
+    private const MESSAGE_READING_CSV = 'Reading CSV file: %s';
+    private const MESSAGE_NO_URLS_IN_CSV = 'No SEO URLs found in CSV file';
+    private const MESSAGE_DRY_RUN = 'Dry run: Would delete %d SEO URLs (no actual deletion performed)';
+    private const MESSAGE_PROCESSING = 'Processing %d SEO URLs...';
+    private const MESSAGE_DELETING = 'Deleting %d SEO URLs';
+    private const MESSAGE_DELETE_SUCCESS = 'Deleted %d SEO URLs successfully';
+
     public function __construct(
         private readonly SeoUrlServiceInterface $service,
         private readonly ExportReaderServiceInterface $csvReaderService,
         private readonly ExportReaderConfigurationFactoryInterface $readerConfigurationFactory,
         private readonly SeoUrlTableRendererInterface $tableRenderer,
+        private readonly LoggerInterface $logger,
     ) {
         parent::__construct();
     }
@@ -49,18 +59,20 @@ final class DeleteSeoUrlsCommand extends Command
         $file = $input->getOption('file');
 
         if (!$file) {
-            $output->writeln('<error>--file option is required</error>');
+            $output->writeln('<error>' . self::MESSAGE_FILE_REQUIRED . '</error>');
             return Command::FAILURE;
         }
 
-        $output->writeln(sprintf('<info>Reading CSV file: %s</info>', $file));
+        $this->logger->info(sprintf(self::MESSAGE_READING_CSV, $file));
+        $output->writeln(sprintf('<info>' . self::MESSAGE_READING_CSV . '</info>', $file));
 
         $configuration = $this->readerConfigurationFactory->create($file);
 
         $dtos = $this->csvReaderService->read($configuration);
 
         if (empty($dtos)) {
-            $output->writeln('<info>No SEO URLs found in CSV file</info>');
+            $this->logger->info(self::MESSAGE_NO_URLS_IN_CSV);
+            $output->writeln('<info>' . self::MESSAGE_NO_URLS_IN_CSV . '</info>');
             return Command::SUCCESS;
         }
 
@@ -71,21 +83,21 @@ final class DeleteSeoUrlsCommand extends Command
         $isDryRun = $input->getOption('dry-run');
 
         if ($isDryRun) {
-            $output->writeln(sprintf(
-                '<comment>Dry run: Would delete %d SEO URLs (no actual deletion performed)</comment>',
-                count($dtos)
-            ));
+            $this->logger->info(sprintf(self::MESSAGE_DRY_RUN, count($dtos)));
+            $output->writeln(sprintf('<comment>' . self::MESSAGE_DRY_RUN . '</comment>', count($dtos)));
             return Command::SUCCESS;
         }
 
-        $output->writeln(sprintf('<info>Processing %d SEO URLs...</info>', count($dtos)));
+        $output->writeln(sprintf('<info>' . self::MESSAGE_PROCESSING . '</info>', count($dtos)));
 
         // Extract OXOBJECTID from DTOs
         $oxids = array_map(fn($dto) => $dto->getObjectId(), $dtos);
 
+        $this->logger->warning(sprintf(self::MESSAGE_DELETING, count($oxids)));
         $deletedCount = $this->service->deleteUrls($oxids);
+        $this->logger->info(sprintf(self::MESSAGE_DELETE_SUCCESS, $deletedCount));
 
-        $output->writeln(sprintf('<info>Deleted %d SEO URLs successfully</info>', $deletedCount));
+        $output->writeln(sprintf('<info>' . self::MESSAGE_DELETE_SUCCESS . '</info>', $deletedCount));
 
         return Command::SUCCESS;
     }

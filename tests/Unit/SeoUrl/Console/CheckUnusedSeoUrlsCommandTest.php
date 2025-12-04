@@ -19,6 +19,7 @@ use OxidEsales\ConsistencyCheck\SeoUrl\Service\SeoUrlServiceInterface;
 use OxidEsales\ConsistencyCheck\SeoUrl\Service\SeoUrlTableRendererInterface;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Tester\CommandTester;
 
 final class CheckUnusedSeoUrlsCommandTest extends TestCase
@@ -42,6 +43,7 @@ final class CheckUnusedSeoUrlsCommandTest extends TestCase
 
         $entityStub = $this->createConfiguredStub(SeoEntityInterface::class, [
             'getReferenceTable' => 'oxarticles',
+            'getSeoType' => 'oxarticle',
         ]);
 
         $serviceStub = $this->createConfiguredStub(SeoUrlServiceInterface::class, [
@@ -54,6 +56,7 @@ final class CheckUnusedSeoUrlsCommandTest extends TestCase
             $this->createStub(ExportServiceInterface::class),
             $this->createStub(ExportConfigurationFactoryInterface::class),
             $this->createStub(SeoUrlTableRendererInterface::class),
+            $this->createStub(LoggerInterface::class),
             '/non/existent/directory/' . uniqid(),
             'Unused-Seo-Urls',
         );

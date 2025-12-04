@@ -10,6 +10,7 @@ services:
       $exportService: '@OxidEsales\ConsistencyCheck\Export\Service\ExportServiceInterface'
       $configurationFactory: '@OxidEsales\ConsistencyCheck\SeoUrl\Factory\SeoUrlExportConfigurationFactory'
       $tableRenderer: '@OxidEsales\ConsistencyCheck\SeoUrl\Service\SeoUrlTableRendererInterface'
+      $logger: '@OxidEsales\ConsistencyCheck\ImageManager\Logger'
       $exportDirectoryPath: '%app.export_directory_path%'
       $exportFilePrefix: '%app.unused_seo_urls_file%'
     tags:
@@ -21,6 +22,7 @@ services:
       $exportService: '@OxidEsales\ConsistencyCheck\Export\Service\ExportServiceInterface'
       $configurationFactory: '@OxidEsales\ConsistencyCheck\SeoUrl\Factory\SeoUrlExportConfigurationFactory'
       $tableRenderer: '@OxidEsales\ConsistencyCheck\SeoUrl\Service\SeoUrlTableRendererInterface'
+      $logger: '@OxidEsales\ConsistencyCheck\ImageManager\Logger'
       $exportDirectoryPath: '%app.export_directory_path%'
       $exportFilePrefix: '%app.duplicate_seo_urls_file%'
     tags:
@@ -31,5 +33,6 @@ services:
       $csvReaderService: '@OxidEsales\ConsistencyCheck\Export\Service\ExportReaderServiceInterface'
       $readerConfigurationFactory: '@OxidEsales\ConsistencyCheck\SeoUrl\Factory\SeoUrlExportReaderConfigurationFactory'
       $tableRenderer: '@OxidEsales\ConsistencyCheck\SeoUrl\Service\SeoUrlTableRendererInterface'
+      $logger: '@OxidEsales\ConsistencyCheck\ImageManager\Logger'
     tags:
-      - { name: 'console.command' , command: 'oe:consistency_check:delete-seo-urls'}
+      - { name: 'console.command', command: 'oe:consistency_check:delete-seo-urls' }

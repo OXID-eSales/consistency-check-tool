@@ -38,12 +38,12 @@ final class DeleteSeoUrlsCommandTest extends IntegrationTestCase
     #[Test]
     public function itSuccessfullyDeletesSeoUrlsFromCsv(): void
     {
-        $objectId1 = uniqid();
-        $objectId2 = uniqid();
+        $id1 = uniqid();
+        $id2 = uniqid();
         $csvContent = <<<CSV
 OXOBJECTID,OXIDENT,OXSHOPID,OXLANG,OXSTDURL,OXSEOURL,OXTYPE,OXFIXED,OXEXPIRED,OXPARAMS,OXTIMESTAMP
-{$objectId1},ident-{$objectId1},1,0,standard-url-{$objectId1},seo-url-{$objectId1},oxarticle,0,0,params1,2024-01-01 00:00:00
-{$objectId2},ident-{$objectId2},1,0,standard-url-{$objectId2},seo-url-{$objectId2},oxcategory,0,0,params2,2024-01-02 00:00:00
+{$id1},ident-{$id1},1,0,std-url-{$id1},seo-url-{$id1},oxarticle,0,0,params1,2024-01-01 00:00:00
+{$id2},ident-{$id2},1,0,std-url-{$id2},seo-url-{$id2},oxcategory,0,0,params2,2024-01-02 00:00:00
 CSV;
         $filename = uniqid() . '.csv';
         $filepath = $this->tempDir . '/' . $filename;
@@ -67,12 +67,12 @@ CSV;
     #[Test]
     public function itPerformsDryRunWithoutActualDeletion(): void
     {
-        $objectId1 = uniqid();
-        $objectId2 = uniqid();
+        $id1 = uniqid();
+        $id2 = uniqid();
         $csvContent = <<<CSV
 OXOBJECTID,OXIDENT,OXSHOPID,OXLANG,OXSTDURL,OXSEOURL,OXTYPE,OXFIXED,OXEXPIRED,OXPARAMS,OXTIMESTAMP
-{$objectId1},ident-{$objectId1},1,0,standard-url-{$objectId1},seo-url-{$objectId1},oxarticle,0,0,params1,2024-01-01 00:00:00
-{$objectId2},ident-{$objectId2},1,0,standard-url-{$objectId2},seo-url-{$objectId2},oxcategory,0,0,params2,2024-01-02 00:00:00
+{$id1},ident-{$id1},1,0,std-url-{$id1},seo-url-{$id1},oxarticle,0,0,params1,2024-01-01 00:00:00
+{$id2},ident-{$id2},1,0,std-url-{$id2},seo-url-{$id2},oxcategory,0,0,params2,2024-01-02 00:00:00
 CSV;
         $filename = uniqid() . '.csv';
         $filepath = $this->tempDir . '/' . $filename;

@@ -17,6 +17,13 @@ final class CheckUnusedSeoUrlsCommand extends AbstractCheckSeoUrlsCommand
 {
     protected static $defaultName = 'oe:consistency_check:check-unused-seo-urls';
 
+    private const COMMAND_DESCRIPTION = 'Check for unused SEO URLs';
+    private const MESSAGE_NO_RESULTS = 'No unused SEO URLs found';
+    private const MESSAGE_RESULTS = 'Found %d unused SEO URLs';
+    private const MESSAGE_PROCESSING_ENTITY = 'Processing entity type: %s';
+    private const MESSAGE_SKIPPING_ENTITY = 'Skipping entity %s - no reference table';
+    private const MESSAGE_ENTITY_RESULTS = 'Found %d unused URLs for entity %s';
+
     /**
      * Find all unused URLs by iterating entities (skip static/dynamic)
      *
@@ -29,10 +36,13 @@ final class CheckUnusedSeoUrlsCommand extends AbstractCheckSeoUrlsCommand
         foreach ($this->seoEntities as $entity) {
             // Skip static/dynamic entities (null reference table)
             if ($entity->getReferenceTable() === null) {
+                $this->logger->debug(sprintf(self::MESSAGE_SKIPPING_ENTITY, $entity->getSeoType()));
                 continue;
             }
 
+            $this->logger->debug(sprintf(self::MESSAGE_PROCESSING_ENTITY, $entity->getSeoType()));
             $results = $this->service->findUnusedUrls($entity);
+            $this->logger->info(sprintf(self::MESSAGE_ENTITY_RESULTS, count($results), $entity->getSeoType()));
             $allResults = array_merge($allResults, $results);
         }
 
@@ -41,16 +51,16 @@ final class CheckUnusedSeoUrlsCommand extends AbstractCheckSeoUrlsCommand
 
     protected function getCommandDescription(): string
     {
-        return 'Check for unused SEO URLs';
+        return self::COMMAND_DESCRIPTION;
     }
 
     protected function getNoResultsMessage(): string
     {
-        return '<info>No unused SEO URLs found</info>';
+        return '<info>' . self::MESSAGE_NO_RESULTS . '</info>';
     }
 
     protected function getResultsMessage(int $count): string
     {
-        return sprintf('<comment>Found %d unused SEO URLs</comment>', $count);
+        return sprintf('<comment>' . self::MESSAGE_RESULTS . '</comment>', $count);
     }
 }
