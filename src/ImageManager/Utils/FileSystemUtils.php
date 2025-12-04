@@ -23,7 +23,7 @@ class FileSystemUtils implements FileSystemUtilsInterface
 
     public function directoryExists(string $directoryPath): bool
     {
-        return is_dir($this->getAbsolutePath($directoryPath));
+        return is_dir($this->pathResolver->getAbsolutePath($directoryPath));
     }
 
     /**
@@ -38,17 +38,12 @@ class FileSystemUtils implements FileSystemUtilsInterface
         }
 
         $files = [];
-        $finder->files()->in($this->getAbsolutePath($directoryPath));
+        $finder->files()->in($this->pathResolver->getAbsolutePath($directoryPath));
 
         foreach ($finder as $file) {
             $files[] = $file->getFilename();
         }
 
         return $files;
-    }
-
-    public function getAbsolutePath(string $path): string
-    {
-        return $this->pathResolver->getAbsolutePath($path);
     }
 }

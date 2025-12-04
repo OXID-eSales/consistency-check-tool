@@ -9,10 +9,10 @@ declare(strict_types=1);
 
 namespace OxidEsales\ConsistencyCheck\ImageManager\Tests\Unit\ImageManager\Service;
 
-use OxidEsales\ConsistencyCheck\ImageManager\DataTransferObject\ImageCollectionInterface;
+use OxidEsales\ConsistencyCheck\ImageManager\Dto\ImageCollectionInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\DataType\ImageDataTypeInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Service\ImageManagerService;
-use OxidEsales\ConsistencyCheck\ImageManager\Utils\FileSystemUtilsInterface;
+use OxidEsales\ConsistencyCheck\Shared\Service\PathResolverInterface;
 use OxidEsales\EshopCommunity\Internal\Framework\FileSystem\ImageHandlerInterface;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -30,8 +30,6 @@ class ImageManagerServiceTest extends TestCase
                 uniqid() => $this->createImageStub()
             ]);
 
-        $fileSystemUtilsSpy = $this->createMock(FileSystemUtilsInterface::class);
-
         $imageHandlerSpy = $this->createMock(ImageHandlerInterface::class);
         $imageHandlerSpy
             ->expects($this->never())
@@ -40,14 +38,12 @@ class ImageManagerServiceTest extends TestCase
             ->expects($this->never())
             ->method('remove');
 
-
         $loggerSpy = $this->createMock(PsrLoggerInterface::class);
         $loggerSpy
             ->method('info')
             ->with($this->stringContains('[DRY-RUN] Move'));
 
         $sut = $this->getSut(
-            fileSystemUtils: $fileSystemUtilsSpy,
             logger: $loggerSpy,
             imageHandler: $imageHandlerSpy
         );
@@ -109,12 +105,11 @@ class ImageManagerServiceTest extends TestCase
             ->method('remove');
 
         $basePath = uniqid();
-        $fileSystemUtilsSpy = $this->createMock(FileSystemUtilsInterface::class);
-        $fileSystemUtilsSpy->expects($this->once())
+        $pathResolverSpy = $this->createMock(PathResolverInterface::class);
+        $pathResolverSpy->expects($this->once())
             ->method('getAbsolutePath')
             ->with($sourcePath . '/' . $imageName)
             ->willReturn($basePath . '/' . $sourcePath . '/' . $imageName);
-
 
         $loggerSpy = $this->createMock(PsrLoggerInterface::class);
 
@@ -124,7 +119,7 @@ class ImageManagerServiceTest extends TestCase
             ->with($this->stringContains('Moved image:'));
 
         $sut = $this->getSut(
-            fileSystemUtils: $fileSystemUtilsSpy,
+            pathResolver: $pathResolverSpy,
             logger: $loggerSpy,
             imageHandler: $imageHandlerSpy
         );
@@ -273,16 +268,16 @@ class ImageManagerServiceTest extends TestCase
     }
 
     private function getSut(
-        ?FileSystemUtilsInterface $fileSystemUtils = null,
+        ?PathResolverInterface $pathResolver = null,
         ?PsrLoggerInterface $logger = null,
         ?ImageHandlerInterface $imageHandler = null,
     ): ImageManagerService {
-        $fileSystemUtils ??= $this->createMock(FileSystemUtilsInterface::class);
-        $logger ??= $this->createMock(PsrLoggerInterface::class);
-        $imageHandler ??= $this->createMock(ImageHandlerInterface::class);
+        $pathResolver ??= $this->createStub(PathResolverInterface::class);
+        $logger ??= $this->createStub(PsrLoggerInterface::class);
+        $imageHandler ??= $this->createStub(ImageHandlerInterface::class);
 
         return new ImageManagerService(
-            fileSystemUtils: $fileSystemUtils,
+            pathResolver: $pathResolver,
             logger: $logger,
             imageHandler: $imageHandler
         );
