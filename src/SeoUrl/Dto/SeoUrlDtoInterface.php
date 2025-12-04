@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 namespace OxidEsales\ConsistencyCheck\SeoUrl\Dto;
 
-use OxidEsales\ConsistencyCheck\Shared\Dto\ExportableDtoInterface;
+use OxidEsales\ConsistencyCheck\Export\Dto\ExportableDtoInterface;
 
 interface SeoUrlDtoInterface extends ExportableDtoInterface
 {

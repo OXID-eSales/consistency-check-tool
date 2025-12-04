@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\ConsistencyCheck\Shared\Dto;
+namespace OxidEsales\ConsistencyCheck\Export\Dto;
 
 interface ExportableDtoInterface
 {

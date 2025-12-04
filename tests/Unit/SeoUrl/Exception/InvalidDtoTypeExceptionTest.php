@@ -11,7 +11,7 @@ namespace OxidEsales\ConsistencyCheck\Tests\Unit\SeoUrl\Exception;
 
 use OxidEsales\ConsistencyCheck\SeoUrl\Dto\SeoUrlDtoInterface;
 use OxidEsales\ConsistencyCheck\SeoUrl\Exception\InvalidDtoTypeException;
-use OxidEsales\ConsistencyCheck\Shared\Dto\ExportableDtoInterface;
+use OxidEsales\ConsistencyCheck\Export\Dto\ExportableDtoInterface;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
