@@ -11,7 +11,7 @@ namespace OxidEsales\ConsistencyCheck\SeoUrl\Configuration;
 
 use OxidEsales\ConsistencyCheck\Export\Configuration\ExportConfigurationInterface;
 use OxidEsales\ConsistencyCheck\Export\Factory\ArrayFactoryInterface;
-use OxidEsales\ConsistencyCheck\Shared\Dto\ExportableDtoInterface;
+use OxidEsales\ConsistencyCheck\Export\Dto\ExportableDtoInterface;
 
 final class SeoUrlExportConfiguration implements ExportConfigurationInterface
 {
@@ -21,7 +21,7 @@ final class SeoUrlExportConfiguration implements ExportConfigurationInterface
     public function __construct(
         private readonly array $items,
         private readonly ArrayFactoryInterface $arrayFactory,
-        private readonly string $filePath,
+        private readonly string $filePrefix,
     ) {
     }
 
@@ -52,8 +52,8 @@ final class SeoUrlExportConfiguration implements ExportConfigurationInterface
         return $this->arrayFactory;
     }
 
-    public function getFilePath(): string
+    public function getFilePrefix(): string
     {
-        return $this->filePath;
+        return $this->filePrefix;
     }
 }

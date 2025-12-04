@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\ConsistencyCheck\SeoUrl\Exception;
+namespace OxidEsales\ConsistencyCheck\Export\Exception;
 
 class ExportDirectoryNotFoundException extends \RuntimeException
 {

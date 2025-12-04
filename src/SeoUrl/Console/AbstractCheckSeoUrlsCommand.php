@@ -13,7 +13,6 @@ use OxidEsales\ConsistencyCheck\Export\Factory\ExportConfigurationFactoryInterfa
 use OxidEsales\ConsistencyCheck\Export\Service\ExportServiceInterface;
 use OxidEsales\ConsistencyCheck\SeoUrl\Dto\SeoUrlDtoInterface;
 use OxidEsales\ConsistencyCheck\SeoUrl\Entity\SeoEntityInterface;
-use OxidEsales\ConsistencyCheck\SeoUrl\Exception\ExportDirectoryNotFoundException;
 use OxidEsales\ConsistencyCheck\SeoUrl\Service\SeoUrlServiceInterface;
 use OxidEsales\ConsistencyCheck\SeoUrl\Service\SeoUrlTableRendererInterface;
 use OxidEsales\ConsistencyCheck\Shared\Service\MessageFormatterServiceInterface;
@@ -30,7 +29,6 @@ abstract class AbstractCheckSeoUrlsCommand extends Command
     protected const MESSAGE_RESULTS_FOUND = 'Found %d SEO URLs';
     protected const MESSAGE_EXPORT_START = 'Starting export of %d URLs to %s';
     protected const MESSAGE_EXPORT_SUCCESS = 'Exported %d URLs to %s';
-    protected const MESSAGE_EXPORT_DIR_NOT_FOUND = 'Export directory not found: %s';
 
     /**
      * @param iterable<SeoEntityInterface> $seoEntities
@@ -43,8 +41,6 @@ abstract class AbstractCheckSeoUrlsCommand extends Command
         private readonly SeoUrlTableRendererInterface $tableRenderer,
         protected readonly MessageFormatterServiceInterface $messageFormatter,
         protected readonly LoggerInterface $logger,
-        private readonly string $exportDirectoryPath,
-        private readonly string $exportFilePrefix,
     ) {
         parent::__construct();
     }
@@ -72,10 +68,10 @@ abstract class AbstractCheckSeoUrlsCommand extends Command
 
         // Export if requested
         if ($input->getOption('export')) {
-            $exportFile = $this->generateExportPath();
-            $this->logger->info(sprintf(static::MESSAGE_EXPORT_START, count($allResults), $exportFile));
-            $configuration = $this->configurationFactory->create($allResults, $exportFile);
-            $this->exportService->export($configuration);
+            $configuration = $this->configurationFactory->create($allResults);
+            $filePrefix = $configuration->getFilePrefix();
+            $this->logger->info(sprintf(static::MESSAGE_EXPORT_START, count($allResults), $filePrefix));
+            $exportFile = $this->exportService->export($configuration);
             $this->logger->info(sprintf(static::MESSAGE_EXPORT_SUCCESS, count($allResults), $exportFile));
             $output->writeln(
                 $this->messageFormatter->formatInfo(static::MESSAGE_EXPORT_SUCCESS, count($allResults), $exportFile)
@@ -99,20 +95,4 @@ abstract class AbstractCheckSeoUrlsCommand extends Command
     abstract protected function getNoResultsMessage(): string;
 
     abstract protected function getResultsMessage(int $count): string;
-
-    private function generateExportPath(): string
-    {
-        if (!is_dir($this->exportDirectoryPath)) {
-            $this->logger->error(sprintf(static::MESSAGE_EXPORT_DIR_NOT_FOUND, $this->exportDirectoryPath));
-            throw new ExportDirectoryNotFoundException($this->exportDirectoryPath);
-        }
-
-        $timestamp = date('Y-m-d_H-i-s');
-        return sprintf(
-            '%s/%s-%s.csv',
-            $this->exportDirectoryPath,
-            $this->exportFilePrefix,
-            $timestamp
-        );
-    }
 }

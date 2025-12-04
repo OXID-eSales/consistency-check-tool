@@ -17,12 +17,13 @@ use OxidEsales\ConsistencyCheck\SeoUrl\Configuration\SeoUrlExportConfiguration;
 final class SeoUrlExportConfigurationFactory implements ExportConfigurationFactoryInterface
 {
     public function __construct(
-        private readonly ArrayFactoryInterface $arrayFactory
+        private readonly ArrayFactoryInterface $arrayFactory,
+        private readonly string $exportFilePrefix,
     ) {
     }
 
-    public function create(array $items, string $filePath): ExportConfigurationInterface
+    public function create(array $items): ExportConfigurationInterface
     {
-        return new SeoUrlExportConfiguration($items, $this->arrayFactory, $filePath);
+        return new SeoUrlExportConfiguration($items, $this->arrayFactory, $this->exportFilePrefix);
     }
 }

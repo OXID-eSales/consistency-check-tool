@@ -7,22 +7,14 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\ConsistencyCheck\Tests\Unit\SeoUrl\Exception;
+namespace OxidEsales\ConsistencyCheck\Tests\Unit\Export\Exception;
 
-use OxidEsales\ConsistencyCheck\SeoUrl\Exception\ExportDirectoryNotFoundException;
+use OxidEsales\ConsistencyCheck\Export\Exception\ExportDirectoryNotFoundException;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 final class ExportDirectoryNotFoundExceptionTest extends TestCase
 {
-    #[Test]
-    public function itsThrowable(): void
-    {
-        $sut = new ExportDirectoryNotFoundException(uniqid());
-
-        $this->assertInstanceOf(\Throwable::class, $sut);
-    }
-
     #[Test]
     public function exceptionMessageContainsDirectoryPath(): void
     {

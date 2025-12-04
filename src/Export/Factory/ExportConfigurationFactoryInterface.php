@@ -10,12 +10,12 @@ declare(strict_types=1);
 namespace OxidEsales\ConsistencyCheck\Export\Factory;
 
 use OxidEsales\ConsistencyCheck\Export\Configuration\ExportConfigurationInterface;
-use OxidEsales\ConsistencyCheck\Shared\Dto\ExportableDtoInterface;
+use OxidEsales\ConsistencyCheck\Export\Dto\ExportableDtoInterface;
 
 interface ExportConfigurationFactoryInterface
 {
     /**
      * @param array<ExportableDtoInterface> $items
      */
-    public function create(array $items, string $filePath): ExportConfigurationInterface;
+    public function create(array $items): ExportConfigurationInterface;
 }

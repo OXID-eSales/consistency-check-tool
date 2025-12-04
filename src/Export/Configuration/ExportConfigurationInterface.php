@@ -10,7 +10,7 @@ declare(strict_types=1);
 namespace OxidEsales\ConsistencyCheck\Export\Configuration;
 
 use OxidEsales\ConsistencyCheck\Export\Factory\ArrayFactoryInterface;
-use OxidEsales\ConsistencyCheck\Shared\Dto\ExportableDtoInterface;
+use OxidEsales\ConsistencyCheck\Export\Dto\ExportableDtoInterface;
 
 interface ExportConfigurationInterface
 {
@@ -26,5 +26,5 @@ interface ExportConfigurationInterface
 
     public function getArrayFactory(): ArrayFactoryInterface;
 
-    public function getFilePath(): string;
+    public function getFilePrefix(): string;
 }

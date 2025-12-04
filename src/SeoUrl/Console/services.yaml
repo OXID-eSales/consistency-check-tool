@@ -8,12 +8,10 @@ services:
     arguments:
       $seoEntities: !tagged_iterator 'seo_entity'
       $exportService: '@OxidEsales\ConsistencyCheck\Export\Service\ExportServiceInterface'
-      $configurationFactory: '@OxidEsales\ConsistencyCheck\SeoUrl\Factory\SeoUrlExportConfigurationFactory'
+      $configurationFactory: '@OxidEsales\ConsistencyCheck\SeoUrl\Factory\UnusedSeoUrlExportConfigurationFactory'
       $tableRenderer: '@OxidEsales\ConsistencyCheck\SeoUrl\Service\SeoUrlTableRendererInterface'
       $messageFormatter: '@OxidEsales\ConsistencyCheck\Shared\Service\MessageFormatterServiceInterface'
       $logger: '@OxidEsales\ConsistencyCheck\ImageManager\Logger'
-      $exportDirectoryPath: '%app.export_directory_path%'
-      $exportFilePrefix: '%app.unused_seo_urls_file%'
     tags:
       - { name: 'console.command', command: 'oe:consistency_check:check-unused-seo-urls' }
 
@@ -21,12 +19,10 @@ services:
     arguments:
       $seoEntities: !tagged_iterator 'seo_entity'
       $exportService: '@OxidEsales\ConsistencyCheck\Export\Service\ExportServiceInterface'
-      $configurationFactory: '@OxidEsales\ConsistencyCheck\SeoUrl\Factory\SeoUrlExportConfigurationFactory'
+      $configurationFactory: '@OxidEsales\ConsistencyCheck\SeoUrl\Factory\DuplicateSeoUrlExportConfigurationFactory'
       $tableRenderer: '@OxidEsales\ConsistencyCheck\SeoUrl\Service\SeoUrlTableRendererInterface'
       $messageFormatter: '@OxidEsales\ConsistencyCheck\Shared\Service\MessageFormatterServiceInterface'
       $logger: '@OxidEsales\ConsistencyCheck\ImageManager\Logger'
-      $exportDirectoryPath: '%app.export_directory_path%'
-      $exportFilePrefix: '%app.duplicate_seo_urls_file%'
     tags:
       - { name: 'console.command', command: 'oe:consistency_check:check-duplicate-seo-urls' }
 

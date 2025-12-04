@@ -13,5 +13,5 @@ use OxidEsales\ConsistencyCheck\Export\Configuration\ExportConfigurationInterfac
 
 interface ExportServiceInterface
 {
-    public function export(ExportConfigurationInterface $configuration): void;
+    public function export(ExportConfigurationInterface $configuration): string;
 }

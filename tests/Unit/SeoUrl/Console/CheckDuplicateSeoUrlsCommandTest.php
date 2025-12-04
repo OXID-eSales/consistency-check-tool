@@ -9,11 +9,12 @@ declare(strict_types=1);
 
 namespace OxidEsales\ConsistencyCheck\Tests\Unit\SeoUrl\Console;
 
+use OxidEsales\ConsistencyCheck\Export\Configuration\ExportConfigurationInterface;
 use OxidEsales\ConsistencyCheck\Export\Factory\ExportConfigurationFactoryInterface;
 use OxidEsales\ConsistencyCheck\Export\Service\ExportServiceInterface;
 use OxidEsales\ConsistencyCheck\SeoUrl\Console\CheckDuplicateSeoUrlsCommand;
 use OxidEsales\ConsistencyCheck\SeoUrl\Dto\SeoUrlDtoInterface;
-use OxidEsales\ConsistencyCheck\SeoUrl\Exception\ExportDirectoryNotFoundException;
+use OxidEsales\ConsistencyCheck\Export\Exception\ExportDirectoryNotFoundException;
 use OxidEsales\ConsistencyCheck\SeoUrl\Service\SeoUrlServiceInterface;
 use OxidEsales\ConsistencyCheck\SeoUrl\Service\SeoUrlTableRendererInterface;
 use OxidEsales\ConsistencyCheck\Shared\Service\MessageFormatterServiceInterface;
@@ -45,16 +46,26 @@ final class CheckDuplicateSeoUrlsCommandTest extends TestCase
             'findDuplicateUrls' => [$dtoStub],
         ]);
 
+        $configurationStub = $this->createConfiguredStub(ExportConfigurationInterface::class, [
+            'getFilePrefix' => 'Duplicate-Seo-Urls',
+        ]);
+
+        $configurationFactoryStub = $this->createStub(ExportConfigurationFactoryInterface::class);
+        $configurationFactoryStub->method('create')->willReturn($configurationStub);
+
+        $exportServiceStub = $this->createStub(ExportServiceInterface::class);
+        $exportServiceStub->method('export')->willThrowException(
+            new ExportDirectoryNotFoundException('/non/existent/directory')
+        );
+
         $sut = new CheckDuplicateSeoUrlsCommand(
             $serviceStub,
             [],
-            $this->createStub(ExportServiceInterface::class),
-            $this->createStub(ExportConfigurationFactoryInterface::class),
+            $exportServiceStub,
+            $configurationFactoryStub,
             $this->createStub(SeoUrlTableRendererInterface::class),
             $this->createStub(MessageFormatterServiceInterface::class),
             $this->createStub(LoggerInterface::class),
-            '/non/existent/directory/' . uniqid(),
-            'Duplicate-Seo-Urls',
         );
 
         $commandTester = new CommandTester($sut);
