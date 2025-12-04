@@ -12,7 +12,7 @@ namespace OxidEsales\ConsistencyCheck\ImageManager\WebP;
 use OxidEsales\ConsistencyCheck\ImageManager\DataType\ImageDataType;
 use OxidEsales\ConsistencyCheck\ImageManager\DataType\ImageDataTypeInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Service\ImageUsageCheckerInterface;
-use OxidEsales\ConsistencyCheck\ImageManager\DataTransferObject\ImageCollectionInterface;
+use OxidEsales\ConsistencyCheck\ImageManager\Dto\ImageCollectionInterface;
 use OxidEsales\Eshop\Core\Config;
 
 class WebPImageUsageChecker implements ImageUsageCheckerInterface

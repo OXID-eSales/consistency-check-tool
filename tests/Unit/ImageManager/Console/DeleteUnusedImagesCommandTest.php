@@ -10,7 +10,7 @@ declare(strict_types=1);
 namespace OxidEsales\ConsistencyCheck\Tests\Unit\ImageManager\Console;
 
 use OxidEsales\ConsistencyCheck\ImageManager\Console\DeleteUnusedImagesCommand;
-use OxidEsales\ConsistencyCheck\ImageManager\DataTransferObject\ImageCollectionInterface;
+use OxidEsales\ConsistencyCheck\ImageManager\Dto\ImageCollectionInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Entity\ImageEntityInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Factory\ProgressBarFactoryInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Service\PostCommandLoggerInterface;

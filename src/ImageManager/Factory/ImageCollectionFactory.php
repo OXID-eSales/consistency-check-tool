@@ -9,8 +9,8 @@ declare(strict_types=1);
 
 namespace OxidEsales\ConsistencyCheck\ImageManager\Factory;
 
-use OxidEsales\ConsistencyCheck\ImageManager\DataTransferObject\ImageCollection;
-use OxidEsales\ConsistencyCheck\ImageManager\DataTransferObject\ImageCollectionInterface;
+use OxidEsales\ConsistencyCheck\ImageManager\Dto\ImageCollection;
+use OxidEsales\ConsistencyCheck\ImageManager\Dto\ImageCollectionInterface;
 use OxidEsales\Eshop\Core\Config;
 
 class ImageCollectionFactory implements ImageCollectionFactoryInterface

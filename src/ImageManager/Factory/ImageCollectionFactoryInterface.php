@@ -7,7 +7,7 @@
 
 namespace OxidEsales\ConsistencyCheck\ImageManager\Factory;
 
-use OxidEsales\ConsistencyCheck\ImageManager\DataTransferObject\ImageCollectionInterface;
+use OxidEsales\ConsistencyCheck\ImageManager\Dto\ImageCollectionInterface;
 
 interface ImageCollectionFactoryInterface
 {
