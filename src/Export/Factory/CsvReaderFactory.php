@@ -13,6 +13,9 @@ use League\Csv\Reader;
 
 final class CsvReaderFactory implements CsvReaderFactoryInterface
 {
+    /**
+     * @inheritDoc
+     */
     public function create(string $path): Reader
     {
         return Reader::from($path, 'r');

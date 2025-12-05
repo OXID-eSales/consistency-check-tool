@@ -13,5 +13,8 @@ use League\Csv\Reader;
 
 interface CsvReaderFactoryInterface
 {
+    /**
+     * @return Reader<array<string, string>>
+     */
     public function create(string $path): Reader;
 }
