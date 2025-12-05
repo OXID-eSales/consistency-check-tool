@@ -25,7 +25,7 @@ final class SeoUrlDtoTest extends TestCase
             languageId: $expectedLanguageId = rand(0, 5),
             stdUrl: $expectedStdUrl = uniqid(),
             seoUrl: $expectedSeoUrl = uniqid() . '.html',
-            type: $expectedType = 'oxarticle',
+            type: $expectedType = uniqid(),
             fixed: $expectedFixed = rand(0, 1),
             expired: $expectedExpired = rand(0, 1),
             params: $expectedParams = uniqid(),

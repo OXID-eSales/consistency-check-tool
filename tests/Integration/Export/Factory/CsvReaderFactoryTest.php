@@ -29,19 +29,16 @@ final class CsvReaderFactoryTest extends IntegrationTestCase
     #[Test]
     public function createReturnsUniqueReaderInstances(): void
     {
-        $filename1 = uniqid() . '.csv';
-        $filename2 = uniqid() . '.csv';
+        $filename = uniqid() . '.csv';
         $csvContent = "col1,col2\nvalue1,value2\n";
 
-        vfsStream::newFile($filename1)->withContent($csvContent)->at($this->fileSystem);
-        vfsStream::newFile($filename2)->withContent($csvContent)->at($this->fileSystem);
+        vfsStream::newFile($filename)->withContent($csvContent)->at($this->fileSystem);
 
-        $filepath1 = $this->fileSystem->url() . '/' . $filename1;
-        $filepath2 = $this->fileSystem->url() . '/' . $filename2;
+        $filepath = $this->fileSystem->url() . '/' . $filename;
 
         $sut = $this->getSut();
-        $reader1 = $sut->create($filepath1);
-        $reader2 = $sut->create($filepath2);
+        $reader1 = $sut->create($filepath);
+        $reader2 = $sut->create($filepath);
 
         $this->assertNotSame($reader1, $reader2);
     }

@@ -20,7 +20,7 @@ final class SeoUrlExportReaderConfigurationTest extends TestCase
     #[Test]
     public function getFilePath(): void
     {
-        $filePath = uniqid() . '.csv';
+        $filePath = uniqid();
         $sut = $this->getSut(filePath: $filePath);
 
         $this->assertSame($filePath, $sut->getFilePath());
@@ -39,7 +39,7 @@ final class SeoUrlExportReaderConfigurationTest extends TestCase
         ?string $filePath = null,
         ?DtoFactoryInterface $dtoFactory = null,
     ): ExportReaderConfigurationInterface {
-        $filePath ??= uniqid() . '.csv';
+        $filePath ??= uniqid();
         $dtoFactory ??= $this->createStub(DtoFactoryInterface::class);
 
         return new SeoUrlExportReaderConfiguration($filePath, $dtoFactory);

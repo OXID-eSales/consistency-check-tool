@@ -11,10 +11,5 @@ namespace OxidEsales\ConsistencyCheck\Shared\Service;
 
 interface PathResolverInterface
 {
-    /**
-     *
-     * @param string $path Relative or absolute path
-     * @return string Absolute path
-     */
     public function getAbsolutePath(string $path): string;
 }

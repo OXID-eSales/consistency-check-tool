@@ -66,7 +66,7 @@ final class SeoUrlExportConfigurationTest extends TestCase
     #[Test]
     public function getFilePath(): void
     {
-        $filePath = uniqid() . '.csv';
+        $filePath = uniqid();
         $sut = $this->getSut(filePath: $filePath);
 
         $this->assertSame($filePath, $sut->getFilePath());
@@ -78,7 +78,7 @@ final class SeoUrlExportConfigurationTest extends TestCase
         ?string $filePath = null,
     ): ExportConfigurationInterface {
         $arrayFactory ??= $this->createStub(ArrayFactoryInterface::class);
-        $filePath ??= uniqid() . '.csv';
+        $filePath ??= uniqid();
 
         return new SeoUrlExportConfiguration($items, $arrayFactory, $filePath);
     }
