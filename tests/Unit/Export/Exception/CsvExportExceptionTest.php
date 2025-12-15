@@ -9,25 +9,36 @@ declare(strict_types=1);
 
 namespace OxidEsales\ConsistencyCheck\Tests\Unit\Export\Exception;
 
-use Exception;
 use OxidEsales\ConsistencyCheck\Export\Exception\CsvExportException;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 final class CsvExportExceptionTest extends TestCase
 {
+    #[DataProvider('throwables')]
     #[Test]
-    public function constructorFormatsMessageWithFilepathAndPreviousError(): void
+    public function constructorFormatsMessageWithFilepathAndPreviousError(string $throwableClassName): void
     {
-        $filepath = uniqid() . '.csv';
+        $filepath = uniqid();
         $errorMessage = uniqid();
-        $previousException = new Exception($errorMessage);
+        $previousException = new $throwableClassName($errorMessage);
 
         $sut = new CsvExportException($filepath, $previousException);
 
-        $this->assertStringContainsString($filepath, $sut->getMessage());
-        $this->assertStringContainsString($errorMessage, $sut->getMessage());
+        $expectedMessage = sprintf('Cannot write CSV file: %s. Error: %s', $filepath, $errorMessage);
+        $this->assertSame($expectedMessage, $sut->getMessage());
         $this->assertSame($previousException, $sut->getPrevious());
-        $this->assertSame(0, $sut->getCode());
+    }
+
+    public static function throwables(): array
+    {
+        return [
+            [\Exception::class],
+            [\Error::class],
+            [\TypeError::class],
+            [\DivisionByZeroError::class],
+            [\RuntimeException::class]
+        ];
     }
 }

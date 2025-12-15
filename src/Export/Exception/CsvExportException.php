@@ -22,6 +22,6 @@ final class CsvExportException extends Exception
             $previous->getMessage()
         );
 
-        parent::__construct($message, 0, $previous);
+        parent::__construct(message: $message, previous: $previous);
     }
 }
