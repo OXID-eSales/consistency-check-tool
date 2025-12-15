@@ -22,10 +22,10 @@ final class PathResolverTest extends TestCase
     {
         $absolutePath = '/absolute/path/to/' . uniqid() . '.csv';
 
-        $contextStub = $this->createStub(ContextInterface::class);
-        $contextStub->method('getSourcePath')->willReturn(uniqid());
+        $contextSpy = $this->createMock(ContextInterface::class);
+        $contextSpy->expects($this->never())->method('getSourcePath');
 
-        $sut = $this->getSut($contextStub);
+        $sut = $this->getSut($contextSpy);
         $result = $sut->getAbsolutePath($absolutePath);
 
         $this->assertSame($absolutePath, $result);
@@ -37,25 +37,6 @@ final class PathResolverTest extends TestCase
         $sourcePath = '/var/www/' . uniqid();
         $relativePath = 'export/' . uniqid() . '.csv';
         $expectedPath = $sourcePath . '/' . $relativePath;
-
-        $contextStub = $this->createStub(ContextInterface::class);
-        $contextStub->method('getSourcePath')->willReturn($sourcePath);
-
-        $sut = $this->getSut($contextStub);
-        $result = $sut->getAbsolutePath($relativePath);
-
-        $this->assertSame($expectedPath, $result);
-    }
-
-    #[Test]
-    public function getAbsolutePathHandlesNestedRelativePath(): void
-    {
-        $sourcePath = '/var/www/' . uniqid();
-        $dir1 = uniqid();
-        $dir2 = uniqid();
-        $filename = uniqid() . '.csv';
-        $relativePath = "{$dir1}/{$dir2}/{$filename}";
-        $expectedPath = "{$sourcePath}/{$dir1}/{$dir2}/{$filename}";
 
         $contextStub = $this->createStub(ContextInterface::class);
         $contextStub->method('getSourcePath')->willReturn($sourcePath);

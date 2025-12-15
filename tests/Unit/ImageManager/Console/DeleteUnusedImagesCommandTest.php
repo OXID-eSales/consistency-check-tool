@@ -87,8 +87,8 @@ class DeleteUnusedImagesCommandTest extends TestCase
         $imageCheckerServiceStub = $this->createStub(UnusedImageFinderServiceInterface::class);
         $imageCheckerServiceStub->method('getUnusedImages')->willReturn($unusedImages);
 
-        $imageManagerServiceMock = $this->createMock(ImageManagerServiceInterface::class);
-        $imageManagerServiceMock
+        $imageManagerServiceSpy = $this->createMock(ImageManagerServiceInterface::class);
+        $imageManagerServiceSpy
             ->expects(self::never())
             ->method('deleteImages');
 
@@ -108,7 +108,7 @@ class DeleteUnusedImagesCommandTest extends TestCase
         $sut = $this->getSut(
             entities: [$entityStub],
             imageCheckerService: $imageCheckerServiceStub,
-            imageManagerService: $imageManagerServiceMock,
+            imageManagerService: $imageManagerServiceSpy,
             imageEntityFilter: $entityFilterServiceStub,
             messageFormatter: $formatterMock,
         );

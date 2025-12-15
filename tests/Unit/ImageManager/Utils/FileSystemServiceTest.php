@@ -22,15 +22,10 @@ use Symfony\Component\Finder\Finder;
 class FileSystemServiceTest extends TestCase
 {
     private vfsStreamDirectory $fileSystem;
-    private PathResolverInterface $pathResolverStub;
 
     protected function setUp(): void
     {
         $this->fileSystem = vfsStream::setup();
-
-        $this->pathResolverStub = $this->createStub(PathResolverInterface::class);
-        $this->pathResolverStub->method('getAbsolutePath')
-            ->willReturnCallback(fn(string $path) => $path);
     }
 
     #[Test]
@@ -105,7 +100,12 @@ class FileSystemServiceTest extends TestCase
     private function getSut(
         ?PathResolverInterface $pathResolver = null
     ): FileSystemUtilsInterface {
-        $pathResolver ??= $this->pathResolverStub;
+        if ($pathResolver === null) {
+            $pathResolver = $this->createStub(PathResolverInterface::class);
+            $pathResolver->method('getAbsolutePath')
+                ->willReturnCallback(fn(string $path) => $path);
+        }
+
         return new FileSystemUtils(
             finder: new Finder(),
             pathResolver: $pathResolver,
