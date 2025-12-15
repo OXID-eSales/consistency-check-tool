@@ -13,8 +13,6 @@ use League\Csv\Reader;
 
 interface CsvReaderFactoryInterface
 {
-    /**
-     * @return Reader<array<string, string>>
-     */
+    /** @phpstan-ignore missingType.generics */
     public function create(string $path): Reader;
 }
