@@ -30,8 +30,8 @@ final class SeoUrlArrayFactoryTest extends TestCase
             'getStdUrl' => $stdUrl = uniqid(),
             'getSeoUrl' => $seoUrl = uniqid(),
             'getType' => $type = uniqid(),
-            'getFixed' => $fixed = rand(),
-            'getExpired' => $expired = rand(),
+            'getFixed' => $fixed = (bool)rand(0, 1),
+            'getExpired' => $expired = (bool)rand(0, 1),
             'getParams' => $params = uniqid(),
             'getTimestamp' => $timestamp = uniqid(),
         ]);
@@ -46,8 +46,8 @@ final class SeoUrlArrayFactoryTest extends TestCase
         $this->assertSame($stdUrl, $result['OXSTDURL']);
         $this->assertSame($seoUrl, $result['OXSEOURL']);
         $this->assertSame($type, $result['OXTYPE']);
-        $this->assertSame($fixed, $result['OXFIXED']);
-        $this->assertSame($expired, $result['OXEXPIRED']);
+        $this->assertSame((int)$fixed, $result['OXFIXED']);
+        $this->assertSame((int)$expired, $result['OXEXPIRED']);
         $this->assertSame($params, $result['OXPARAMS']);
         $this->assertSame($timestamp, $result['OXTIMESTAMP']);
     }
@@ -60,7 +60,9 @@ final class SeoUrlArrayFactoryTest extends TestCase
         $sut = $this->getSut();
 
         $this->expectException(InvalidDtoTypeException::class);
-        $this->expectExceptionMessage(SeoUrlDtoInterface::class);
+        $this->expectExceptionMessage(
+            (new InvalidDtoTypeException($invalidDto, SeoUrlDtoInterface::class))->getMessage()
+        );
 
         $sut->createFromDto($invalidDto);
     }

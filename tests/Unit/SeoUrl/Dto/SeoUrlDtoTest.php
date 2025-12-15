@@ -26,8 +26,8 @@ final class SeoUrlDtoTest extends TestCase
             stdUrl: $expectedStdUrl = uniqid(),
             seoUrl: $expectedSeoUrl = uniqid() . '.html',
             type: $expectedType = uniqid(),
-            fixed: $expectedFixed = rand(0, 1),
-            expired: $expectedExpired = rand(0, 1),
+            fixed: $expectedFixed = (bool)rand(0, 1),
+            expired: $expectedExpired = (bool)rand(0, 1),
             params: $expectedParams = uniqid(),
             timestamp: $expectedTimestamp = date('Y-m-d H:i:s'),
         );

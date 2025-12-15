@@ -19,16 +19,20 @@ final class SeoUrlDtoFactoryTest extends TestCase
     #[Test]
     public function createFromArray(): void
     {
+        $shopId = rand();
+        $langId = rand();
+        $fixed = rand(0, 1);
+        $expired = rand(0, 1);
         $data = [
             'OXOBJECTID' => $objectId = uniqid(),
             'OXIDENT' => $ident = uniqid(),
-            'OXSHOPID' => $shopId = rand(),
-            'OXLANG' => $langId = rand(),
+            'OXSHOPID' => (string)$shopId,
+            'OXLANG' => (string)$langId,
             'OXSTDURL' => $stdUrl = uniqid(),
             'OXSEOURL' => $seoUrl = uniqid(),
             'OXTYPE' => $type = uniqid(),
-            'OXFIXED' => $fixed = rand(),
-            'OXEXPIRED' => $expired = rand(),
+            'OXFIXED' => (string)$fixed,
+            'OXEXPIRED' => (string)$expired,
             'OXPARAMS' => $params = uniqid(),
             'OXTIMESTAMP' => $timestamp = uniqid(),
         ];
@@ -44,8 +48,8 @@ final class SeoUrlDtoFactoryTest extends TestCase
         $this->assertSame($stdUrl, $result->getStdUrl());
         $this->assertSame($seoUrl, $result->getSeoUrl());
         $this->assertSame($type, $result->getType());
-        $this->assertSame($fixed, $result->getFixed());
-        $this->assertSame($expired, $result->getExpired());
+        $this->assertSame((bool)$fixed, $result->getFixed());
+        $this->assertSame((bool)$expired, $result->getExpired());
         $this->assertSame($params, $result->getParams());
         $this->assertSame($timestamp, $result->getTimestamp());
     }

@@ -25,8 +25,8 @@ final class SeoUrlDtoFactory implements DtoFactoryInterface
             stdUrl: $data['OXSTDURL'],
             seoUrl: $data['OXSEOURL'],
             type: $data['OXTYPE'],
-            fixed: (int)$data['OXFIXED'],
-            expired: (int)$data['OXEXPIRED'],
+            fixed: (bool)$data['OXFIXED'],
+            expired: (bool)$data['OXEXPIRED'],
             params: $data['OXPARAMS'],
             timestamp: $data['OXTIMESTAMP'],
         );

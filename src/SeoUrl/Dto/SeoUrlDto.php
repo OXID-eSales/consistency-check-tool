@@ -11,6 +11,7 @@ namespace OxidEsales\ConsistencyCheck\SeoUrl\Dto;
 
 final class SeoUrlDto implements SeoUrlDtoInterface
 {
+    /** @SuppressWarnings(PHPMD.ExcessiveParameterList) */
     public function __construct(
         private readonly string $objectId,
         private readonly string $ident,
@@ -19,8 +20,8 @@ final class SeoUrlDto implements SeoUrlDtoInterface
         private readonly string $stdUrl,
         private readonly string $seoUrl,
         private readonly string $type,
-        private readonly int $fixed,
-        private readonly int $expired,
+        private readonly bool $fixed,
+        private readonly bool $expired,
         private readonly string $params,
         private readonly string $timestamp,
     ) {
@@ -61,12 +62,12 @@ final class SeoUrlDto implements SeoUrlDtoInterface
         return $this->type;
     }
 
-    public function getFixed(): int
+    public function getFixed(): bool
     {
         return $this->fixed;
     }
 
-    public function getExpired(): int
+    public function getExpired(): bool
     {
         return $this->expired;
     }

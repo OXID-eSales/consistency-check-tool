@@ -30,8 +30,8 @@ final class SeoUrlArrayFactory implements ArrayFactoryInterface
             'OXSTDURL' => $dto->getStdUrl(),
             'OXSEOURL' => $dto->getSeoUrl(),
             'OXTYPE' => $dto->getType(),
-            'OXFIXED' => $dto->getFixed(),
-            'OXEXPIRED' => $dto->getExpired(),
+            'OXFIXED' => (int)$dto->getFixed(),
+            'OXEXPIRED' => (int)$dto->getExpired(),
             'OXPARAMS' => $dto->getParams(),
             'OXTIMESTAMP' => $dto->getTimestamp(),
         ];

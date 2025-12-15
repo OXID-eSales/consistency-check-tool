@@ -27,9 +27,9 @@ interface SeoUrlDtoInterface extends ExportableDtoInterface
 
     public function getType(): string;
 
-    public function getFixed(): int;
+    public function getFixed(): bool;
 
-    public function getExpired(): int;
+    public function getExpired(): bool;
 
     public function getParams(): string;
 

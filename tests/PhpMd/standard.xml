@@ -22,14 +22,7 @@
         </properties>
     </rule>
 
-    <rule ref="rulesets/codesize.xml/ExcessiveParameterList">
-        <properties>
-            <property name="minimum" value="12" />
-        </properties>
-    </rule>
-    <rule ref="rulesets/codesize.xml">
-        <exclude name="ExcessiveParameterList"/>
-    </rule>
+    <rule ref="rulesets/codesize.xml" />
 
     <rule ref="rulesets/design.xml" />
     <rule ref="rulesets/unusedcode.xml" />
