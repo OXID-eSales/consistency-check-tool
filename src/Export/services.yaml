@@ -11,8 +11,6 @@ services:
 
   OxidEsales\ConsistencyCheck\Export\Service\ExportServiceInterface:
     class: OxidEsales\ConsistencyCheck\Export\Service\CsvExportService
-    public: true
 
   OxidEsales\ConsistencyCheck\Export\Service\ExportReaderServiceInterface:
     class: OxidEsales\ConsistencyCheck\Export\Service\CsvExportReaderService
-    public: true
