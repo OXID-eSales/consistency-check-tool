@@ -9,9 +9,8 @@ declare(strict_types=1);
 
 namespace OxidEsales\ConsistencyCheck\Tests\Unit\Export\Service;
 
+use League\Csv\UnableToProcessCsv;
 use League\Csv\Writer;
-use org\bovigo\vfs\vfsStream;
-use org\bovigo\vfs\vfsStreamDirectory;
 use OxidEsales\ConsistencyCheck\Export\Configuration\ExportConfigurationInterface;
 use OxidEsales\ConsistencyCheck\Export\Exception\CsvExportException;
 use OxidEsales\ConsistencyCheck\Export\Factory\ArrayFactoryInterface;
@@ -25,98 +24,80 @@ use PHPUnit\Framework\TestCase;
 
 final class CsvExportServiceTest extends TestCase
 {
-    private vfsStreamDirectory $fileSystem;
-
-    protected function setUp(): void
-    {
-        $this->fileSystem = vfsStream::setup('root');
-    }
-
     #[Test]
     public function export(): void
     {
-        $value1 = uniqid();
-        $value2 = uniqid();
-        $value3 = uniqid();
-        $value4 = uniqid();
-
-        $dto1 = $this->createStub(ExportableDtoInterface::class);
-        $dto2 = $this->createStub(ExportableDtoInterface::class);
+        $filePath = uniqid();
+        $absolutePath = uniqid();
 
         $arrayFactoryStub = $this->createStub(ArrayFactoryInterface::class);
-        $arrayFactoryStub->method('createFromDto')->willReturnCallback(
-            fn($dto) => $dto === $dto1
-                ? ['field1' => $value1, 'field2' => $value2]
-                : ['field1' => $value3, 'field2' => $value4]
-        );
+        $arrayFactoryStub->method('createFromDto')->willReturn([uniqid()]);
 
         $configurationStub = $this->createConfiguredStub(ExportConfigurationInterface::class, [
-            'getHeaders' => ['field1', 'field2'],
-            'getItems' => [$dto1, $dto2],
+            'getHeaders' => [uniqid()],
+            'getItems' => [$this->createStub(ExportableDtoInterface::class)],
             'getArrayFactory' => $arrayFactoryStub,
-            'getFilePath' => $filepath = uniqid() . '.csv',
+            'getFilePath' => $filePath,
         ]);
 
+        $writerMock = $this->createMock(Writer::class);
+        $writerMock->expects($this->exactly(2))
+            ->method('insertOne');
+
+        $writerFactoryMock = $this->createMock(CsvWriterFactoryInterface::class);
+        $writerFactoryMock->method('create')
+            ->with($absolutePath)
+            ->willReturn($writerMock);
+
+        $pathResolverMock = $this->createMock(PathResolverInterface::class);
+        $pathResolverMock->method('getAbsolutePath')
+            ->with($filePath)
+            ->willReturn($absolutePath);
+
         $sut = $this->getSut(
-            pathResolver: $this->createPathResolverStub(),
-            writerFactory: $this->createWriterFactoryStub()
+            pathResolver: $pathResolverMock,
+            writerFactory: $writerFactoryMock
         );
 
         $sut->export($configurationStub);
-
-        $content = file_get_contents($this->fileSystem->url() . '/' . $filepath);
-        $this->assertStringContainsString('field1', $content);
-        $this->assertStringContainsString($value1, $content);
-        $this->assertStringContainsString($value2, $content);
-        $this->assertStringContainsString($value3, $content);
-        $this->assertStringContainsString($value4, $content);
     }
 
     #[Test]
-    public function exportThrowsExceptionWhenFileCannotBeOpened(): void
+    public function exportThrowsCsvExportExceptionWhenWriterFails(): void
     {
-        $dto = $this->createStub(ExportableDtoInterface::class);
-
-        $arrayFactoryStub = $this->createStub(ArrayFactoryInterface::class);
-        $arrayFactoryStub->method('createFromDto')->willReturn(['col1' => 'value1']);
+        $filePath = uniqid();
+        $errorMessage = uniqid();
 
         $configurationStub = $this->createConfiguredStub(ExportConfigurationInterface::class, [
-            'getHeaders' => ['col1'],
-            'getItems' => [$dto],
-            'getArrayFactory' => $arrayFactoryStub,
-            'getFilePath' => $filename = uniqid() . '.csv',
+            'getHeaders' => [uniqid()],
+            'getItems' => [],
+            'getFilePath' => $filePath,
         ]);
 
-        // Create a directory where file should be (blocks file creation)
-        vfsStream::newDirectory($filename)->at($this->fileSystem);
+        $writerStub = $this->createStub(Writer::class);
+        $writerStub->method('insertOne')
+            ->willThrowException(
+                new class ($errorMessage) extends \Exception implements UnableToProcessCsv {
+                }
+            );
+
+        $writerFactoryStub = $this->createStub(CsvWriterFactoryInterface::class);
+        $writerFactoryStub->method('create')->willReturn($writerStub);
+
+        $pathResolverStub = $this->createStub(PathResolverInterface::class);
+        $pathResolverStub->method('getAbsolutePath')->willReturn(uniqid());
 
         $sut = $this->getSut(
-            pathResolver: $this->createPathResolverStub(),
-            writerFactory: $this->createWriterFactoryStub()
+            pathResolver: $pathResolverStub,
+            writerFactory: $writerFactoryStub
         );
 
         $this->expectException(CsvExportException::class);
-        $this->expectExceptionMessage($filename);
+        $this->expectExceptionMessage(
+            (new CsvExportException($filePath, new \Exception($errorMessage)))->getMessage()
+        );
 
         $sut->export($configurationStub);
-    }
-
-    private function createPathResolverStub(): PathResolverInterface
-    {
-        $pathResolverStub = $this->createStub(PathResolverInterface::class);
-        $pathResolverStub->method('getAbsolutePath')
-            ->willReturnCallback(fn(string $path) => $this->fileSystem->url() . '/' . $path);
-
-        return $pathResolverStub;
-    }
-
-    private function createWriterFactoryStub(): CsvWriterFactoryInterface
-    {
-        $writerFactoryStub = $this->createStub(CsvWriterFactoryInterface::class);
-        $writerFactoryStub->method('create')
-            ->willReturnCallback(fn(string $path) => Writer::from($path, 'w'));
-
-        return $writerFactoryStub;
     }
 
     private function getSut(
