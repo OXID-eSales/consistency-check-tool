@@ -9,7 +9,6 @@ declare(strict_types=1);
 
 namespace OxidEsales\ConsistencyCheck\SeoUrl\Console;
 
-use OxidEsales\ConsistencyCheck\SeoUrl\Dto\SeoUrlDtoInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 
@@ -28,11 +27,6 @@ final class CheckDuplicateSeoUrlsCommand extends AbstractCheckSeoUrlsCommand
         $this->addOption('suffix', null, InputOption::VALUE_REQUIRED, self::COMMAND_OPTION_SUFFIX);
     }
 
-    /**
-     * Find all duplicate URLs (global search, not entity-specific)
-     *
-     * @return array<SeoUrlDtoInterface>
-     */
     protected function findAllUrls(InputInterface $input): array
     {
         $customSuffix = $input->getOption('suffix');

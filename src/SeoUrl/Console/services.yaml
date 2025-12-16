@@ -6,7 +6,6 @@ services:
 
   OxidEsales\ConsistencyCheck\SeoUrl\Console\CheckUnusedSeoUrlsCommand:
     arguments:
-      $seoEntities: !tagged_iterator 'seo_entity'
       $exportService: '@OxidEsales\ConsistencyCheck\Export\Service\ExportServiceInterface'
       $configurationFactory: '@OxidEsales\ConsistencyCheck\SeoUrl\Factory\UnusedSeoUrlExportConfigurationFactory'
       $tableRenderer: '@OxidEsales\ConsistencyCheck\SeoUrl\Service\SeoUrlTableRendererInterface'
@@ -17,7 +16,6 @@ services:
 
   OxidEsales\ConsistencyCheck\SeoUrl\Console\CheckDuplicateSeoUrlsCommand:
     arguments:
-      $seoEntities: !tagged_iterator 'seo_entity'
       $exportService: '@OxidEsales\ConsistencyCheck\Export\Service\ExportServiceInterface'
       $configurationFactory: '@OxidEsales\ConsistencyCheck\SeoUrl\Factory\DuplicateSeoUrlExportConfigurationFactory'
       $tableRenderer: '@OxidEsales\ConsistencyCheck\SeoUrl\Service\SeoUrlTableRendererInterface'

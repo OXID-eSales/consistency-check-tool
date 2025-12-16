@@ -78,7 +78,6 @@ final class DeleteSeoUrlsCommand extends Command
             return Command::SUCCESS;
         }
 
-        // Display table with all URLs
         /** @var array<SeoUrlDtoInterface> $dtos */
         $this->tableRenderer->render($dtos, $output);
 
@@ -92,7 +91,6 @@ final class DeleteSeoUrlsCommand extends Command
 
         $output->writeln($this->messageFormatter->formatInfo(self::MESSAGE_PROCESSING, count($dtos)));
 
-        // Extract OXOBJECTID from DTOs
         $oxids = array_map(fn($dto) => $dto->getObjectId(), $dtos);
 
         $this->logger->warning(sprintf(self::MESSAGE_DELETING, count($oxids)));

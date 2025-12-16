@@ -60,7 +60,6 @@ final class CheckDuplicateSeoUrlsCommandTest extends TestCase
 
         $sut = new CheckDuplicateSeoUrlsCommand(
             $serviceStub,
-            [],
             $exportServiceStub,
             $configurationFactoryStub,
             $this->createStub(SeoUrlTableRendererInterface::class),

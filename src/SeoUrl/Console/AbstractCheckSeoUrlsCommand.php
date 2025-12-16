@@ -12,7 +12,6 @@ namespace OxidEsales\ConsistencyCheck\SeoUrl\Console;
 use OxidEsales\ConsistencyCheck\Export\Factory\ExportConfigurationFactoryInterface;
 use OxidEsales\ConsistencyCheck\Export\Service\ExportServiceInterface;
 use OxidEsales\ConsistencyCheck\SeoUrl\Dto\SeoUrlDtoInterface;
-use OxidEsales\ConsistencyCheck\SeoUrl\Entity\SeoEntityInterface;
 use OxidEsales\ConsistencyCheck\SeoUrl\Service\SeoUrlServiceInterface;
 use OxidEsales\ConsistencyCheck\SeoUrl\Service\SeoUrlTableRendererInterface;
 use OxidEsales\ConsistencyCheck\Shared\Service\MessageFormatterServiceInterface;
@@ -30,12 +29,8 @@ abstract class AbstractCheckSeoUrlsCommand extends Command
     protected const MESSAGE_EXPORT_START = 'Starting export of %d URLs to %s';
     protected const MESSAGE_EXPORT_SUCCESS = 'Exported %d URLs to %s';
 
-    /**
-     * @param iterable<SeoEntityInterface> $seoEntities
-     */
     public function __construct(
         protected readonly SeoUrlServiceInterface $service,
-        protected readonly iterable $seoEntities,
         private readonly ExportServiceInterface $exportService,
         private readonly ExportConfigurationFactoryInterface $configurationFactory,
         private readonly SeoUrlTableRendererInterface $tableRenderer,
@@ -63,10 +58,8 @@ abstract class AbstractCheckSeoUrlsCommand extends Command
 
         $this->logger->info(sprintf(static::MESSAGE_RESULTS_FOUND, count($allResults)));
 
-        // Display results in table
         $this->tableRenderer->render($allResults, $output);
 
-        // Export if requested
         if ($input->getOption('export')) {
             $configuration = $this->configurationFactory->create($allResults);
             $filePrefix = $configuration->getFilePrefix();
@@ -84,8 +77,6 @@ abstract class AbstractCheckSeoUrlsCommand extends Command
     }
 
     /**
-     * Find all URLs - subclasses must implement their own logic
-     *
      * @return array<SeoUrlDtoInterface>
      */
     abstract protected function findAllUrls(InputInterface $input): array;

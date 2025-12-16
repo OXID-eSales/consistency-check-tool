@@ -14,7 +14,6 @@ use OxidEsales\ConsistencyCheck\Export\Factory\ExportConfigurationFactoryInterfa
 use OxidEsales\ConsistencyCheck\Export\Service\ExportServiceInterface;
 use OxidEsales\ConsistencyCheck\SeoUrl\Console\CheckUnusedSeoUrlsCommand;
 use OxidEsales\ConsistencyCheck\SeoUrl\Dto\SeoUrlDtoInterface;
-use OxidEsales\ConsistencyCheck\SeoUrl\Entity\SeoEntityInterface;
 use OxidEsales\ConsistencyCheck\Export\Exception\ExportDirectoryNotFoundException;
 use OxidEsales\ConsistencyCheck\SeoUrl\Service\SeoUrlServiceInterface;
 use OxidEsales\ConsistencyCheck\SeoUrl\Service\SeoUrlTableRendererInterface;
@@ -43,11 +42,6 @@ final class CheckUnusedSeoUrlsCommandTest extends TestCase
             'getTimestamp' => '2024-01-01',
         ]);
 
-        $entityStub = $this->createConfiguredStub(SeoEntityInterface::class, [
-            'getReferenceTable' => 'oxarticles',
-            'getSeoType' => 'oxarticle',
-        ]);
-
         $serviceStub = $this->createConfiguredStub(SeoUrlServiceInterface::class, [
             'findUnusedUrls' => [$dtoStub],
         ]);
@@ -66,7 +60,6 @@ final class CheckUnusedSeoUrlsCommandTest extends TestCase
 
         $sut = new CheckUnusedSeoUrlsCommand(
             $serviceStub,
-            [$entityStub],
             $exportServiceStub,
             $configurationFactoryStub,
             $this->createStub(SeoUrlTableRendererInterface::class),
