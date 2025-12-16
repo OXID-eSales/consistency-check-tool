@@ -33,3 +33,9 @@ services:
       $seoType: 'oxcontent'
       $referenceTable: 'oxcontents'
     tags: ['seo_type_table_mapping']
+
+  OxidEsales\ConsistencyCheck\SeoUrl\Infrastructure\SeoUrlRepositoryInterface:
+    class: OxidEsales\ConsistencyCheck\SeoUrl\Infrastructure\SeoUrlRepository
+    arguments:
+      $mappings: !tagged_iterator seo_type_table_mapping
+    public: true

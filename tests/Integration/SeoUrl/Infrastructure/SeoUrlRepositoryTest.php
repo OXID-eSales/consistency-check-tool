@@ -7,12 +7,12 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\ConsistencyCheck\Tests\Integration\SeoUrl\Repository;
+namespace OxidEsales\ConsistencyCheck\Tests\Integration\SeoUrl\Infrastructure;
 
 use OxidEsales\ConsistencyCheck\Export\Factory\DtoFactoryInterface;
 use OxidEsales\ConsistencyCheck\SeoUrl\Infrastructure\SeoTypeTableMapping;
-use OxidEsales\ConsistencyCheck\SeoUrl\Repository\SeoUrlRepository;
-use OxidEsales\ConsistencyCheck\SeoUrl\Repository\SeoUrlRepositoryInterface;
+use OxidEsales\ConsistencyCheck\SeoUrl\Infrastructure\SeoUrlRepository;
+use OxidEsales\ConsistencyCheck\SeoUrl\Infrastructure\SeoUrlRepositoryInterface;
 use OxidEsales\Eshop\Application\Model\Article;
 use OxidEsales\Eshop\Core\Model\BaseModel;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
@@ -40,8 +40,7 @@ final class SeoUrlRepositoryTest extends IntegrationTestCase
             type: 'oxarticle'
         );
 
-        $mapping = new SeoTypeTableMapping('oxarticle', 'oxarticles');
-        $result = $this->getSut()->findUnusedUrls($mapping);
+        $result = $this->getSut()->findUnusedUrls();
 
         $this->assertCount(1, $result);
         $this->assertSame($orphanedObjectId, $result[0]->getObjectId());
@@ -59,8 +58,7 @@ final class SeoUrlRepositoryTest extends IntegrationTestCase
             type: 'oxarticle'
         );
 
-        $mapping = new SeoTypeTableMapping('oxarticle', 'oxarticles');
-        $result = $this->getSut()->findUnusedUrls($mapping);
+        $result = $this->getSut()->findUnusedUrls();
 
         $this->assertEmpty($result);
     }
@@ -68,8 +66,7 @@ final class SeoUrlRepositoryTest extends IntegrationTestCase
     #[Test]
     public function findUnusedUrlsReturnsEmptyWhenTableIsEmpty(): void
     {
-        $mapping = new SeoTypeTableMapping('oxarticle', 'oxarticles');
-        $result = $this->getSut()->findUnusedUrls($mapping);
+        $result = $this->getSut()->findUnusedUrls();
 
         $this->assertEmpty($result);
     }
@@ -134,9 +131,7 @@ final class SeoUrlRepositoryTest extends IntegrationTestCase
 
         $this->assertSame(2, $deletedCount);
 
-        // Verify oxid3 still exists
-        $mapping = new SeoTypeTableMapping('oxarticle', 'oxarticles');
-        $remaining = $this->getSut()->findUnusedUrls($mapping);
+        $remaining = $this->getSut()->findUnusedUrls();
         $this->assertCount(1, $remaining);
         $this->assertSame($oxid3, $remaining[0]->getObjectId());
     }
@@ -201,9 +196,14 @@ final class SeoUrlRepositoryTest extends IntegrationTestCase
 
     private function getSut(): SeoUrlRepositoryInterface
     {
+        $mappings = [
+            new SeoTypeTableMapping('oxarticle', 'oxarticles'),
+        ];
+
         return new SeoUrlRepository(
             $this->get(QueryBuilderFactoryInterface::class),
-            $this->get(DtoFactoryInterface::class)
+            $this->get(DtoFactoryInterface::class),
+            $mappings
         );
     }
 }

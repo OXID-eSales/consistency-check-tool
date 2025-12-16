@@ -7,17 +7,16 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\ConsistencyCheck\SeoUrl\Repository;
+namespace OxidEsales\ConsistencyCheck\SeoUrl\Infrastructure;
 
 use OxidEsales\ConsistencyCheck\SeoUrl\Dto\SeoUrlDtoInterface;
-use OxidEsales\ConsistencyCheck\SeoUrl\Infrastructure\SeoTypeTableMappingInterface;
 
 interface SeoUrlRepositoryInterface
 {
     /**
      * @return array<SeoUrlDtoInterface>
      */
-    public function findUnusedUrls(SeoTypeTableMappingInterface $mapping): array;
+    public function findUnusedUrls(): array;
 
     /**
      * @return array<SeoUrlDtoInterface>

@@ -7,24 +7,40 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\ConsistencyCheck\SeoUrl\Repository;
+namespace OxidEsales\ConsistencyCheck\SeoUrl\Infrastructure;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\ForwardCompatibility\Result;
 use OxidEsales\ConsistencyCheck\Export\Factory\DtoFactoryInterface;
 use OxidEsales\ConsistencyCheck\SeoUrl\Dto\SeoUrlDtoInterface;
-use OxidEsales\ConsistencyCheck\SeoUrl\Infrastructure\SeoTypeTableMappingInterface;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 
 final class SeoUrlRepository implements SeoUrlRepositoryInterface
 {
+    /**
+     * @param iterable<SeoTypeTableMappingInterface> $mappings
+     */
     public function __construct(
         private readonly QueryBuilderFactoryInterface $queryBuilderFactory,
         private readonly DtoFactoryInterface $factory,
+        private readonly iterable $mappings,
     ) {
     }
 
-    public function findUnusedUrls(SeoTypeTableMappingInterface $mapping): array
+    public function findUnusedUrls(): array
+    {
+        $allDtos = [];
+        foreach ($this->mappings as $mapping) {
+            $dtos = $this->findUnusedUrlsForMapping($mapping);
+            $allDtos = array_merge($allDtos, $dtos);
+        }
+        return $allDtos;
+    }
+
+    /**
+     * @return array<SeoUrlDtoInterface>
+     */
+    private function findUnusedUrlsForMapping(SeoTypeTableMappingInterface $mapping): array
     {
         $queryBuilder = $this->queryBuilderFactory->create();
 
