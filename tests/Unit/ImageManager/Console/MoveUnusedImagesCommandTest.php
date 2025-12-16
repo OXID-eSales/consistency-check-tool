@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\ConsistencyCheck\ImageManager\Tests\Unit\ImageManager\Console;
+namespace OxidEsales\ConsistencyCheck\Tests\Unit\ImageManager\Console;
 
 use OxidEsales\ConsistencyCheck\ImageManager\Console\MoveUnusedImagesCommand;
 use OxidEsales\ConsistencyCheck\ImageManager\DataTransferObject\ImageCollectionInterface;
@@ -112,7 +112,7 @@ class MoveUnusedImagesCommandTest extends TestCase
 
         $imageManagerServiceMock = $this->createMock(ImageManagerServiceInterface::class);
         $imageManagerServiceMock
-            ->expects(self::never())
+            ->expects($this->never())
             ->method('moveImages');
 
         $entityFilterServiceStub = $this->createStub(ImageEntityFilterServiceInterface::class);

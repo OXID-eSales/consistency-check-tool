@@ -29,25 +29,27 @@ final class CsvExportServiceTest extends TestCase
     {
         $filePath = uniqid();
         $absolutePath = uniqid();
+        $dtoStub = $this->createStub(ExportableDtoInterface::class);
 
         $arrayFactoryStub = $this->createStub(ArrayFactoryInterface::class);
-        $arrayFactoryStub->method('createFromDto')->willReturn([uniqid()]);
+        $arrayFactoryStub->method('createFromDto')->with($dtoStub)->willReturn($dtoArray = [uniqid()]);
 
         $configurationStub = $this->createConfiguredStub(ExportConfigurationInterface::class, [
-            'getHeaders' => [uniqid()],
-            'getItems' => [$this->createStub(ExportableDtoInterface::class)],
+            'getHeaders' => $headers = [uniqid()],
+            'getItems' => [$dtoStub],
             'getArrayFactory' => $arrayFactoryStub,
             'getFilePath' => $filePath,
         ]);
 
-        $writerMock = $this->createMock(Writer::class);
-        $writerMock->expects($this->exactly(2))
-            ->method('insertOne');
+        $writerSpy = $this->createMock(Writer::class);
+        $writerSpy->expects($this->exactly(2))
+            ->method('insertOne')
+            ->with($this->logicalOr($headers, $dtoArray));
 
         $writerFactoryMock = $this->createMock(CsvWriterFactoryInterface::class);
         $writerFactoryMock->method('create')
             ->with($absolutePath)
-            ->willReturn($writerMock);
+            ->willReturn($writerSpy);
 
         $pathResolverMock = $this->createMock(PathResolverInterface::class);
         $pathResolverMock->method('getAbsolutePath')
@@ -66,7 +68,9 @@ final class CsvExportServiceTest extends TestCase
     public function exportThrowsCsvExportExceptionWhenWriterFails(): void
     {
         $filePath = uniqid();
+        $absolutePath = uniqid();
         $errorMessage = uniqid();
+        $exception = new class ($errorMessage) extends \Exception implements UnableToProcessCsv {};
 
         $configurationStub = $this->createConfiguredStub(ExportConfigurationInterface::class, [
             'getHeaders' => [uniqid()],
@@ -74,18 +78,12 @@ final class CsvExportServiceTest extends TestCase
             'getFilePath' => $filePath,
         ]);
 
-        $writerStub = $this->createStub(Writer::class);
-        $writerStub->method('insertOne')
-            ->willThrowException(
-                new class ($errorMessage) extends \Exception implements UnableToProcessCsv {
-                }
-            );
-
         $writerFactoryStub = $this->createStub(CsvWriterFactoryInterface::class);
-        $writerFactoryStub->method('create')->willReturn($writerStub);
+        $writerFactoryStub->method('create')->with($absolutePath)
+            ->willThrowException($exception);
 
         $pathResolverStub = $this->createStub(PathResolverInterface::class);
-        $pathResolverStub->method('getAbsolutePath')->willReturn(uniqid());
+        $pathResolverStub->method('getAbsolutePath')->with($filePath)->willReturn($absolutePath);
 
         $sut = $this->getSut(
             pathResolver: $pathResolverStub,
@@ -94,7 +92,7 @@ final class CsvExportServiceTest extends TestCase
 
         $this->expectException(CsvExportException::class);
         $this->expectExceptionMessage(
-            (new CsvExportException($filePath, new \Exception($errorMessage)))->getMessage()
+            (new CsvExportException($filePath, $exception))->getMessage()
         );
 
         $sut->export($configurationStub);

@@ -30,11 +30,13 @@ final class CsvExportReaderServiceTest extends TestCase
     {
         $filePath = uniqid();
         $absolutePath = uniqid();
+        $readerIterator = new ArrayIterator([$csvRecord = [uniqid()]]);
 
         $dtoStub = $this->createStub(ExportableDtoInterface::class);
 
-        $dtoFactoryStub = $this->createStub(DtoFactoryInterface::class);
-        $dtoFactoryStub->method('createFromArray')->willReturn($dtoStub);
+        $dtoFactoryStub = $this->createMock(DtoFactoryInterface::class);
+        $dtoFactoryStub->expects($this->exactly(count($readerIterator)))
+            ->method('createFromArray')->with($csvRecord)->willReturn($dtoStub);
 
         $configurationStub = $this->createConfiguredStub(ExportReaderConfigurationInterface::class, [
             'getFilePath' => $filePath,
@@ -46,7 +48,7 @@ final class CsvExportReaderServiceTest extends TestCase
             ->method('setHeaderOffset')
             ->with(0);
         $readerMock->method('getIterator')
-            ->willReturn(new ArrayIterator([[uniqid()]]));
+            ->willReturn($readerIterator);
 
         $readerFactoryMock = $this->createMock(CsvReaderFactoryInterface::class);
         $readerFactoryMock->method('create')
@@ -74,6 +76,8 @@ final class CsvExportReaderServiceTest extends TestCase
     {
         $filePath = uniqid();
         $errorMessage = uniqid();
+        $absolutePath = uniqid();
+        $exception = new class ($errorMessage) extends \Exception implements UnableToProcessCsv {};
 
         $configurationStub = $this->createConfiguredStub(ExportReaderConfigurationInterface::class, [
             'getFilePath' => $filePath,
@@ -81,14 +85,10 @@ final class CsvExportReaderServiceTest extends TestCase
         ]);
 
         $readerFactoryStub = $this->createStub(CsvReaderFactoryInterface::class);
-        $readerFactoryStub->method('create')
-            ->willThrowException(
-                new class ($errorMessage) extends \Exception implements UnableToProcessCsv {
-                }
-            );
+        $readerFactoryStub->method('create')->with($absolutePath)->willThrowException($exception);
 
         $pathResolverStub = $this->createStub(PathResolverInterface::class);
-        $pathResolverStub->method('getAbsolutePath')->willReturn(uniqid());
+        $pathResolverStub->method('getAbsolutePath')->with($filePath)->willReturn($absolutePath);
 
         $sut = $this->getSut(
             pathResolver: $pathResolverStub,
@@ -96,9 +96,7 @@ final class CsvExportReaderServiceTest extends TestCase
         );
 
         $this->expectException(CsvReadException::class);
-        $this->expectExceptionMessage(
-            (new CsvReadException($filePath, new \Exception($errorMessage)))->getMessage()
-        );
+        $this->expectExceptionMessage((new CsvReadException($filePath, $exception))->getMessage());
 
         $sut->read($configurationStub);
     }

@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\ConsistencyCheck\ImageManager\Tests\Unit\ImageManager\Console;
+namespace OxidEsales\ConsistencyCheck\Tests\Unit\ImageManager\Console;
 
 use OxidEsales\ConsistencyCheck\ImageManager\Console\DeleteUnusedImagesCommand;
 use OxidEsales\ConsistencyCheck\ImageManager\DataTransferObject\ImageCollectionInterface;
@@ -89,7 +89,7 @@ class DeleteUnusedImagesCommandTest extends TestCase
 
         $imageManagerServiceSpy = $this->createMock(ImageManagerServiceInterface::class);
         $imageManagerServiceSpy
-            ->expects(self::never())
+            ->expects($this->never())
             ->method('deleteImages');
 
         $entityFilterServiceStub = $this->createStub(ImageEntityFilterServiceInterface::class);

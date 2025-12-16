@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\ConsistencyCheck\ImageManager\Tests\Unit\ImageManager\Utils;
+namespace OxidEsales\ConsistencyCheck\Tests\Unit\ImageManager\Utils;
 
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
@@ -19,7 +19,7 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Finder\Finder;
 
-class FileSystemServiceTest extends TestCase
+class FileSystemUtilsTest extends TestCase
 {
     private vfsStreamDirectory $fileSystem;
 
