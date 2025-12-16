@@ -1,5 +1,5 @@
 imports:
-  - { resource: Entity/services.yaml }
+  - { resource: Infrastructure/services.yaml }
 
 services:
   _defaults:

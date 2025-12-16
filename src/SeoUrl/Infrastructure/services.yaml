@@ -1,0 +1,35 @@
+services:
+  seo_type_table_mapping.article:
+    class: OxidEsales\ConsistencyCheck\SeoUrl\Infrastructure\SeoTypeTableMapping
+    arguments:
+      $seoType: 'oxarticle'
+      $referenceTable: 'oxarticles'
+    tags: ['seo_type_table_mapping']
+
+  seo_type_table_mapping.category:
+    class: OxidEsales\ConsistencyCheck\SeoUrl\Infrastructure\SeoTypeTableMapping
+    arguments:
+      $seoType: 'oxcategory'
+      $referenceTable: 'oxcategories'
+    tags: ['seo_type_table_mapping']
+
+  seo_type_table_mapping.manufacturer:
+    class: OxidEsales\ConsistencyCheck\SeoUrl\Infrastructure\SeoTypeTableMapping
+    arguments:
+      $seoType: 'oxmanufacturer'
+      $referenceTable: 'oxmanufacturers'
+    tags: ['seo_type_table_mapping']
+
+  seo_type_table_mapping.vendor:
+    class: OxidEsales\ConsistencyCheck\SeoUrl\Infrastructure\SeoTypeTableMapping
+    arguments:
+      $seoType: 'oxvendor'
+      $referenceTable: 'oxvendor'
+    tags: ['seo_type_table_mapping']
+
+  seo_type_table_mapping.content:
+    class: OxidEsales\ConsistencyCheck\SeoUrl\Infrastructure\SeoTypeTableMapping
+    arguments:
+      $seoType: 'oxcontent'
+      $referenceTable: 'oxcontents'
+    tags: ['seo_type_table_mapping']

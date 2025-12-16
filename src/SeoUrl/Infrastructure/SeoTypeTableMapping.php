@@ -7,13 +7,13 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\ConsistencyCheck\SeoUrl\Entity;
+namespace OxidEsales\ConsistencyCheck\SeoUrl\Infrastructure;
 
-final class SeoEntity implements SeoEntityInterface
+final class SeoTypeTableMapping implements SeoTypeTableMappingInterface
 {
     public function __construct(
         private readonly string $seoType,
-        private readonly ?string $referenceTable,
+        private readonly string $referenceTable,
     ) {
     }
 
@@ -22,7 +22,7 @@ final class SeoEntity implements SeoEntityInterface
         return $this->seoType;
     }
 
-    public function getReferenceTable(): ?string
+    public function getReferenceTable(): string
     {
         return $this->referenceTable;
     }
