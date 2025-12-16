@@ -11,7 +11,7 @@ namespace OxidEsales\ConsistencyCheck\SeoUrl\Dto;
 
 final class SeoUrlDto implements SeoUrlDtoInterface
 {
-    /** @SuppressWarnings(PHPMD.ExcessiveParameterList) */
+    /** @SuppressWarnings("PHPMD.ExcessiveParameterList") */
     public function __construct(
         private readonly string $objectId,
         private readonly string $ident,

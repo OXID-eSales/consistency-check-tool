@@ -77,7 +77,8 @@ final class CsvExportReaderServiceTest extends TestCase
         $filePath = uniqid();
         $errorMessage = uniqid();
         $absolutePath = uniqid();
-        $exception = new class ($errorMessage) extends \Exception implements UnableToProcessCsv {};
+        $exception = new class ($errorMessage) extends \Exception implements UnableToProcessCsv {
+        };
 
         $configurationStub = $this->createConfiguredStub(ExportReaderConfigurationInterface::class, [
             'getFilePath' => $filePath,

@@ -13,7 +13,9 @@ use League\Csv\Reader;
 
 final class CsvReaderFactory implements CsvReaderFactoryInterface
 {
-    /** @phpstan-ignore missingType.generics */
+    /**
+     * @inheritDoc
+     */
     public function create(string $path): Reader
     {
         return Reader::from($path, 'r');
