@@ -26,6 +26,10 @@ final class CheckUnusedSeoUrlsCommandTest extends IntegrationTestCase
         parent::setUp();
         $this->tempDir = sys_get_temp_dir() . '/oxid_test_' . uniqid();
         mkdir($this->tempDir, 0777, true);
+
+        if (!is_dir('export')) {
+            mkdir('export', 0777, true);
+        }
     }
 
     public function tearDown(): void

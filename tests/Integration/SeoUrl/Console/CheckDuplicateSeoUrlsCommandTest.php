@@ -27,6 +27,10 @@ final class CheckDuplicateSeoUrlsCommandTest extends IntegrationTestCase
         $this->tempDir = sys_get_temp_dir() . '/oxid_test_' . uniqid();
         mkdir($this->tempDir, 0777, true);
 
+        if (!is_dir('export')) {
+            mkdir('export', 0777, true);
+        }
+
         $command = $this->get(CheckDuplicateSeoUrlsCommand::class);
         $this->commandTester = new CommandTester($command);
     }
