@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 namespace OxidEsales\ConsistencyCheck\Tests\Integration\SeoUrl\Infrastructure;
 
-use OxidEsales\ConsistencyCheck\Export\Factory\DtoFactoryInterface;
+use OxidEsales\ConsistencyCheck\SeoUrl\Factory\SeoUrlDtoFactoryInterface;
 use OxidEsales\ConsistencyCheck\SeoUrl\Infrastructure\SeoTypeTableMapping;
 use OxidEsales\ConsistencyCheck\SeoUrl\Infrastructure\SeoUrlRepository;
 use OxidEsales\ConsistencyCheck\SeoUrl\Infrastructure\SeoUrlRepositoryInterface;
@@ -202,7 +202,7 @@ final class SeoUrlRepositoryTest extends IntegrationTestCase
 
         return new SeoUrlRepository(
             $this->get(QueryBuilderFactoryInterface::class),
-            $this->get(DtoFactoryInterface::class),
+            $this->get(SeoUrlDtoFactoryInterface::class),
             $mappings
         );
     }

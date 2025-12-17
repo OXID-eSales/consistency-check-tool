@@ -11,10 +11,13 @@ namespace OxidEsales\ConsistencyCheck\SeoUrl\Infrastructure;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\ForwardCompatibility\Result;
-use OxidEsales\ConsistencyCheck\Export\Factory\DtoFactoryInterface;
 use OxidEsales\ConsistencyCheck\SeoUrl\Dto\SeoUrlDtoInterface;
+use OxidEsales\ConsistencyCheck\SeoUrl\Factory\SeoUrlDtoFactoryInterface;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 
+/**
+ * @phpstan-import-type SeoUrlTableRow from SeoUrlDtoFactoryInterface
+ */
 final class SeoUrlRepository implements SeoUrlRepositoryInterface
 {
     /**
@@ -22,7 +25,7 @@ final class SeoUrlRepository implements SeoUrlRepositoryInterface
      */
     public function __construct(
         private readonly QueryBuilderFactoryInterface $queryBuilderFactory,
-        private readonly DtoFactoryInterface $factory,
+        private readonly SeoUrlDtoFactoryInterface $factory,
         private readonly iterable $mappings,
     ) {
     }
@@ -52,14 +55,14 @@ final class SeoUrlRepository implements SeoUrlRepositoryInterface
             ->andWhere('r.OXID IS NULL')
             ->setParameter('type', $mapping->getSeoType());
 
-        /** @var Result $result */
-        $result = $queryBuilder->execute(); /** @phpstan-ignore missingType.iterableValue */
+        /** @var Result<array> $result */
+        $result = $queryBuilder->execute();
         $rows = $result->fetchAllAssociative();
 
         $dtos = [];
+        /** @var SeoUrlTableRow $row */
         foreach ($rows as $row) {
             $dto = $this->factory->createFromArray($row);
-            assert($dto instanceof SeoUrlDtoInterface);
             $dtos[] = $dto;
         }
 
@@ -76,14 +79,14 @@ final class SeoUrlRepository implements SeoUrlRepositoryInterface
             ->where('OXSEOURL LIKE :pattern')
             ->setParameter('pattern', '%' . $suffix . '%');
 
-        /** @var Result $result */
-        $result = $queryBuilder->execute(); /** @phpstan-ignore missingType.iterableValue */
+        /** @var Result<array> $result */
+        $result = $queryBuilder->execute();
         $rows = $result->fetchAllAssociative();
 
         $dtos = [];
+        /** @var SeoUrlTableRow $row */
         foreach ($rows as $row) {
             $dto = $this->factory->createFromArray($row);
-            assert($dto instanceof SeoUrlDtoInterface);
             $dtos[] = $dto;
         }
 
