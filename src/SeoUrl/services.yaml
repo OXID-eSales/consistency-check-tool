@@ -6,8 +6,9 @@ services:
     autowire: true
     public: false
 
-  OxidEsales\ConsistencyCheck\SeoUrl\Factory\SeoUrlDtoFactory:
+  OxidEsales\ConsistencyCheck\SeoUrl\Factory\SeoUrlDtoFactoryInterface:
     class: OxidEsales\ConsistencyCheck\SeoUrl\Factory\SeoUrlDtoFactory
+    public: true
 
   OxidEsales\ConsistencyCheck\SeoUrl\Factory\SeoUrlArrayFactory:
     class: OxidEsales\ConsistencyCheck\SeoUrl\Factory\SeoUrlArrayFactory

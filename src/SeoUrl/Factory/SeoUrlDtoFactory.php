@@ -9,13 +9,12 @@ declare(strict_types=1);
 
 namespace OxidEsales\ConsistencyCheck\SeoUrl\Factory;
 
-use OxidEsales\ConsistencyCheck\Export\Factory\DtoFactoryInterface;
 use OxidEsales\ConsistencyCheck\SeoUrl\Dto\SeoUrlDto;
-use OxidEsales\ConsistencyCheck\Shared\Dto\ExportableDtoInterface;
+use OxidEsales\ConsistencyCheck\SeoUrl\Dto\SeoUrlDtoInterface;
 
-final class SeoUrlDtoFactory implements DtoFactoryInterface
+final class SeoUrlDtoFactory implements SeoUrlDtoFactoryInterface
 {
-    public function createFromArray(array $data): ExportableDtoInterface
+    public function createFromArray(array $data): SeoUrlDtoInterface
     {
         return new SeoUrlDto(
             objectId: $data['OXOBJECTID'],
