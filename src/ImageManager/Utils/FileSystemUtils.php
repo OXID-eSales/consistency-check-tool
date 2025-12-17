@@ -10,15 +10,14 @@ declare(strict_types=1);
 namespace OxidEsales\ConsistencyCheck\ImageManager\Utils;
 
 use OxidEsales\ConsistencyCheck\ImageManager\Exception\DirectoryNotFoundException;
-use OxidEsales\EshopCommunity\Internal\Transition\Utility\ContextInterface;
-use Symfony\Component\Filesystem\Path;
+use OxidEsales\ConsistencyCheck\Shared\Service\PathResolverInterface;
 use Symfony\Component\Finder\Finder;
 
 class FileSystemUtils implements FileSystemUtilsInterface
 {
     public function __construct(
         private readonly Finder $finder,
-        private readonly ContextInterface $context,
+        private readonly PathResolverInterface $pathResolver,
     ) {
     }
 
@@ -50,6 +49,6 @@ class FileSystemUtils implements FileSystemUtilsInterface
 
     public function getAbsolutePath(string $path): string
     {
-        return Path::join($this->context->getSourcePath(), $path);
+        return $this->pathResolver->getAbsolutePath($path);
     }
 }

@@ -7,19 +7,19 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\ConsistencyCheck\ImageManager\Tests\Unit\ImageManager\Utils;
+namespace OxidEsales\ConsistencyCheck\Tests\Unit\ImageManager\Utils;
 
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
 use OxidEsales\ConsistencyCheck\ImageManager\Exception\DirectoryNotFoundException;
 use OxidEsales\ConsistencyCheck\ImageManager\Utils\FileSystemUtils;
 use OxidEsales\ConsistencyCheck\ImageManager\Utils\FileSystemUtilsInterface;
-use OxidEsales\EshopCommunity\Internal\Transition\Utility\ContextInterface;
+use OxidEsales\ConsistencyCheck\Shared\Service\PathResolverInterface;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Finder\Finder;
 
-class FileSystemServiceTest extends TestCase
+class FileSystemUtilsTest extends TestCase
 {
     private vfsStreamDirectory $fileSystem;
 
@@ -83,24 +83,32 @@ class FileSystemServiceTest extends TestCase
     #[Test]
     public function getAbsolutePathReturnsCorrectPath(): void
     {
-        $contextStub = $this->createStub(ContextInterface::class);
-        $contextStub->method('getSourcePath')->willReturn($basePath = uniqid());
-
-        $sut = $this->getSut($contextStub);
-
+        $basePath = uniqid();
         $relativePath = uniqid();
         $expectedAbsolutePath = $basePath . '/' . $relativePath;
+
+        $pathResolverStub = $this->createStub(PathResolverInterface::class);
+        $pathResolverStub->method('getAbsolutePath')
+            ->with($relativePath)
+            ->willReturn($expectedAbsolutePath);
+
+        $sut = $this->getSut($pathResolverStub);
 
         $this->assertEquals($expectedAbsolutePath, $sut->getAbsolutePath($relativePath));
     }
 
     private function getSut(
-        ?ContextInterface $context = null
+        ?PathResolverInterface $pathResolver = null
     ): FileSystemUtilsInterface {
-        $context ??= $this->createStub(ContextInterface::class);
+        if ($pathResolver === null) {
+            $pathResolver = $this->createStub(PathResolverInterface::class);
+            $pathResolver->method('getAbsolutePath')
+                ->willReturnCallback(fn(string $path) => $path);
+        }
+
         return new FileSystemUtils(
             finder: new Finder(),
-            context: $context,
+            pathResolver: $pathResolver,
         );
     }
 }
