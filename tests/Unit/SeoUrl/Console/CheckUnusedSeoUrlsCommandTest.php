@@ -35,11 +35,11 @@ final class CheckUnusedSeoUrlsCommandTest extends TestCase
             'getLanguageId' => rand(0, 5),
             'getStdUrl' => uniqid(),
             'getSeoUrl' => uniqid(),
-            'getType' => 'oxarticle',
-            'getFixed' => 0,
-            'getExpired' => 0,
-            'getParams' => '',
-            'getTimestamp' => '2024-01-01',
+            'getType' => uniqid(),
+            'getFixed' => (bool)rand(0, 1),
+            'getExpired' => (bool)rand(0, 1),
+            'getParams' => uniqid(),
+            'getTimestamp' => date('Y-m-d H:i:s'),
         ]);
 
         $serviceStub = $this->createConfiguredStub(SeoUrlServiceInterface::class, [
@@ -47,7 +47,7 @@ final class CheckUnusedSeoUrlsCommandTest extends TestCase
         ]);
 
         $configurationStub = $this->createConfiguredStub(ExportConfigurationInterface::class, [
-            'getFilePrefix' => 'Unused-Seo-Urls',
+            'getFilePrefix' => uniqid(),
         ]);
 
         $configurationFactoryStub = $this->createStub(ExportConfigurationFactoryInterface::class);

@@ -46,13 +46,13 @@ final class SeoUrlTableRendererTest extends TestCase
         $ident = uniqid();
         $shopId = rand(1, 10);
         $languageId = rand(0, 5);
-        $stdUrl = 'index.php?cl=test&id=' . uniqid();
-        $seoUrl = 'test-product-' . uniqid() . '.html';
-        $type = 'oxarticle';
-        $fixed = rand(0, 1);
-        $expired = rand(0, 1);
-        $params = 'param=' . uniqid();
-        $timestamp = '2024-01-01 12:00:00';
+        $stdUrl = uniqid();
+        $seoUrl = uniqid();
+        $type = uniqid();
+        $fixed = (bool)rand(0, 1);
+        $expired = (bool)rand(0, 1);
+        $params = uniqid();
+        $timestamp = date('Y-m-d H:i:s');
 
         $dtoStub = $this->createConfiguredStub(SeoUrlDtoInterface::class, [
             'getObjectId' => $objectId,
@@ -86,32 +86,37 @@ final class SeoUrlTableRendererTest extends TestCase
     #[Test]
     public function itRendersMultipleRows(): void
     {
+        $objectId1 = uniqid();
+        $seoUrl1 = uniqid();
+        $objectId2 = uniqid();
+        $seoUrl2 = uniqid();
+
         $dtoStub1 = $this->createConfiguredStub(SeoUrlDtoInterface::class, [
-            'getObjectId' => 'object-1',
-            'getIdent' => 'ident-1',
-            'getShopId' => 1,
-            'getLanguageId' => 0,
-            'getStdUrl' => 'std-url-1',
-            'getSeoUrl' => 'seo-url-1.html',
-            'getType' => 'oxarticle',
-            'getFixed' => 0,
-            'getExpired' => 0,
-            'getParams' => '',
-            'getTimestamp' => '2024-01-01',
+            'getObjectId' => $objectId1,
+            'getIdent' => uniqid(),
+            'getShopId' => rand(1, 10),
+            'getLanguageId' => rand(0, 5),
+            'getStdUrl' => uniqid(),
+            'getSeoUrl' => $seoUrl1,
+            'getType' => uniqid(),
+            'getFixed' => (bool)rand(0, 1),
+            'getExpired' => (bool)rand(0, 1),
+            'getParams' => uniqid(),
+            'getTimestamp' => date('Y-m-d H:i:s'),
         ]);
 
         $dtoStub2 = $this->createConfiguredStub(SeoUrlDtoInterface::class, [
-            'getObjectId' => 'object-2',
-            'getIdent' => 'ident-2',
-            'getShopId' => 1,
-            'getLanguageId' => 1,
-            'getStdUrl' => 'std-url-2',
-            'getSeoUrl' => 'seo-url-2.html',
-            'getType' => 'oxcategory',
-            'getFixed' => 1,
-            'getExpired' => 0,
-            'getParams' => '',
-            'getTimestamp' => '2024-01-02',
+            'getObjectId' => $objectId2,
+            'getIdent' => uniqid(),
+            'getShopId' => rand(1, 10),
+            'getLanguageId' => rand(0, 5),
+            'getStdUrl' => uniqid(),
+            'getSeoUrl' => $seoUrl2,
+            'getType' => uniqid(),
+            'getFixed' => (bool)rand(0, 1),
+            'getExpired' => (bool)rand(0, 1),
+            'getParams' => uniqid(),
+            'getTimestamp' => date('Y-m-d H:i:s'),
         ]);
 
         $sut = new SeoUrlTableRenderer();
@@ -120,9 +125,9 @@ final class SeoUrlTableRendererTest extends TestCase
         $sut->render([$dtoStub1, $dtoStub2], $output);
 
         $result = $output->fetch();
-        $this->assertStringContainsString('object-1', $result);
-        $this->assertStringContainsString('object-2', $result);
-        $this->assertStringContainsString('seo-url-1.html', $result);
-        $this->assertStringContainsString('seo-url-2.html', $result);
+        $this->assertStringContainsString($objectId1, $result);
+        $this->assertStringContainsString($objectId2, $result);
+        $this->assertStringContainsString($seoUrl1, $result);
+        $this->assertStringContainsString($seoUrl2, $result);
     }
 }
