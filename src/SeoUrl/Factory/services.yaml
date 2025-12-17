@@ -1,12 +1,9 @@
 services:
   _defaults:
     autowire: true
-    autoconfigure: true
     public: false
 
-  OxidEsales\ConsistencyCheck\SeoUrl\Factory\SeoUrlExportReaderConfigurationFactory:
-    arguments:
-      $dtoFactory: '@OxidEsales\ConsistencyCheck\SeoUrl\Factory\SeoUrlDtoFactoryInterface'
+  OxidEsales\ConsistencyCheck\SeoUrl\Factory\SeoUrlExportReaderConfigurationFactory: ~
 
   OxidEsales\ConsistencyCheck\SeoUrl\Factory\UnusedSeoUrlExportConfigurationFactory:
     class: OxidEsales\ConsistencyCheck\SeoUrl\Factory\SeoUrlExportConfigurationFactory

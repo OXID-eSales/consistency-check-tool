@@ -1,35 +1,25 @@
 services:
   _defaults:
     autowire: true
-    autoconfigure: true
     public: false
 
   OxidEsales\ConsistencyCheck\SeoUrl\Console\CheckUnusedSeoUrlsCommand:
     arguments:
-      $exportService: '@OxidEsales\ConsistencyCheck\Export\Service\ExportServiceInterface'
       $configurationFactory: '@OxidEsales\ConsistencyCheck\SeoUrl\Factory\UnusedSeoUrlExportConfigurationFactory'
-      $tableRenderer: '@OxidEsales\ConsistencyCheck\SeoUrl\Service\SeoUrlTableRendererInterface'
-      $messageFormatter: '@OxidEsales\ConsistencyCheck\Shared\Service\MessageFormatterServiceInterface'
       $logger: '@OxidEsales\ConsistencyCheck\ImageManager\Logger'
     tags:
       - { name: 'console.command', command: 'oe:consistency_check:check-unused-seo-urls' }
 
   OxidEsales\ConsistencyCheck\SeoUrl\Console\CheckDuplicateSeoUrlsCommand:
     arguments:
-      $exportService: '@OxidEsales\ConsistencyCheck\Export\Service\ExportServiceInterface'
       $configurationFactory: '@OxidEsales\ConsistencyCheck\SeoUrl\Factory\DuplicateSeoUrlExportConfigurationFactory'
-      $tableRenderer: '@OxidEsales\ConsistencyCheck\SeoUrl\Service\SeoUrlTableRendererInterface'
-      $messageFormatter: '@OxidEsales\ConsistencyCheck\Shared\Service\MessageFormatterServiceInterface'
       $logger: '@OxidEsales\ConsistencyCheck\ImageManager\Logger'
     tags:
       - { name: 'console.command', command: 'oe:consistency_check:check-duplicate-seo-urls' }
 
   OxidEsales\ConsistencyCheck\SeoUrl\Console\DeleteSeoUrlsCommand:
     arguments:
-      $csvReaderService: '@OxidEsales\ConsistencyCheck\Export\Service\ExportReaderServiceInterface'
       $readerConfigurationFactory: '@OxidEsales\ConsistencyCheck\SeoUrl\Factory\SeoUrlExportReaderConfigurationFactory'
-      $tableRenderer: '@OxidEsales\ConsistencyCheck\SeoUrl\Service\SeoUrlTableRendererInterface'
-      $messageFormatter: '@OxidEsales\ConsistencyCheck\Shared\Service\MessageFormatterServiceInterface'
       $logger: '@OxidEsales\ConsistencyCheck\ImageManager\Logger'
     tags:
       - { name: 'console.command', command: 'oe:consistency_check:delete-seo-urls' }
