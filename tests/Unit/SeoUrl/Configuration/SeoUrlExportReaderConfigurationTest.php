@@ -10,8 +10,8 @@ declare(strict_types=1);
 namespace OxidEsales\ConsistencyCheck\Tests\Unit\SeoUrl\Configuration;
 
 use OxidEsales\ConsistencyCheck\Export\Configuration\ExportReaderConfigurationInterface;
-use OxidEsales\ConsistencyCheck\Export\Factory\DtoFactoryInterface;
 use OxidEsales\ConsistencyCheck\SeoUrl\Configuration\SeoUrlExportReaderConfiguration;
+use OxidEsales\ConsistencyCheck\SeoUrl\Factory\SeoUrlDtoFactoryInterface;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
@@ -29,7 +29,7 @@ final class SeoUrlExportReaderConfigurationTest extends TestCase
     #[Test]
     public function getDtoFactory(): void
     {
-        $dtoFactoryStub = $this->createStub(DtoFactoryInterface::class);
+        $dtoFactoryStub = $this->createStub(SeoUrlDtoFactoryInterface::class);
         $sut = $this->getSut(dtoFactory: $dtoFactoryStub);
 
         $this->assertSame($dtoFactoryStub, $sut->getDtoFactory());
@@ -37,10 +37,10 @@ final class SeoUrlExportReaderConfigurationTest extends TestCase
 
     private function getSut(
         ?string $filePath = null,
-        ?DtoFactoryInterface $dtoFactory = null,
+        ?SeoUrlDtoFactoryInterface $dtoFactory = null,
     ): ExportReaderConfigurationInterface {
         $filePath ??= uniqid();
-        $dtoFactory ??= $this->createStub(DtoFactoryInterface::class);
+        $dtoFactory ??= $this->createStub(SeoUrlDtoFactoryInterface::class);
 
         return new SeoUrlExportReaderConfiguration($filePath, $dtoFactory);
     }

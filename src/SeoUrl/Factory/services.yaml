@@ -6,7 +6,7 @@ services:
 
   OxidEsales\ConsistencyCheck\SeoUrl\Factory\SeoUrlExportReaderConfigurationFactory:
     arguments:
-      $dtoFactory: '@OxidEsales\ConsistencyCheck\Export\Factory\DtoFactoryInterface'
+      $dtoFactory: '@OxidEsales\ConsistencyCheck\SeoUrl\Factory\SeoUrlDtoFactoryInterface'
 
   OxidEsales\ConsistencyCheck\SeoUrl\Factory\UnusedSeoUrlExportConfigurationFactory:
     class: OxidEsales\ConsistencyCheck\SeoUrl\Factory\SeoUrlExportConfigurationFactory

@@ -10,8 +10,8 @@ declare(strict_types=1);
 namespace OxidEsales\ConsistencyCheck\Tests\Unit\SeoUrl\Factory;
 
 use OxidEsales\ConsistencyCheck\Export\Configuration\ExportReaderConfigurationInterface;
-use OxidEsales\ConsistencyCheck\Export\Factory\DtoFactoryInterface;
 use OxidEsales\ConsistencyCheck\SeoUrl\Configuration\SeoUrlExportReaderConfiguration;
+use OxidEsales\ConsistencyCheck\SeoUrl\Factory\SeoUrlDtoFactoryInterface;
 use OxidEsales\ConsistencyCheck\SeoUrl\Factory\SeoUrlExportReaderConfigurationFactory;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -22,7 +22,7 @@ final class SeoUrlExportReaderConfigurationFactoryTest extends TestCase
     public function create(): void
     {
         $filePath = uniqid() . '.csv';
-        $dtoFactoryStub = $this->createStub(DtoFactoryInterface::class);
+        $dtoFactoryStub = $this->createStub(SeoUrlDtoFactoryInterface::class);
 
         $sut = new SeoUrlExportReaderConfigurationFactory($dtoFactoryStub);
         $result = $sut->create($filePath);
@@ -38,7 +38,7 @@ final class SeoUrlExportReaderConfigurationFactoryTest extends TestCase
     {
         $filePath1 = uniqid() . '.csv';
         $filePath2 = uniqid() . '.csv';
-        $dtoFactoryStub = $this->createStub(DtoFactoryInterface::class);
+        $dtoFactoryStub = $this->createStub(SeoUrlDtoFactoryInterface::class);
 
         $sut = new SeoUrlExportReaderConfigurationFactory($dtoFactoryStub);
         $result1 = $sut->create($filePath1);
@@ -53,7 +53,7 @@ final class SeoUrlExportReaderConfigurationFactoryTest extends TestCase
     public function createPreservesDtoFactory(): void
     {
         $filePath = uniqid() . '.csv';
-        $dtoFactoryStub = $this->createStub(DtoFactoryInterface::class);
+        $dtoFactoryStub = $this->createStub(SeoUrlDtoFactoryInterface::class);
 
         $sut = new SeoUrlExportReaderConfigurationFactory($dtoFactoryStub);
         $result = $sut->create($filePath);
