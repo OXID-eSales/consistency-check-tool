@@ -142,12 +142,12 @@ $ vendor/bin/oe-console oe:consistency_check:check-duplicate-seo-urls --export
 ### Delete SEO URLs from CSV
 Delete SEO URLs listed in a previously exported CSV file:
 ```bash
-$ vendor/bin/oe-console oe:consistency_check:delete-seo-urls --file=/path/to/exported.csv
+$ vendor/bin/oe-console oe:consistency_check:delete-seo-urls /absolute/path/to/exported.csv
 ```
 
 Use `--dry-run` to preview deletions without making changes:
 ```bash
-$ vendor/bin/oe-console oe:consistency_check:delete-seo-urls --file=/path/to/exported.csv --dry-run
+$ vendor/bin/oe-console oe:consistency_check:delete-seo-urls /absolute/path/to/exported.csv --dry-run
 ```
 
 **Recommended workflow:**
