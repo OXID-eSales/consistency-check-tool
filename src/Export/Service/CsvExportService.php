@@ -44,6 +44,6 @@ final class CsvExportService implements ExportServiceInterface
             throw new CsvExportException($filePath, $e);
         }
 
-        return $filePath;
+        return $absolutePath;
     }
 }

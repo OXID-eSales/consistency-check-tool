@@ -13,5 +13,10 @@ use OxidEsales\ConsistencyCheck\Export\Configuration\ExportConfigurationInterfac
 
 interface ExportServiceInterface
 {
+    /**
+     * Exports data to a file based on the provided configuration.
+     *
+     * @return string The absolute path to the exported file
+     */
     public function export(ExportConfigurationInterface $configuration): string;
 }

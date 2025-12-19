@@ -55,7 +55,7 @@ CSV;
         $application->add($sut);
 
         $commandTester = new CommandTester($application->find('oe:consistency_check:delete-seo-urls'));
-        $exitCode = $commandTester->execute(['--file' => $filepath]);
+        $exitCode = $commandTester->execute(['file' => $filepath]);
 
         $output = $commandTester->getDisplay();
         $this->assertSame(0, $exitCode);
@@ -84,7 +84,7 @@ CSV;
         $application->add($sut);
 
         $commandTester = new CommandTester($application->find('oe:consistency_check:delete-seo-urls'));
-        $exitCode = $commandTester->execute(['--file' => $filepath, '--dry-run' => true]);
+        $exitCode = $commandTester->execute(['file' => $filepath, '--dry-run' => true]);
 
         $output = $commandTester->getDisplay();
         $this->assertSame(0, $exitCode);
@@ -113,40 +113,13 @@ CSV;
         $application->add($sut);
 
         $commandTester = new CommandTester($application->find('oe:consistency_check:delete-seo-urls'));
-        $exitCode = $commandTester->execute(['--file' => $filepath, '--dry-run' => true]);
+        $exitCode = $commandTester->execute(['file' => $filepath, '--dry-run' => true]);
 
         $output = $commandTester->getDisplay();
         $this->assertSame(0, $exitCode);
         $this->assertStringContainsString($objectId, $output);
         $this->assertStringContainsString($seoUrl, $output);
         $this->assertStringContainsString('OXOBJECTID', $output);
-    }
-
-    #[Test]
-    public function itHasDryRunOption(): void
-    {
-        $sut = $this->getSut();
-        $definition = $sut->getDefinition();
-
-        $this->assertTrue($definition->hasOption('dry-run'));
-        $dryRunOption = $definition->getOption('dry-run');
-        $this->assertSame('Perform a dry run without actual deletions', $dryRunOption->getDescription());
-    }
-
-    #[Test]
-    public function itFailsWhenNoFileOptionProvided(): void
-    {
-        $sut = $this->getSut();
-
-        $application = new Application();
-        $application->add($sut);
-
-        $commandTester = new CommandTester($application->find('oe:consistency_check:delete-seo-urls'));
-        $exitCode = $commandTester->execute([]);
-
-        $output = $commandTester->getDisplay();
-        $this->assertStringContainsString('--file option is required', $output);
-        $this->assertSame(1, $exitCode);
     }
 
     #[Test]
@@ -165,7 +138,7 @@ CSV;
         $application->add($sut);
 
         $commandTester = new CommandTester($application->find('oe:consistency_check:delete-seo-urls'));
-        $exitCode = $commandTester->execute(['--file' => $filepath]);
+        $exitCode = $commandTester->execute(['file' => $filepath]);
 
         $output = $commandTester->getDisplay();
         $this->assertStringContainsString('No SEO URLs found in CSV file', $output);

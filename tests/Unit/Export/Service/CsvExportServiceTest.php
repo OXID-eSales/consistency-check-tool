@@ -72,8 +72,9 @@ final class CsvExportServiceTest extends TestCase
 
         $result = $sut->export($configurationStub);
 
-        $this->assertSame($filepath, $result);
-        $content = file_get_contents($this->fileSystem->url() . '/' . $filepath);
+        $expectedAbsolutePath = $this->fileSystem->url() . '/' . $filepath;
+        $this->assertSame($expectedAbsolutePath, $result);
+        $content = file_get_contents($expectedAbsolutePath);
         $this->assertStringContainsString('field1', $content);
         $this->assertStringContainsString($value1, $content);
         $this->assertStringContainsString($value2, $content);

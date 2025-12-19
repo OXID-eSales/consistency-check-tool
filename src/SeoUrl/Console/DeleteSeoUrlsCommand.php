@@ -17,6 +17,7 @@ use OxidEsales\ConsistencyCheck\SeoUrl\Service\SeoUrlTableRendererInterface;
 use OxidEsales\ConsistencyCheck\Shared\Service\MessageFormatterServiceInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -26,10 +27,8 @@ final class DeleteSeoUrlsCommand extends Command
     protected static $defaultName = 'oe:consistency_check:delete-seo-urls';
 
     private const COMMAND_DESCRIPTION = 'Delete SEO URLs from CSV file (batch operation)';
-    private const COMMAND_OPTION_FILE = 'Path to CSV file containing URLs to delete';
+    private const COMMAND_ARGUMENT_FILE = 'Absolute path to CSV file containing URLs to delete';
     private const COMMAND_OPTION_DRY_RUN = 'Perform a dry run without actual deletions';
-
-    private const MESSAGE_FILE_REQUIRED = '--file option is required';
     private const MESSAGE_READING_CSV = 'Reading CSV file: %s';
     private const MESSAGE_NO_URLS_IN_CSV = 'No SEO URLs found in CSV file';
     private const MESSAGE_DRY_RUN = 'Dry run: Would delete %d SEO URLs (no actual deletion performed)';
@@ -52,18 +51,14 @@ final class DeleteSeoUrlsCommand extends Command
     {
         $this
             ->setDescription(self::COMMAND_DESCRIPTION)
-            ->addOption('file', null, InputOption::VALUE_REQUIRED, self::COMMAND_OPTION_FILE)
+            ->addArgument('file', InputArgument::REQUIRED, self::COMMAND_ARGUMENT_FILE)
             ->addOption('dry-run', null, InputOption::VALUE_NONE, self::COMMAND_OPTION_DRY_RUN);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $file = $input->getOption('file');
-
-        if (!$file) {
-            $output->writeln($this->messageFormatter->formatError(self::MESSAGE_FILE_REQUIRED));
-            return Command::FAILURE;
-        }
+        /** @var string $file */
+        $file = $input->getArgument('file');
 
         $this->logger->info(sprintf(self::MESSAGE_READING_CSV, $file));
         $output->writeln($this->messageFormatter->formatInfo(self::MESSAGE_READING_CSV, $file));
