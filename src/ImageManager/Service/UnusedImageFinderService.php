@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 namespace OxidEsales\ConsistencyCheck\ImageManager\Service;
 
-use OxidEsales\ConsistencyCheck\ImageManager\DataTransferObject\ImageCollectionInterface;
+use OxidEsales\ConsistencyCheck\ImageManager\Dto\ImageCollectionInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Entity\ImageEntityInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Factory\ImageCollectionFactoryInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Repository\ImageRepositoryInterface;

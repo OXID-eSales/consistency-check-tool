@@ -1,0 +1,18 @@
+services:
+  _defaults:
+    autowire: true
+    public: false
+
+  OxidEsales\ConsistencyCheck\SeoUrl\Factory\SeoUrlExportReaderConfigurationFactory: ~
+
+  OxidEsales\ConsistencyCheck\SeoUrl\Factory\UnusedSeoUrlExportConfigurationFactory:
+    class: OxidEsales\ConsistencyCheck\SeoUrl\Factory\SeoUrlExportConfigurationFactory
+    arguments:
+      $arrayFactory: '@OxidEsales\ConsistencyCheck\SeoUrl\Factory\SeoUrlArrayFactory'
+      $exportFilePrefix: '%app.unused_seo_urls_file%'
+
+  OxidEsales\ConsistencyCheck\SeoUrl\Factory\DuplicateSeoUrlExportConfigurationFactory:
+    class: OxidEsales\ConsistencyCheck\SeoUrl\Factory\SeoUrlExportConfigurationFactory
+    arguments:
+      $arrayFactory: '@OxidEsales\ConsistencyCheck\SeoUrl\Factory\SeoUrlArrayFactory'
+      $exportFilePrefix: '%app.duplicate_seo_urls_file%'

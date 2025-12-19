@@ -7,17 +7,17 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\ConsistencyCheck\ImageManager\Tests\Unit\ImageManager\Console;
+namespace OxidEsales\ConsistencyCheck\Tests\Unit\ImageManager\Console;
 
 use OxidEsales\ConsistencyCheck\ImageManager\Console\DeleteUnusedImagesCommand;
-use OxidEsales\ConsistencyCheck\ImageManager\DataTransferObject\ImageCollectionInterface;
+use OxidEsales\ConsistencyCheck\ImageManager\Dto\ImageCollectionInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Entity\ImageEntityInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Factory\ProgressBarFactoryInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Service\PostCommandLoggerInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Service\UnusedImageFinderServiceInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Service\ImageEntityFilterServiceInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Service\ImageManagerServiceInterface;
-use OxidEsales\ConsistencyCheck\ImageManager\Service\MessageFormatterServiceInterface;
+use OxidEsales\ConsistencyCheck\Shared\Service\MessageFormatterServiceInterface;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
@@ -41,8 +41,8 @@ class DeleteUnusedImagesCommandTest extends TestCase
             ->method('getUnusedImages')
             ->willReturn($unusedImages);
 
-        $imageManagerServiceStub = $this->createStub(ImageManagerServiceInterface::class);
-        $imageManagerServiceStub
+        $imageManagerServiceMock = $this->createMock(ImageManagerServiceInterface::class);
+        $imageManagerServiceMock
             ->expects(self::once())
             ->method('deleteImages')
             ->willReturn(1);
@@ -63,7 +63,7 @@ class DeleteUnusedImagesCommandTest extends TestCase
         $sut = $this->getSut(
             entities: [$entityStub],
             imageCheckerService: $imageCheckerServiceStub,
-            imageManagerService: $imageManagerServiceStub,
+            imageManagerService: $imageManagerServiceMock,
             imageEntityFilter: $entityFilterServiceStub,
             messageFormatter: $formatterMock
         );
@@ -87,9 +87,9 @@ class DeleteUnusedImagesCommandTest extends TestCase
         $imageCheckerServiceStub = $this->createStub(UnusedImageFinderServiceInterface::class);
         $imageCheckerServiceStub->method('getUnusedImages')->willReturn($unusedImages);
 
-        $imageManagerServiceStub = $this->createStub(ImageManagerServiceInterface::class);
-        $imageManagerServiceStub
-            ->expects(self::never())
+        $imageManagerServiceSpy = $this->createMock(ImageManagerServiceInterface::class);
+        $imageManagerServiceSpy
+            ->expects($this->never())
             ->method('deleteImages');
 
         $entityFilterServiceStub = $this->createStub(ImageEntityFilterServiceInterface::class);
@@ -108,7 +108,7 @@ class DeleteUnusedImagesCommandTest extends TestCase
         $sut = $this->getSut(
             entities: [$entityStub],
             imageCheckerService: $imageCheckerServiceStub,
-            imageManagerService: $imageManagerServiceStub,
+            imageManagerService: $imageManagerServiceSpy,
             imageEntityFilter: $entityFilterServiceStub,
             messageFormatter: $formatterMock,
         );

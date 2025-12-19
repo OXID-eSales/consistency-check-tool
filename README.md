@@ -9,21 +9,30 @@
 [![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=OXID-eSales_consistency-check-tool&metric=sqale_index)](https://sonarcloud.io/dashboard?id=OXID-eSales_consistency-check-tool)
 
 
-The OXID eSales Consistency Check component is designed to perform various consistency checks on your eShop. It primarily focuses on detecting unused images and provides multiple actions such as
+The OXID eSales Consistency Check component is a flexible tool designed to perform various consistency checks on your eShop. It helps maintain shop performance and data hygiene by identifying and resolving data inconsistencies.
 
-- Performing a dry-run to see how many images would be affected
-- Moving unused images to another location
-- Deleting unused images to free up storage
+**Current capabilities include:**
+- **Unused Image Detection** - Identify orphaned image files no longer connected to products, categories, or manufacturers
+- **SEO URL Verification** - Detect unused and duplicate SEO URLs that may affect shop performance and search rankings
 
-This component ensures that your eShop remains optimized by helping you remove or move unnecessary image files while keeping track of the changes.
+This component ensures that your eShop remains optimized by helping you clean up unnecessary data while keeping track of all changes.
 
 ## Features
-- Provides commands to move or delete unused images. 
-- Supports dry-run mode, allowing safe testing before making changes.
-- Filter unused images across product, categories, and manufacturers.
+
+### Image Management
+- Provides commands to move or delete unused images
+- Supports dry-run mode, allowing safe testing before making changes
+- Filter unused images across product, categories, and manufacturers
 - Progress bar for real-time feedback
-- Logs all actions in log/oe_consistency_check.log for review and auditing. 
-- Customizable directory paths for images.
+- Logs all actions in log/oe_consistency_check.log for review and auditing
+- Customizable directory paths for images
+
+### SEO URL Management
+- Detect unused SEO URLs (orphaned entries where target object no longer exists)
+- Detect duplicate SEO URLs (entries with collision suffixes)
+- Export findings to CSV format for review
+- Batch delete SEO URLs from exported CSV file
+- Support for OXID SEO types with reference tables (oxarticle, oxcategory, oxmanufacturer, oxvendor, oxcontent)
 
 ## Compatibility
 This component assumes you have OXID eShop Compilation version 7.4.0 installed.
@@ -101,6 +110,53 @@ $ vendor/bin/oe-console oe:consistency_check:delete-unused-images --type=product
 ```
 If this parameter is not set the application perform actions on all images.
 
+## SEO URL Commands
+
+### Check Unused SEO URLs
+Detect SEO URLs where the target object no longer exists in the database:
+```bash
+$ vendor/bin/oe-console oe:consistency_check:check-unused-seo-urls
+```
+
+Export results to CSV file:
+```bash
+$ vendor/bin/oe-console oe:consistency_check:check-unused-seo-urls --export
+```
+
+### Check Duplicate SEO URLs
+Detect SEO URLs with collision suffixes (e.g., URLs ending with `-oxid`):
+```bash
+$ vendor/bin/oe-console oe:consistency_check:check-duplicate-seo-urls
+```
+
+The command reads the collision suffix from shop configuration (`sSEOuprefix`). You can override it:
+```bash
+$ vendor/bin/oe-console oe:consistency_check:check-duplicate-seo-urls --suffix=-duplicate
+```
+
+Export results to CSV:
+```bash
+$ vendor/bin/oe-console oe:consistency_check:check-duplicate-seo-urls --export
+```
+
+### Delete SEO URLs from CSV
+Delete SEO URLs listed in a previously exported CSV file:
+```bash
+$ vendor/bin/oe-console oe:consistency_check:delete-seo-urls /absolute/path/to/exported.csv
+```
+
+Use `--dry-run` to preview deletions without making changes:
+```bash
+$ vendor/bin/oe-console oe:consistency_check:delete-seo-urls /absolute/path/to/exported.csv --dry-run
+```
+
+**Recommended workflow:**
+1. Run check command to see results in console
+2. Run check command with `--export` to generate CSV
+3. Review the CSV file and remove any rows you want to keep
+4. Run delete command with `--dry-run` to preview
+5. Run delete command to perform actual deletion
+
 ### Logs
 All operations, including moved and deleted images, are logged in:
 ```
@@ -112,14 +168,22 @@ This log file helps you track the changes and verify actions performed by the to
 
 There are several parameters in the `services.yaml` that can be customized for the module:
 * `app.log_file_path` - Path to the log file where the consistency check results will be stored.
+* `app.export_directory_path` - Directory where CSV export files are saved.
+* `app.unused_seo_urls_file` - File name prefix for unused SEO URLs export.
+* `app.duplicate_seo_urls_file` - File name prefix for duplicate SEO URLs export.
 
-To modify the parameters, create the `configurable_services.yaml` file in the `var/configuration` folder as 
-described in the [Documentation](https://docs.oxid-esales.com/developer/en/latest/development/tell_me_about/service_container.html#replacing-oxid-eshop-services-in-a-project), 
+All paths are relative to the OXID eShop root directory.
+
+To modify the parameters, create the `configurable_services.yaml` file in the `var/configuration` folder as
+described in the [Documentation](https://docs.oxid-esales.com/developer/en/latest/development/tell_me_about/service_container.html#replacing-oxid-eshop-services-in-a-project),
 and overwrite the parameters you want to change. Ex.:
 
 ```yaml
 parameters:
-  app.log_file_path: '/my/custom/filepath/to.log'
+  app.log_file_path: 'log/oe_consistency_check.log'
+  app.export_directory_path: 'var/exports'
+  app.unused_seo_urls_file: 'orphaned-seo-urls'
+  app.duplicate_seo_urls_file: 'collision-seo-urls'
 ```
 
 ### Custom file paths for images

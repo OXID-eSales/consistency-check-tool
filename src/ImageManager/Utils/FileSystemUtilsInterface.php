@@ -18,6 +18,4 @@ interface FileSystemUtilsInterface
      * @throws DirectoryNotFoundException
      */
     public function getFilesInDirectory(string $directoryPath): array;
-
-    public function getAbsolutePath(string $path): string;
 }

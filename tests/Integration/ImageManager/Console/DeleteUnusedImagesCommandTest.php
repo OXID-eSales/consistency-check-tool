@@ -16,7 +16,7 @@ use OxidEsales\ConsistencyCheck\ImageManager\Service\PostCommandLoggerInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Service\UnusedImageFinderServiceInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Service\ImageEntityFilterServiceInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\Service\ImageManagerServiceInterface;
-use OxidEsales\ConsistencyCheck\ImageManager\Service\MessageFormatterServiceInterface;
+use OxidEsales\ConsistencyCheck\Shared\Service\MessageFormatterServiceInterface;
 use OxidEsales\EshopCommunity\Tests\Integration\IntegrationTestCase;
 use PHPUnit\Framework\Attributes\Test;
 use Psr\Log\LoggerInterface;

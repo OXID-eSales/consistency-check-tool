@@ -4,10 +4,29 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [1.1.0] - unreleased
+## [2.0.0] - unreleased
+
+### Added
+- SEO URL consistency checking functionality
+- Console command `oe:consistency_check:check-unused-seo-urls` to detect orphaned SEO URLs
+- Console command `oe:consistency_check:check-duplicate-seo-urls` to detect SEO URLs with collision suffixes
+- Console command `oe:consistency_check:delete-seo-urls` for batch deletion from CSV file
+- CSV export functionality for SEO URL check results
+- Support for OXID SEO types with reference tables (oxarticle, oxcategory, oxmanufacturer, oxvendor, oxcontent)
+- Generic CSV export/import services in `Export/` domain for reusability
+- `ExportFileNameGenerator` service for timestamped export filenames
 
 ### Changed
 - Update component to work with OXID eShop 7.4
+- Renamed `ImageManager/DataTransferObject` directory to `ImageManager/Dto` for naming consistency
+- Removed `FileSystemUtils::getAbsolutePath()` wrapper method; `ImageManagerService` now uses `PathResolverInterface` directly
+- Moved `ExportableDtoInterface` from `Shared/Dto` to `Export/Dto`
+- Moved `ExportDirectoryNotFoundException` from `SeoUrl/Exception` to `Export/Exception`
+- `ImageManagerService` requires `PathResolverInterface` instance instead of `FileSystemUtilsInterface`
+- `FileSystemUtils` requiers `PathResolverInterface` instance instead of eShop `ContextInterface`
+
+### Removed
+- `FileSystemUtilsInterface::getAbsolutePath` method
 
 ## [1.0.0] - 2025-06-11
 
