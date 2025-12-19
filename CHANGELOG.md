@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [1.1.0] - unreleased
+## [2.0.0] - unreleased
 
 ### Added
 - SEO URL consistency checking functionality
@@ -22,6 +22,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Removed `FileSystemUtils::getAbsolutePath()` wrapper method; `ImageManagerService` now uses `PathResolverInterface` directly
 - Moved `ExportableDtoInterface` from `Shared/Dto` to `Export/Dto`
 - Moved `ExportDirectoryNotFoundException` from `SeoUrl/Exception` to `Export/Exception`
+- `ImageManagerService` requires `PathResolverInterface` instance instead of `FileSystemUtilsInterface`
+- `FileSystemUtils` requiers `PathResolverInterface` instance instead of eShop `ContextInterface`
+
+### Removed
+- `FileSystemUtilsInterface::getAbsolutePath` method
 
 ## [1.0.0] - 2025-06-11
 
