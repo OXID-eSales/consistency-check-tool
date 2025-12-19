@@ -35,9 +35,6 @@ services:
     arguments:
       $logger: '@OxidEsales\ConsistencyCheck\ImageManager\Logger'
 
-  OxidEsales\ConsistencyCheck\ImageManager\Service\MessageFormatterServiceInterface:
-    class: OxidEsales\ConsistencyCheck\ImageManager\Service\MessageFormatterService
-
   OxidEsales\ConsistencyCheck\ImageManager\Service\LogReaderInterface:
     class: OxidEsales\ConsistencyCheck\ImageManager\Service\FileLogReader
     arguments:
@@ -48,3 +45,5 @@ services:
 
   OxidEsales\ConsistencyCheck\ImageManager\Service\PostCommandLoggerInterface:
     class: OxidEsales\ConsistencyCheck\ImageManager\Service\VerboseConsoleLogReporter
+    arguments:
+      $formatter: '@OxidEsales\ConsistencyCheck\Shared\Service\MessageFormatterServiceInterface'

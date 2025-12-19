@@ -11,12 +11,13 @@ namespace OxidEsales\ConsistencyCheck\SeoUrl\Configuration;
 
 use OxidEsales\ConsistencyCheck\Export\Configuration\ExportReaderConfigurationInterface;
 use OxidEsales\ConsistencyCheck\Export\Factory\DtoFactoryInterface;
+use OxidEsales\ConsistencyCheck\SeoUrl\Factory\SeoUrlDtoFactoryInterface;
 
 final class SeoUrlExportReaderConfiguration implements ExportReaderConfigurationInterface
 {
     public function __construct(
         private readonly string $filePath,
-        private readonly DtoFactoryInterface $dtoFactory,
+        private readonly SeoUrlDtoFactoryInterface $dtoFactory,
     ) {
     }
 

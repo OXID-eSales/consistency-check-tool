@@ -10,7 +10,7 @@ declare(strict_types=1);
 namespace OxidEsales\ConsistencyCheck\Export\Service;
 
 use OxidEsales\ConsistencyCheck\Export\Configuration\ExportReaderConfigurationInterface;
-use OxidEsales\ConsistencyCheck\Shared\Dto\ExportableDtoInterface;
+use OxidEsales\ConsistencyCheck\Export\Dto\ExportableDtoInterface;
 
 interface ExportReaderServiceInterface
 {

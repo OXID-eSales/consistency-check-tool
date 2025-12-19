@@ -80,23 +80,6 @@ class FileSystemUtilsTest extends TestCase
         $sut->getFilesInDirectory($nonExistingDirectory);
     }
 
-    #[Test]
-    public function getAbsolutePathReturnsCorrectPath(): void
-    {
-        $basePath = uniqid();
-        $relativePath = uniqid();
-        $expectedAbsolutePath = $basePath . '/' . $relativePath;
-
-        $pathResolverStub = $this->createStub(PathResolverInterface::class);
-        $pathResolverStub->method('getAbsolutePath')
-            ->with($relativePath)
-            ->willReturn($expectedAbsolutePath);
-
-        $sut = $this->getSut($pathResolverStub);
-
-        $this->assertEquals($expectedAbsolutePath, $sut->getAbsolutePath($relativePath));
-    }
-
     private function getSut(
         ?PathResolverInterface $pathResolver = null
     ): FileSystemUtilsInterface {

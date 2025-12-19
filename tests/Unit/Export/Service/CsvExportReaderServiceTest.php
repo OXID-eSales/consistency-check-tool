@@ -18,7 +18,7 @@ use OxidEsales\ConsistencyCheck\Export\Factory\CsvReaderFactoryInterface;
 use OxidEsales\ConsistencyCheck\Export\Factory\DtoFactoryInterface;
 use OxidEsales\ConsistencyCheck\Export\Service\CsvExportReaderService;
 use OxidEsales\ConsistencyCheck\Export\Service\ExportReaderServiceInterface;
-use OxidEsales\ConsistencyCheck\Shared\Dto\ExportableDtoInterface;
+use OxidEsales\ConsistencyCheck\Export\Dto\ExportableDtoInterface;
 use OxidEsales\ConsistencyCheck\Shared\Service\PathResolverInterface;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

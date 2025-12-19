@@ -9,8 +9,8 @@ declare(strict_types=1);
 
 namespace OxidEsales\ConsistencyCheck\ImageManager\Service;
 
-use OxidEsales\ConsistencyCheck\ImageManager\DataTransferObject\ImageCollectionInterface;
-use OxidEsales\ConsistencyCheck\ImageManager\Utils\FileSystemUtilsInterface;
+use OxidEsales\ConsistencyCheck\ImageManager\Dto\ImageCollectionInterface;
+use OxidEsales\ConsistencyCheck\Shared\Service\PathResolverInterface;
 use Psr\Log\LoggerInterface as PsrLoggerInterface;
 use OxidEsales\EshopCommunity\Internal\Framework\FileSystem\ImageHandlerInterface;
 
@@ -24,7 +24,7 @@ class ImageManagerService implements ImageManagerServiceInterface
     private const IMAGE_DELETED_FAILED = 'Failed to delete image: %s. Error: %s for %s';
 
     public function __construct(
-        private readonly FileSystemUtilsInterface $fileSystemUtils,
+        private readonly PathResolverInterface $pathResolver,
         private readonly PsrLoggerInterface $logger,
         private readonly ImageHandlerInterface $imageHandler,
     ) {
@@ -49,7 +49,7 @@ class ImageManagerService implements ImageManagerServiceInterface
                 $moveCount++;
             } else {
                 try {
-                    $this->imageHandler->copy($this->fileSystemUtils->getAbsolutePath($sourcePath), $destinationPath);
+                    $this->imageHandler->copy($this->pathResolver->getAbsolutePath($sourcePath), $destinationPath);
                     $this->imageHandler->remove($sourcePath);
                     $moveCount++;
                     $this->logger->info(

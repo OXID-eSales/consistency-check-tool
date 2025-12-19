@@ -7,13 +7,13 @@
 
 declare(strict_types=1);
 
-namespace ImageManager\DataTransferObject;
+namespace OxidEsales\ConsistencyCheck\Tests\Unit\ImageManager\Dto;
 
-use OxidEsales\ConsistencyCheck\ImageManager\DataTransferObject\ImageCollectionInterface;
+use OxidEsales\ConsistencyCheck\ImageManager\Dto\ImageCollectionInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\DataType\ImageDataType;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use OxidEsales\ConsistencyCheck\ImageManager\DataTransferObject\ImageCollection;
+use OxidEsales\ConsistencyCheck\ImageManager\Dto\ImageCollection;
 
 class ImageCollectionTest extends TestCase
 {

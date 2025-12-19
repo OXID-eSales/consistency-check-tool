@@ -17,15 +17,19 @@ use OxidEsales\ConsistencyCheck\Shared\Service\PathResolverInterface;
 
 final class CsvExportService implements ExportServiceInterface
 {
+    private const FILE_EXTENSION = 'csv';
+
     public function __construct(
         private readonly PathResolverInterface $pathResolver,
         private readonly CsvWriterFactoryInterface $writerFactory,
+        private readonly ExportFileNameGeneratorInterface $fileNameGenerator,
     ) {
     }
 
-    public function export(ExportConfigurationInterface $configuration): void
+    public function export(ExportConfigurationInterface $configuration): string
     {
-        $absolutePath = $this->pathResolver->getAbsolutePath($configuration->getFilePath());
+        $filePath = $this->fileNameGenerator->generate($configuration->getFilePrefix(), self::FILE_EXTENSION);
+        $absolutePath = $this->pathResolver->getAbsolutePath($filePath);
 
         try {
             $csv = $this->writerFactory->create($absolutePath);
@@ -37,7 +41,9 @@ final class CsvExportService implements ExportServiceInterface
                 $csv->insertOne($arrayFactory->createFromDto($dto));
             }
         } catch (UnableToProcessCsv $e) {
-            throw new CsvExportException($configuration->getFilePath(), $e);
+            throw new CsvExportException($filePath, $e);
         }
+
+        return $absolutePath;
     }
 }

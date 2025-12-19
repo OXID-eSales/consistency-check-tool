@@ -9,6 +9,11 @@ services:
   OxidEsales\ConsistencyCheck\Export\Factory\CsvWriterFactoryInterface:
     class: OxidEsales\ConsistencyCheck\Export\Factory\CsvWriterFactory
 
+  OxidEsales\ConsistencyCheck\Export\Service\ExportFileNameGeneratorInterface:
+    class: OxidEsales\ConsistencyCheck\Export\Service\ExportFileNameGenerator
+    arguments:
+      $exportDirectoryPath: '%app.export_directory_path%'
+
   OxidEsales\ConsistencyCheck\Export\Service\ExportServiceInterface:
     class: OxidEsales\ConsistencyCheck\Export\Service\CsvExportService
 

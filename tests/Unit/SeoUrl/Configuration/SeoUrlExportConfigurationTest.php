@@ -12,7 +12,7 @@ namespace OxidEsales\ConsistencyCheck\Tests\Unit\SeoUrl\Configuration;
 use OxidEsales\ConsistencyCheck\Export\Configuration\ExportConfigurationInterface;
 use OxidEsales\ConsistencyCheck\Export\Factory\ArrayFactoryInterface;
 use OxidEsales\ConsistencyCheck\SeoUrl\Configuration\SeoUrlExportConfiguration;
-use OxidEsales\ConsistencyCheck\Shared\Dto\ExportableDtoInterface;
+use OxidEsales\ConsistencyCheck\Export\Dto\ExportableDtoInterface;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
@@ -64,22 +64,22 @@ final class SeoUrlExportConfigurationTest extends TestCase
     }
 
     #[Test]
-    public function getFilePath(): void
+    public function getFilePrefix(): void
     {
-        $filePath = uniqid();
-        $sut = $this->getSut(filePath: $filePath);
+        $filePrefix = uniqid();
+        $sut = $this->getSut(filePrefix: $filePrefix);
 
-        $this->assertSame($filePath, $sut->getFilePath());
+        $this->assertSame($filePrefix, $sut->getFilePrefix());
     }
 
     private function getSut(
         array $items = [],
         ?ArrayFactoryInterface $arrayFactory = null,
-        ?string $filePath = null,
+        ?string $filePrefix = null,
     ): ExportConfigurationInterface {
         $arrayFactory ??= $this->createStub(ArrayFactoryInterface::class);
-        $filePath ??= uniqid();
+        $filePrefix ??= uniqid();
 
-        return new SeoUrlExportConfiguration($items, $arrayFactory, $filePath);
+        return new SeoUrlExportConfiguration($items, $arrayFactory, $filePrefix);
     }
 }

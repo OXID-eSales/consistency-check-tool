@@ -5,7 +5,7 @@
  * See LICENSE file for license details.
  */
 
-namespace OxidEsales\ConsistencyCheck\ImageManager\DataTransferObject;
+namespace OxidEsales\ConsistencyCheck\ImageManager\Dto;
 
 use OxidEsales\ConsistencyCheck\ImageManager\DataType\ImageDataTypeInterface;
 

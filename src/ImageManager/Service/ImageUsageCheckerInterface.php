@@ -7,7 +7,7 @@
 
 namespace OxidEsales\ConsistencyCheck\ImageManager\Service;
 
-use OxidEsales\ConsistencyCheck\ImageManager\DataTransferObject\ImageCollectionInterface;
+use OxidEsales\ConsistencyCheck\ImageManager\Dto\ImageCollectionInterface;
 use OxidEsales\ConsistencyCheck\ImageManager\DataType\ImageDataTypeInterface;
 
 interface ImageUsageCheckerInterface

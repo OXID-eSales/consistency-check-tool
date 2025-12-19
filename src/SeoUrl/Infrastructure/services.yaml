@@ -1,4 +1,8 @@
 services:
+  _defaults:
+    autowire: true
+    public: false
+
   seo_type_table_mapping.article:
     class: OxidEsales\ConsistencyCheck\SeoUrl\Infrastructure\SeoTypeTableMapping
     arguments:

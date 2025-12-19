@@ -1,5 +1,8 @@
 parameters:
   app.log_file_path: '/var/www/source/log/oe_consistency_check.log'
+  app.export_directory_path: '/var/www/source/export'
+  app.unused_seo_urls_file: 'Unused-Seo-Urls'
+  app.duplicate_seo_urls_file: 'Duplicate-Seo-Urls'
 
 imports:
   - { resource: src/ImageManager/services.yaml }

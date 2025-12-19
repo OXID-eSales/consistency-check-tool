@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace OxidEsales\ConsistencyCheck\ImageManager\Service;
 
+use OxidEsales\ConsistencyCheck\Shared\Service\MessageFormatterServiceInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class VerboseConsoleLogReporter implements PostCommandLoggerInterface
