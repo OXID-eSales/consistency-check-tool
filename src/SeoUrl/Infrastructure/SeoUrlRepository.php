@@ -21,6 +21,8 @@ use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInt
 final class SeoUrlRepository implements SeoUrlRepositoryInterface
 {
     private const ROOT_OBJECT_ID = 'root';
+    private const DELETE_CHUNK_SIZE = 500;
+
 
     /**
      * @param iterable<SeoTypeTableMappingInterface> $seoTypeTableMappings
@@ -99,14 +101,21 @@ final class SeoUrlRepository implements SeoUrlRepositoryInterface
             return 0;
         }
 
-        $queryBuilder = $this->queryBuilderFactory->create();
+        $deleted = 0;
+        $chunks = array_chunk($oxids, self::DELETE_CHUNK_SIZE);
 
-        $result = $queryBuilder
-            ->delete('oxseo')
-            ->where('OXOBJECTID IN (:oxids)')
-            ->setParameter('oxids', $oxids, Connection::PARAM_STR_ARRAY)
-            ->execute();
+        foreach ($chunks as $chunk) {
+            $queryBuilder = $this->queryBuilderFactory->create();
 
-        return is_int($result) ? $result : 0;
+            $result = $queryBuilder
+                ->delete('oxseo')
+                ->where('OXOBJECTID IN (:oxids)')
+                ->setParameter('oxids', $chunk, Connection::PARAM_STR_ARRAY)
+                ->execute();
+
+            $deleted += is_int($result) ? $result : 0;
+        }
+
+        return $deleted;
     }
 }
