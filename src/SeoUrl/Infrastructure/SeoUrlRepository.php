@@ -23,19 +23,19 @@ final class SeoUrlRepository implements SeoUrlRepositoryInterface
     private const ROOT_OBJECT_ID = 'root';
 
     /**
-     * @param iterable<SeoTypeTableMappingInterface> $mappings
+     * @param iterable<SeoTypeTableMappingInterface> $seoTypeTableMappings
      */
     public function __construct(
         private readonly QueryBuilderFactoryInterface $queryBuilderFactory,
-        private readonly SeoUrlDtoFactoryInterface $factory,
-        private readonly iterable $mappings,
+        private readonly SeoUrlDtoFactoryInterface $seoUrlDtoFactory,
+        private readonly iterable $seoTypeTableMappings,
     ) {
     }
 
     public function findUnusedUrls(): array
     {
         $allDtos = [];
-        foreach ($this->mappings as $mapping) {
+        foreach ($this->seoTypeTableMappings as $mapping) {
             $dtos = $this->findUnusedUrlsForMapping($mapping);
             $allDtos = array_merge($allDtos, $dtos);
         }
@@ -61,13 +61,11 @@ final class SeoUrlRepository implements SeoUrlRepositoryInterface
 
         /** @var Result<array> $result */
         $result = $queryBuilder->execute();
-        $rows = $result->fetchAllAssociative();
 
         $dtos = [];
         /** @var SeoUrlTableRow $row */
-        foreach ($rows as $row) {
-            $dto = $this->factory->createFromArray($row);
-            $dtos[] = $dto;
+        while ($row = $result->fetchAssociative()) {
+            $dtos[] = $this->seoUrlDtoFactory->createFromArray($row);
         }
 
         return $dtos;
@@ -85,13 +83,11 @@ final class SeoUrlRepository implements SeoUrlRepositoryInterface
 
         /** @var Result<array> $result */
         $result = $queryBuilder->execute();
-        $rows = $result->fetchAllAssociative();
 
         $dtos = [];
         /** @var SeoUrlTableRow $row */
-        foreach ($rows as $row) {
-            $dto = $this->factory->createFromArray($row);
-            $dtos[] = $dto;
+        while ($row = $result->fetchAssociative()) {
+            $dtos[] = $this->seoUrlDtoFactory->createFromArray($row);
         }
 
         return $dtos;
