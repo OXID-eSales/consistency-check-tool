@@ -41,5 +41,5 @@ services:
   OxidEsales\ConsistencyCheck\SeoUrl\Infrastructure\SeoUrlRepositoryInterface:
     class: OxidEsales\ConsistencyCheck\SeoUrl\Infrastructure\SeoUrlRepository
     arguments:
-      $mappings: !tagged_iterator seo_type_table_mapping
+     $seoTypeTableMappings: !tagged_iterator seo_type_table_mapping
     public: true
