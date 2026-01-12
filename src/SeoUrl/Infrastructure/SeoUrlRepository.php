@@ -14,6 +14,8 @@ use Doctrine\DBAL\ForwardCompatibility\Result;
 use OxidEsales\ConsistencyCheck\SeoUrl\Dto\SeoUrlDtoInterface;
 use OxidEsales\ConsistencyCheck\SeoUrl\Factory\SeoUrlDtoFactoryInterface;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
+use OxidEsales\EshopCommunity\Internal\Transition\Adapter\ShopAdapterInterface;
+use OxidEsales\EshopCommunity\Internal\Transition\Utility\ContextInterface;
 
 /**
  * @phpstan-import-type SeoUrlTableRow from SeoUrlDtoFactoryInterface
@@ -31,6 +33,8 @@ final class SeoUrlRepository implements SeoUrlRepositoryInterface
         private readonly QueryBuilderFactoryInterface $queryBuilderFactory,
         private readonly SeoUrlDtoFactoryInterface $seoUrlDtoFactory,
         private readonly iterable $seoTypeTableMappings,
+        private readonly ContextInterface $context,
+        private readonly ShopAdapterInterface $shopAdapter,
     ) {
     }
 
@@ -49,25 +53,37 @@ final class SeoUrlRepository implements SeoUrlRepositoryInterface
      */
     private function findUnusedUrlsForMapping(SeoTypeTableMappingInterface $mapping): array
     {
-        $queryBuilder = $this->queryBuilderFactory->create();
-
-        $queryBuilder
-            ->select('s.*')
-            ->from('oxseo', 's')
-            ->leftJoin('s', $mapping->getReferenceTable(), 'r', 's.OXOBJECTID = r.OXID')
-            ->where('s.OXTYPE = :type')
-            ->andWhere('r.OXID IS NULL')
-            ->andWhere('s.OXOBJECTID != :rootId')
-            ->setParameter('type', $mapping->getSeoType())
-            ->setParameter('rootId', self::ROOT_OBJECT_ID);
-
-        /** @var Result<array> $result */
-        $result = $queryBuilder->execute();
-
         $dtos = [];
-        /** @var SeoUrlTableRow $row */
-        while ($row = $result->fetchAssociative()) {
-            $dtos[] = $this->seoUrlDtoFactory->createFromArray($row);
+
+        foreach ($this->context->getAllShopIds() as $shopId) {
+            $seoViewName = $this->shopAdapter->generateDatabaseViewName('oxseo', 0, $shopId);
+            $referenceViewName = $this->shopAdapter->generateDatabaseViewName(
+                $mapping->getReferenceTable(),
+                0,
+                $shopId
+            );
+
+            $queryBuilder = $this->queryBuilderFactory->create();
+
+            $queryBuilder
+                ->select('s.*')
+                ->from($seoViewName, 's')
+                ->leftJoin('s', $referenceViewName, 'r', 's.OXOBJECTID = r.OXID')
+                ->where('s.OXTYPE = :type')
+                ->andWhere('s.OXSHOPID = :shopId')
+                ->andWhere('r.OXID IS NULL')
+                ->andWhere('s.OXOBJECTID != :rootId')
+                ->setParameter('type', $mapping->getSeoType())
+                ->setParameter('shopId', $shopId)
+                ->setParameter('rootId', self::ROOT_OBJECT_ID);
+
+            /** @var Result<array> $result */
+            $result = $queryBuilder->execute();
+
+            while ($row = $result->fetchAssociative()) {
+                /** @var SeoUrlTableRow $row */
+                $dtos[] = $this->seoUrlDtoFactory->createFromArray($row);
+            }
         }
 
         return $dtos;
@@ -87,8 +103,8 @@ final class SeoUrlRepository implements SeoUrlRepositoryInterface
         $result = $queryBuilder->execute();
 
         $dtos = [];
-        /** @var SeoUrlTableRow $row */
         while ($row = $result->fetchAssociative()) {
+            /** @var SeoUrlTableRow $row */
             $dtos[] = $this->seoUrlDtoFactory->createFromArray($row);
         }
 

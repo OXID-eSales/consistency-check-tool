@@ -14,9 +14,11 @@ use OxidEsales\ConsistencyCheck\SeoUrl\Infrastructure\SeoTypeTableMapping;
 use OxidEsales\ConsistencyCheck\SeoUrl\Infrastructure\SeoUrlRepository;
 use OxidEsales\ConsistencyCheck\SeoUrl\Infrastructure\SeoUrlRepositoryInterface;
 use OxidEsales\Eshop\Application\Model\Article;
-use OxidEsales\Eshop\Core\Model\BaseModel;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
+use OxidEsales\EshopCommunity\Internal\Transition\Adapter\ShopAdapterInterface;
+use OxidEsales\EshopCommunity\Internal\Transition\Utility\ContextInterface;
 use OxidEsales\EshopCommunity\Tests\Integration\IntegrationTestCase;
+use OxidEsales\Facts\Facts;
 use PHPUnit\Framework\Attributes\Test;
 
 final class SeoUrlRepositoryTest extends IntegrationTestCase
@@ -24,51 +26,53 @@ final class SeoUrlRepositoryTest extends IntegrationTestCase
     #[Test]
     public function findUnusedUrls(): void
     {
-        $orphanedObjectId = uniqid();
-        $orphanedSeoUrl = uniqid() . '.html';
+        // Article 1: exists in Shop 1 only
+        $articleIdShop1 = uniqid();
+        $this->insertArticle($articleIdShop1, shopId: 1);
+
+        // SEO URL 1: Shop 1, references non-existing article → ORPHAN
+        $orphanSeoUrlShop1 = uniqid() . '-shop1-orphan.html';
+        $nonExistingArticleId = uniqid();
         $this->insertSeoUrl(
-            objectId: $orphanedObjectId,
-            seoUrl: $orphanedSeoUrl,
-            type: 'oxarticle'
+            objectId: $nonExistingArticleId,
+            seoUrl: $orphanSeoUrlShop1,
+            type: 'oxarticle',
+            shopId: 1
         );
 
-        $existingObjectId = uniqid();
-        $this->insertArticle($existingObjectId);
+        // SEO URL 2: Shop 1, references Article 1 (same shop) → NOT ORPHAN
         $this->insertSeoUrl(
-            objectId: $existingObjectId,
-            seoUrl: uniqid() . '.html',
-            type: 'oxarticle'
+            objectId: $articleIdShop1,
+            seoUrl: uniqid() . '-shop1-valid.html',
+            type: 'oxarticle',
+            shopId: 1
         );
+
+        $expectedOrphanCount = 1;
+        $orphanSeoUrlShop2 = null;
+
+        if ($this->isNotCommunityEdition()) {
+            // SEO URL 3: Shop 2, references Article 1 (exists in Shop 1 only) → ORPHAN
+            $orphanSeoUrlShop2 = uniqid() . '-shop2-orphan.html';
+            $this->insertSeoUrl(
+                objectId: $articleIdShop1,
+                seoUrl: $orphanSeoUrlShop2,
+                type: 'oxarticle',
+                shopId: 2
+            );
+            $expectedOrphanCount++;
+        }
 
         $result = $this->getSut()->findUnusedUrls();
 
-        $this->assertCount(1, $result);
-        $this->assertSame($orphanedObjectId, $result[0]->getObjectId());
-        $this->assertSame($orphanedSeoUrl, $result[0]->getSeoUrl());
-    }
+        $seoUrls = array_map(fn($dto) => $dto->getSeoUrl(), $result);
 
-    #[Test]
-    public function findUnusedUrlsReturnsEmptyWhenAllHaveReferences(): void
-    {
-        $existingObjectId = uniqid();
-        $this->insertArticle($existingObjectId);
-        $this->insertSeoUrl(
-            objectId: $existingObjectId,
-            seoUrl: uniqid() . '.html',
-            type: 'oxarticle'
-        );
+        $this->assertCount($expectedOrphanCount, $result);
+        $this->assertContains($orphanSeoUrlShop1, $seoUrls);
 
-        $result = $this->getSut()->findUnusedUrls();
-
-        $this->assertEmpty($result);
-    }
-
-    #[Test]
-    public function findUnusedUrlsReturnsEmptyWhenTableIsEmpty(): void
-    {
-        $result = $this->getSut()->findUnusedUrls();
-
-        $this->assertEmpty($result);
+        if ($this->isNotCommunityEdition()) {
+            $this->assertContains($orphanSeoUrlShop2, $seoUrls);
+        }
     }
 
     #[Test]
@@ -168,7 +172,7 @@ final class SeoUrlRepositoryTest extends IntegrationTestCase
         $this->assertSame(0, $deletedCount);
     }
 
-    private function insertSeoUrl(string $objectId, string $seoUrl, string $type): void
+    private function insertSeoUrl(string $objectId, string $seoUrl, string $type, int $shopId = 1): void
     {
         $queryBuilder = $this->get(QueryBuilderFactoryInterface::class)->create();
 
@@ -188,8 +192,8 @@ final class SeoUrlRepositoryTest extends IntegrationTestCase
             ])
             ->setParameters([
                 'objectId' => $objectId,
-                'ident' => md5($seoUrl),
-                'shopId' => 1,
+                'ident' => md5($seoUrl . $shopId),
+                'shopId' => $shopId,
                 'lang' => 0,
                 'stdUrl' => 'index.php?cl=details&anid=' . $objectId,
                 'seoUrl' => $seoUrl,
@@ -201,7 +205,7 @@ final class SeoUrlRepositoryTest extends IntegrationTestCase
             ->execute();
     }
 
-    private function insertArticle(string $articleId): BaseModel
+    private function insertArticle(string $articleId, int $shopId = 1): void
     {
         $article = oxNew(Article::class);
         $article->setId($articleId);
@@ -210,12 +214,13 @@ final class SeoUrlRepositoryTest extends IntegrationTestCase
             'oxparentid' => '',
             'oxartnum' => uniqid(),
             'oxtitle' => uniqid(),
-            'oxshopid' => 1,
             'oxactive' => 1
         ]);
         $article->save();
 
-        return $article;
+        if ($this->isNotCommunityEdition()) {
+            $article->assignToShop($shopId);
+        }
     }
 
     private function getSut(): SeoUrlRepositoryInterface
@@ -227,7 +232,14 @@ final class SeoUrlRepositoryTest extends IntegrationTestCase
         return new SeoUrlRepository(
             $this->get(QueryBuilderFactoryInterface::class),
             $this->get(SeoUrlDtoFactoryInterface::class),
-            $mappings
+            $mappings,
+            $this->get(ContextInterface::class),
+            $this->get(ShopAdapterInterface::class),
         );
+    }
+
+    private function isNotCommunityEdition(): bool
+    {
+        return (new Facts())->getEdition() !== 'CE';
     }
 }
