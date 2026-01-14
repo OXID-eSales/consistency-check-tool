@@ -9,7 +9,6 @@ declare(strict_types=1);
 
 namespace OxidEsales\ConsistencyCheck\SeoUrl\Infrastructure;
 
-use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\ForwardCompatibility\Result;
 use OxidEsales\ConsistencyCheck\SeoUrl\Dto\SeoUrlDtoInterface;
 use OxidEsales\ConsistencyCheck\SeoUrl\Factory\SeoUrlDtoFactoryInterface;
@@ -111,25 +110,34 @@ final class SeoUrlRepository implements SeoUrlRepositoryInterface
         return $dtos;
     }
 
-    public function deleteUrls(array $oxids): int
+    public function deleteUrls(array $seoUrlDtos): int
     {
-        if (empty($oxids)) {
+        if (empty($seoUrlDtos)) {
             return 0;
         }
 
         $deleted = 0;
-        $chunks = array_chunk($oxids, self::DELETE_CHUNK_SIZE);
+        $chunks = array_chunk($seoUrlDtos, self::DELETE_CHUNK_SIZE);
 
         foreach ($chunks as $chunk) {
-            $queryBuilder = $this->queryBuilderFactory->create();
+            $tuples = [];
+            $params = [];
 
-            $result = $queryBuilder
-                ->delete('oxseo')
-                ->where('OXOBJECTID IN (:oxids)')
-                ->setParameter('oxids', $chunk, Connection::PARAM_STR_ARRAY)
-                ->execute();
+            foreach ($chunk as $dto) {
+                $tuples[] = '(?, ?, ?)';
+                $params[] = $dto->getObjectId();
+                $params[] = $dto->getShopId();
+                $params[] = $dto->getLanguageId();
+            }
 
-            $deleted += is_int($result) ? $result : 0;
+            $sql = sprintf(
+                'DELETE FROM oxseo WHERE (OXOBJECTID, OXSHOPID, OXLANG) IN (%s)',
+                implode(', ', $tuples)
+            );
+
+            $connection = $this->queryBuilderFactory->create()->getConnection();
+            $result = $connection->executeStatement($sql, $params);
+            $deleted += $result;
         }
 
         return $deleted;

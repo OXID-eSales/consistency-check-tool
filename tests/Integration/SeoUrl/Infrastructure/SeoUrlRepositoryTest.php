@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace OxidEsales\ConsistencyCheck\Tests\Integration\SeoUrl\Infrastructure;
 
+use OxidEsales\ConsistencyCheck\SeoUrl\Dto\SeoUrlDto;
 use OxidEsales\ConsistencyCheck\SeoUrl\Factory\SeoUrlDtoFactoryInterface;
 use OxidEsales\ConsistencyCheck\SeoUrl\Infrastructure\SeoTypeTableMapping;
 use OxidEsales\ConsistencyCheck\SeoUrl\Infrastructure\SeoUrlRepository;
@@ -150,12 +151,37 @@ final class SeoUrlRepositoryTest extends IntegrationTestCase
         $oxid1 = uniqid();
         $oxid2 = uniqid();
         $oxid3 = uniqid();
+        $shopId = 1;
+        $languageId = random_int(0, 1);
 
-        $this->insertSeoUrl(objectId: $oxid1, seoUrl: uniqid() . '.html', type: 'oxarticle');
-        $this->insertSeoUrl(objectId: $oxid2, seoUrl: uniqid() . '.html', type: 'oxarticle');
-        $this->insertSeoUrl(objectId: $oxid3, seoUrl: uniqid() . '.html', type: 'oxarticle');
+        $this->insertSeoUrl(
+            objectId: $oxid1,
+            seoUrl: uniqid() . '.html',
+            type: 'oxarticle',
+            shopId: $shopId,
+            lang: $languageId
+        );
+        $this->insertSeoUrl(
+            objectId: $oxid2,
+            seoUrl: uniqid() . '.html',
+            type: 'oxarticle',
+            shopId: $shopId,
+            lang: $languageId
+        );
+        $this->insertSeoUrl(
+            objectId: $oxid3,
+            seoUrl: uniqid() . '.html',
+            type: 'oxarticle',
+            shopId: $shopId,
+            lang: $languageId
+        );
 
-        $deletedCount = $this->getSut()->deleteUrls([$oxid1, $oxid2]);
+        $seoUrlDtos = [
+            $this->createDto($oxid1, $shopId, $languageId),
+            $this->createDto($oxid2, $shopId, $languageId),
+        ];
+
+        $deletedCount = $this->getSut()->deleteUrls($seoUrlDtos);
 
         $this->assertSame(2, $deletedCount);
 
@@ -172,7 +198,41 @@ final class SeoUrlRepositoryTest extends IntegrationTestCase
         $this->assertSame(0, $deletedCount);
     }
 
-    private function insertSeoUrl(string $objectId, string $seoUrl, string $type, int $shopId = 1): void
+    #[Test]
+    public function deleteUrlsOnlyDeletesSpecificShopAndLanguage(): void
+    {
+        $objectId = uniqid();
+
+        $this->insertSeoUrl(
+            objectId: $objectId,
+            seoUrl: uniqid() . '-shop1-lang0.html',
+            type: 'oxarticle',
+            shopId: 1,
+            lang: 0
+        );
+        $this->insertSeoUrl(
+            objectId: $objectId,
+            seoUrl: uniqid() . '-shop1-lang1.html',
+            type: 'oxarticle',
+            shopId: 1,
+            lang: 1
+        );
+
+        $seoUrlDtos = [
+            $this->createDto($objectId, 1, 0),
+        ];
+
+        $deletedCount = $this->getSut()->deleteUrls($seoUrlDtos);
+
+        $this->assertSame(1, $deletedCount);
+
+        $remaining = $this->getSut()->findUnusedUrls();
+        $this->assertCount(1, $remaining);
+        $this->assertSame($objectId, $remaining[0]->getObjectId());
+        $this->assertSame(1, $remaining[0]->getLanguageId());
+    }
+
+    private function insertSeoUrl(string $objectId, string $seoUrl, string $type, int $shopId = 1, int $lang = 0): void
     {
         $queryBuilder = $this->get(QueryBuilderFactoryInterface::class)->create();
 
@@ -192,9 +252,9 @@ final class SeoUrlRepositoryTest extends IntegrationTestCase
             ])
             ->setParameters([
                 'objectId' => $objectId,
-                'ident' => md5($seoUrl . $shopId),
+                'ident' => md5($seoUrl . $shopId . $lang),
                 'shopId' => $shopId,
-                'lang' => 0,
+                'lang' => $lang,
                 'stdUrl' => 'index.php?cl=details&anid=' . $objectId,
                 'seoUrl' => $seoUrl,
                 'type' => $type,
@@ -203,6 +263,23 @@ final class SeoUrlRepositoryTest extends IntegrationTestCase
                 'params' => '',
             ])
             ->execute();
+    }
+
+    private function createDto(string $objectId, int $shopId, int $languageId): SeoUrlDto
+    {
+        return new SeoUrlDto(
+            objectId: $objectId,
+            ident: md5($objectId . $shopId . $languageId),
+            shopId: $shopId,
+            languageId: $languageId,
+            stdUrl: 'index.php?cl=details&anid=' . $objectId,
+            seoUrl: $objectId . '.html',
+            type: 'oxarticle',
+            fixed: (bool)random_int(0, 1),
+            expired: (bool)random_int(0, 1),
+            params: '',
+            timestamp: date('Y-m-d H:i:s'),
+        );
     }
 
     private function insertArticle(string $articleId, int $shopId = 1): void

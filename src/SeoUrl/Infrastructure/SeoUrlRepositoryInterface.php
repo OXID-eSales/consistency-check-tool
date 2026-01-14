@@ -24,7 +24,7 @@ interface SeoUrlRepositoryInterface
     public function findDuplicateUrls(string $suffix): array;
 
     /**
-     * @param array<string> $oxids
+     * @param array<SeoUrlDtoInterface> $seoUrlDtos
      */
-    public function deleteUrls(array $oxids): int;
+    public function deleteUrls(array $seoUrlDtos): int;
 }

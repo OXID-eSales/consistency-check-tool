@@ -37,8 +37,8 @@ final class SeoUrlService implements SeoUrlServiceInterface
         return $this->repository->findDuplicateUrls($effectiveSuffix);
     }
 
-    public function deleteUrls(array $oxids): int
+    public function deleteUrls(array $seoUrlDtos): int
     {
-        return $this->repository->deleteUrls($oxids);
+        return $this->repository->deleteUrls($seoUrlDtos);
     }
 }

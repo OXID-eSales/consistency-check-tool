@@ -86,10 +86,8 @@ final class DeleteSeoUrlsCommand extends Command
 
         $output->writeln($this->messageFormatter->formatInfo(self::MESSAGE_PROCESSING, count($dtos)));
 
-        $oxids = array_map(fn($dto) => $dto->getObjectId(), $dtos);
-
-        $this->logger->warning(sprintf(self::MESSAGE_DELETING, count($oxids)));
-        $deletedCount = $this->service->deleteUrls($oxids);
+        $this->logger->warning(sprintf(self::MESSAGE_DELETING, count($dtos)));
+        $deletedCount = $this->service->deleteUrls($dtos);
         $this->logger->info(sprintf(self::MESSAGE_DELETE_SUCCESS, $deletedCount));
 
         $output->writeln($this->messageFormatter->formatInfo(self::MESSAGE_DELETE_SUCCESS, $deletedCount));

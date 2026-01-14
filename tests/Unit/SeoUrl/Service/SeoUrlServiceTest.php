@@ -96,14 +96,18 @@ final class SeoUrlServiceTest extends TestCase
     #[Test]
     public function deleteUrls(): void
     {
-        $oxids = [uniqid(), uniqid(), uniqid()];
+        $seoUrlDtos = [
+            $this->createStub(SeoUrlDtoInterface::class),
+            $this->createStub(SeoUrlDtoInterface::class),
+            $this->createStub(SeoUrlDtoInterface::class),
+        ];
         $deletedCount = rand(1, 100);
 
         $repositoryMock = $this->createMock(SeoUrlRepositoryInterface::class);
-        $repositoryMock->method('deleteUrls')->with($oxids)->willReturn($deletedCount);
+        $repositoryMock->method('deleteUrls')->with($seoUrlDtos)->willReturn($deletedCount);
 
         $sut = $this->getSut(repositoryStub: $repositoryMock);
-        $result = $sut->deleteUrls($oxids);
+        $result = $sut->deleteUrls($seoUrlDtos);
 
         $this->assertSame($deletedCount, $result);
     }
