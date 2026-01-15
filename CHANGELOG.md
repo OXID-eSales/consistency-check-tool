@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [2.0.0] - unreleased
+## [2.0.0] - 2026-01-15
 
 ### Added
 - SEO URL consistency checking functionality
@@ -20,10 +20,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Update component to work with OXID eShop 7.4
 - Renamed `ImageManager/DataTransferObject` directory to `ImageManager/Dto` for naming consistency
 - Removed `FileSystemUtils::getAbsolutePath()` wrapper method; `ImageManagerService` now uses `PathResolverInterface` directly
-- Moved `ExportableDtoInterface` from `Shared/Dto` to `Export/Dto`
-- Moved `ExportDirectoryNotFoundException` from `SeoUrl/Exception` to `Export/Exception`
 - `ImageManagerService` requires `PathResolverInterface` instance instead of `FileSystemUtilsInterface`
-- `FileSystemUtils` requiers `PathResolverInterface` instance instead of eShop `ContextInterface`
+- `FileSystemUtils` requires `PathResolverInterface` instance instead of eShop `ContextInterface`
 
 ### Removed
 - `FileSystemUtilsInterface::getAbsolutePath` method
@@ -37,5 +35,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [1.0.0-rc.1] - 2025-05-13
 - Initial release
 
+[2.0.0]: https://github.com/OXID-eSales/consistency-check-tool/compare/v1.0.0...v2.0.0
 [1.0.0]: https://github.com/OXID-eSales/consistency-check-tool/compare/v1.0.0-rc.1...v1.0.0
 [1.0.0-rc.1]: https://github.com/OXID-eSales/consistency-check-tool/releases/tag/v1.0.0-rc.1
