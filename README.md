@@ -154,6 +154,8 @@ $ vendor/bin/oe-console oe:consistency_check:delete-seo-urls /absolute/path/to/e
 1. Run check command to see results in console
 2. Run check command with `--export` to generate CSV
 3. Review the CSV file and remove any rows you want to keep
+   > **Note:** Each row is deleted by its unique combination of OXOBJECTID, OXSHOPID, and OXLANG.
+   > You can filter the CSV to delete URLs for specific shops or languages only.
 4. Run delete command with `--dry-run` to preview
 5. Run delete command to perform actual deletion
 
