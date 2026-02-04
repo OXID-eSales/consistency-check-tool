@@ -10,7 +10,6 @@ declare(strict_types=1);
 namespace OxidEsales\ConsistencyCheck\Tests\Unit\SeoUrl\Service;
 
 use OxidEsales\ConsistencyCheck\SeoUrl\Dto\SeoUrlDtoInterface;
-use OxidEsales\ConsistencyCheck\SeoUrl\Exception\MissingSuffixException;
 use OxidEsales\ConsistencyCheck\SeoUrl\Infrastructure\SeoUrlRepositoryInterface;
 use OxidEsales\ConsistencyCheck\SeoUrl\Service\SeoUrlService;
 use OxidEsales\ConsistencyCheck\SeoUrl\Service\SeoUrlServiceInterface;
@@ -70,27 +69,21 @@ final class SeoUrlServiceTest extends TestCase
     }
 
     #[Test]
-    public function findDuplicateUrlsThrowsExceptionWhenSuffixIsNullAndConfigNotSet(): void
+    public function findDuplicateUrlsUsesDefaultSuffixWhenNothingProvided(): void
     {
+        $dtoStub = $this->createStub(SeoUrlDtoInterface::class);
+
+        $repositoryMock = $this->createMock(SeoUrlRepositoryInterface::class);
+        $repositoryMock->method('findDuplicateUrls')->with('oxid')->willReturn([$dtoStub]);
+
         $configStub = $this->createConfiguredStub(Config::class, [
             'getConfigParam' => null,
         ]);
 
-        $sut = $this->getSut(configStub: $configStub);
+        $sut = $this->getSut(repositoryStub: $repositoryMock, configStub: $configStub);
+        $result = $sut->findDuplicateUrls(null);
 
-        $this->expectException(MissingSuffixException::class);
-
-        $sut->findDuplicateUrls(null);
-    }
-
-    #[Test]
-    public function findDuplicateUrlsThrowsExceptionWhenSuffixIsEmptyString(): void
-    {
-        $sut = $this->getSut();
-
-        $this->expectException(MissingSuffixException::class);
-
-        $sut->findDuplicateUrls('');
+        $this->assertSame([$dtoStub], $result);
     }
 
     #[Test]
