@@ -7,12 +7,13 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\ConsistencyCheck\ImageManager\Tests\Unit\ImageManager\Service;
+namespace OxidEsales\ConsistencyCheck\Tests\Unit\ImageManager\Service;
 
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
 use OxidEsales\ConsistencyCheck\ImageManager\Service\FileLogReader;
 use OxidEsales\ConsistencyCheck\ImageManager\Service\LogReaderInterface;
+use OxidEsales\ConsistencyCheck\Shared\Service\PathResolverInterface;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
@@ -28,13 +29,19 @@ final class FileLogReaderTest extends TestCase
     #[Test]
     public function itReturnsLogLinesIfFileExists(): void
     {
+        $logFilePath = uniqid();
         $line2 = uniqid();
         $line3 = uniqid();
         $file = vfsStream::newFile(uniqid())
             ->withContent("\n$line2\n$line3\n")
             ->at($this->fileSystem);
 
-        $sut = $this->getSut($file->url());
+        $pathResolverMock = $this->createMock(PathResolverInterface::class);
+        $pathResolverMock->method('getAbsolutePath')
+            ->with($logFilePath)
+            ->willReturn($file->url());
+
+        $sut = $this->getSut($logFilePath, $pathResolverMock);
 
         $lines = $sut->readLines();
 
@@ -46,7 +53,15 @@ final class FileLogReaderTest extends TestCase
     #[Test]
     public function itReturnsEmptyArrayIfFileDoesNotExist(): void
     {
-        $sut = $this->getSut($this->fileSystem->url() . '/' . uniqid());
+        $logFilePath = uniqid();
+        $absolutePath = $this->fileSystem->url() . '/' . uniqid();
+
+        $pathResolverMock = $this->createMock(PathResolverInterface::class);
+        $pathResolverMock->method('getAbsolutePath')
+            ->with($logFilePath)
+            ->willReturn($absolutePath);
+
+        $sut = $this->getSut($logFilePath, $pathResolverMock);
 
         $this->assertSame([], $sut->readLines());
     }
@@ -54,13 +69,19 @@ final class FileLogReaderTest extends TestCase
     #[Test]
     public function itSkipsEmptyLines(): void
     {
+        $logFilePath = uniqid();
         $line1 = uniqid();
         $line2 = uniqid();
         $file = vfsStream::newFile(uniqid())
             ->withContent("$line1\n\n$line2\n\n")
             ->at($this->fileSystem);
 
-        $sut = $this->getSut($file->url());
+        $pathResolverMock = $this->createMock(PathResolverInterface::class);
+        $pathResolverMock->method('getAbsolutePath')
+            ->with($logFilePath)
+            ->willReturn($file->url());
+
+        $sut = $this->getSut($logFilePath, $pathResolverMock);
 
         $lines = $sut->readLines();
 
@@ -69,8 +90,13 @@ final class FileLogReaderTest extends TestCase
         $this->assertSame($line2, $lines[1]);
     }
 
-    private function getSut(string $path): LogReaderInterface
-    {
-        return new FileLogReader($path);
+    private function getSut(
+        string $logFilePath,
+        ?PathResolverInterface $pathResolver = null,
+    ): LogReaderInterface {
+        return new FileLogReader(
+            $pathResolver ?? $this->createStub(PathResolverInterface::class),
+            $logFilePath,
+        );
     }
 }

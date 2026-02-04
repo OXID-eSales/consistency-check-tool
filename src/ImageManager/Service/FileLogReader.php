@@ -5,12 +5,17 @@
  * See LICENSE file for license details.
  */
 
+declare(strict_types=1);
+
 namespace OxidEsales\ConsistencyCheck\ImageManager\Service;
+
+use OxidEsales\ConsistencyCheck\Shared\Service\PathResolverInterface;
 
 class FileLogReader implements LogReaderInterface
 {
     public function __construct(
-        private readonly string $logFilePath
+        private readonly PathResolverInterface $pathResolver,
+        private readonly string $logFilePath,
     ) {
     }
 
@@ -19,10 +24,12 @@ class FileLogReader implements LogReaderInterface
      */
     public function readLines(): array
     {
-        if (!file_exists($this->logFilePath)) {
+        $absoluteFileLogPath = $this->pathResolver->getAbsolutePath($this->logFilePath);
+
+        if (!file_exists($absoluteFileLogPath)) {
             return [];
         }
 
-        return file($this->logFilePath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) ?: [];
+        return file($absoluteFileLogPath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) ?: [];
     }
 }

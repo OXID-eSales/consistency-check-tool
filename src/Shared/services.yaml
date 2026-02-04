@@ -1,2 +1,3 @@
 imports:
   - { resource: Service/services.yaml }
+  - { resource: Infrastructure/services.yaml }

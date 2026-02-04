@@ -174,7 +174,9 @@ There are several parameters in the `services.yaml` that can be customized for t
 * `app.unused_seo_urls_file` - File name prefix for unused SEO URLs export.
 * `app.duplicate_seo_urls_file` - File name prefix for duplicate SEO URLs export.
 
-All paths are relative to the OXID eShop root directory.
+Path parameters (`app.log_file_path`, `app.export_directory_path`) support both **relative** and **absolute** paths:
+- **Relative paths** (e.g., `log/oe_consistency_check.log`) are resolved relative to the OXID eShop `source` directory.
+- **Absolute paths** (e.g., `/var/log/oxid/consistency_check.log`) are used as-is.
 
 To modify the parameters, create the `configurable_services.yaml` file in the `var/configuration` folder as
 described in the [Documentation](https://docs.oxid-esales.com/developer/en/latest/development/tell_me_about/service_container.html#replacing-oxid-eshop-services-in-a-project),
@@ -235,12 +237,14 @@ $ ./vendor/bin/phpunit --bootstrap=./source/bootstrap.php -c vendor/oxid-esales/
 
 ## Troubleshooting
 
-### Wrong log file path
+### Log directory does not exist
 
-This tool uses a default log path `/var/www/source/log/oe_consistency_check.log` in a standard OXID eShop
-directory structure. However, if your project uses a different structure (e.g. `/var/www/custom/source/log`), this
-directory may not exist, and you may encounter an error like:
+By default, the tool uses `log/oe_consistency_check.log` relative to the OXID eShop `source` directory.
+If the `log` directory does not exist, you may encounter an error like:
 ```
-There is no existing directory at "/var/www/custom/source/log" and its not buildable: Permission denied.
+There is no existing directory at "/var/www/source/log" and its not buildable: Permission denied.
 ```
-Refer to the "Customizable parameters" section to learn how to change the log file path.
+
+To resolve this, either:
+- Create the `log` directory in your `source` folder, or
+- Configure a custom path in `var/configuration/configurable_services.yaml` (see "Customizable parameters" section)

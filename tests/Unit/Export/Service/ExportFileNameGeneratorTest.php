@@ -14,6 +14,7 @@ use org\bovigo\vfs\vfsStreamDirectory;
 use OxidEsales\ConsistencyCheck\Export\Exception\ExportDirectoryNotFoundException;
 use OxidEsales\ConsistencyCheck\Export\Service\ExportFileNameGenerator;
 use OxidEsales\ConsistencyCheck\Export\Service\ExportFileNameGeneratorInterface;
+use OxidEsales\ConsistencyCheck\Shared\Service\PathResolverInterface;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
@@ -29,13 +30,21 @@ class ExportFileNameGeneratorTest extends TestCase
     #[Test]
     public function generate(): void
     {
-        $sut = $this->getSut($this->fileSystem->url());
+        $exportDirectoryPath = 'export';
+        $absoluteExportDirectoryPath = $this->fileSystem->url();
+
+        $pathResolverMock = $this->createMock(PathResolverInterface::class);
+        $pathResolverMock->method('getAbsolutePath')
+            ->with($exportDirectoryPath)
+            ->willReturn($absoluteExportDirectoryPath);
+
+        $sut = $this->getSut(exportDirectoryPath: $exportDirectoryPath, pathResolver: $pathResolverMock);
 
         $filePrefix = uniqid();
         $fileExtension = uniqid();
         $expectedFileName = sprintf(
             '%s/%s-%s.%s',
-            $this->fileSystem->url(),
+            $absoluteExportDirectoryPath,
             $filePrefix,
             date('Y-m-d_H-i-s'),
             $fileExtension
@@ -49,16 +58,28 @@ class ExportFileNameGeneratorTest extends TestCase
     #[Test]
     public function generateThrowsExceptionWhenDirectoryDoesNotExist(): void
     {
-        $nonExistentDir = $this->fileSystem->url() . '/' . uniqid();
-        $sut = $this->getSut($nonExistentDir);
+        $exportDirectoryPath = 'non-existent';
+        $absoluteExportDirectoryPath = $this->fileSystem->url() . '/' . uniqid();
+
+        $pathResolverMock = $this->createMock(PathResolverInterface::class);
+        $pathResolverMock->method('getAbsolutePath')
+            ->with($exportDirectoryPath)
+            ->willReturn($absoluteExportDirectoryPath);
+
+        $sut = $this->getSut(exportDirectoryPath: $exportDirectoryPath, pathResolver: $pathResolverMock);
 
         $this->expectException(ExportDirectoryNotFoundException::class);
 
         $sut->generate(uniqid(), uniqid());
     }
 
-    private function getSut(string $exportDirectoryPath): ExportFileNameGeneratorInterface
-    {
-        return new ExportFileNameGenerator($exportDirectoryPath);
+    private function getSut(
+        string $exportDirectoryPath,
+        ?PathResolverInterface $pathResolver = null,
+    ): ExportFileNameGeneratorInterface {
+        return new ExportFileNameGenerator(
+            $pathResolver ?? $this->createStub(PathResolverInterface::class),
+            $exportDirectoryPath,
+        );
     }
 }

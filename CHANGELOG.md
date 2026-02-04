@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.0.1] - Unreleased
+
+### Changed
+- Path parameters (`app.log_file_path`, `app.export_directory_path`) now support both relative (`source` path) and absolute paths
+- Default paths for `app.log_file_path` and `app.export_directory_path` changed from absolute (`/var/www/source/...`) to relative (`log/...`, `export`)
+
 ## [2.0.0] - 2026-01-15
 
 ### Added
@@ -35,6 +41,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [1.0.0-rc.1] - 2025-05-13
 - Initial release
 
+[2.0.1]: https://github.com/OXID-eSales/consistency-check-tool/compare/v2.0.0...v2.0.1
 [2.0.0]: https://github.com/OXID-eSales/consistency-check-tool/compare/v1.0.0...v2.0.0
 [1.0.0]: https://github.com/OXID-eSales/consistency-check-tool/compare/v1.0.0-rc.1...v1.0.0
 [1.0.0-rc.1]: https://github.com/OXID-eSales/consistency-check-tool/releases/tag/v1.0.0-rc.1

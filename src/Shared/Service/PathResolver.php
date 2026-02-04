@@ -19,6 +19,12 @@ final class PathResolver implements PathResolverInterface
     ) {
     }
 
+    //todo-critical: Has to be refactored. At first the name doesn't fit because it's handling two situations.
+    //  Returning the absolute path and returning the absolute source path for a relative path.
+    //  The places where this method is used should be checked as well, if it's possible/needed to pass an
+    //  absolute(or relative path anyway).
+    //todo-critical: After refactoring, we need to ensure that the FileLogReader and MonologConfigurationFactory can
+    //  still handle absolute and relative paths like before.
     public function getAbsolutePath(string $path): string
     {
         if (Path::isAbsolute($path)) {

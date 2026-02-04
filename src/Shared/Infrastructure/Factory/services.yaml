@@ -1,0 +1,7 @@
+services:
+  _defaults:
+    autowire: true
+    public: false
+
+  OxidEsales\ConsistencyCheck\Shared\Infrastructure\Factory\MonologConfigurationFactoryInterface:
+    class: OxidEsales\ConsistencyCheck\Shared\Infrastructure\Factory\MonologConfigurationFactory

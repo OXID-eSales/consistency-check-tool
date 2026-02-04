@@ -14,6 +14,7 @@ services:
 
   OxidEsales\ConsistencyCheck\ImageManager\Logger\Configuration:
     class: OxidEsales\EshopCommunity\Internal\Framework\Logger\Configuration\MonologConfiguration
+    factory: ['@OxidEsales\ConsistencyCheck\Shared\Infrastructure\Factory\MonologConfigurationFactoryInterface', 'create']
     arguments:
       $loggerName: 'Consistency Check Logger'
       $logFilePath: '%app.log_file_path%'
