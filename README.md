@@ -1,6 +1,6 @@
 # OXID eShop Consistency Check Component
 
-[![Development](https://github.com/OXID-eSales/consistency-check-tool/actions/workflows/trigger.yaml/badge.svg?branch=b-7.4.x)](https://github.com/OXID-eSales/consistency-check-tool/actions/workflows/trigger.yaml)
+[![Development](https://github.com/OXID-eSales/consistency-check-tool/actions/workflows/trigger.yaml/badge.svg?branch=b-7.5.x)](https://github.com/OXID-eSales/consistency-check-tool/actions/workflows/trigger.yaml)
 [![Latest Version](https://img.shields.io/packagist/v/OXID-eSales/consistency-check-tool?logo=composer&label=latest&include_prereleases&color=orange)](https://packagist.org/packages/oxid-esales/consistency-check-tool )
 [![PHP Version](https://img.shields.io/packagist/php-v/oxid-esales/consistency-check-tool)](https://github.com/oxid-esales/consistency-check-tool)
 
@@ -35,7 +35,7 @@ This component ensures that your eShop remains optimized by helping you clean up
 - Support for OXID SEO types with reference tables (oxarticle, oxcategory, oxmanufacturer, oxvendor, oxcontent)
 
 ## Compatibility
-This component assumes you have OXID eShop Compilation version 7.4.0 installed.
+This component assumes you have OXID eShop Compilation version 7.5.0 installed.
 
 ## Installation
 To install this component in your OXID eShop environment, use Composer:
@@ -46,7 +46,7 @@ $ composer require oxid-esales/consistency-check-tool
 ## Development installation
 
 The installation instructions below are shown for the current [SDK](https://github.com/OXID-eSales/docker-eshop-sdk)
-for shop 7.4. Make sure your system meets the requirements of the SDK.
+for shop 7.5. Make sure your system meets the requirements of the SDK.
 
 0. Ensure all docker containers are down to avoid port conflicts
 
@@ -57,7 +57,7 @@ echo MyProject && git clone https://github.com/OXID-eSales/docker-eshop-sdk.git 
 
 2. Clone the repository to the source directory
 ```shell
-git clone --recurse-submodules https://github.com/OXID-eSales/consistency-check-tool.git --branch=b-7.4.x ./source
+git clone --recurse-submodules https://github.com/OXID-eSales/consistency-check-tool.git --branch=b-7.5.x ./source
 ```
 
 3. Run the recipe to setup the development environment
