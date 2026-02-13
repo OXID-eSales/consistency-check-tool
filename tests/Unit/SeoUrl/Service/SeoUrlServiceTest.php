@@ -87,6 +87,43 @@ final class SeoUrlServiceTest extends TestCase
     }
 
     #[Test]
+    public function findDuplicateUrlsFallsBackToConfigWhenSuffixIsEmptyString(): void
+    {
+        $dtoStub = $this->createStub(SeoUrlDtoInterface::class);
+        $configSuffix = uniqid();
+
+        $repositoryMock = $this->createMock(SeoUrlRepositoryInterface::class);
+        $repositoryMock->method('findDuplicateUrls')->with($configSuffix)->willReturn([$dtoStub]);
+
+        $configStub = $this->createConfiguredStub(Config::class, [
+            'getConfigParam' => $configSuffix,
+        ]);
+
+        $sut = $this->getSut(repositoryStub: $repositoryMock, configStub: $configStub);
+        $result = $sut->findDuplicateUrls('');
+
+        $this->assertSame([$dtoStub], $result);
+    }
+
+    #[Test]
+    public function findDuplicateUrlsUsesDefaultSuffixWhenConfigIsEmptyString(): void
+    {
+        $dtoStub = $this->createStub(SeoUrlDtoInterface::class);
+
+        $repositoryMock = $this->createMock(SeoUrlRepositoryInterface::class);
+        $repositoryMock->method('findDuplicateUrls')->with('oxid')->willReturn([$dtoStub]);
+
+        $configStub = $this->createConfiguredStub(Config::class, [
+            'getConfigParam' => '',
+        ]);
+
+        $sut = $this->getSut(repositoryStub: $repositoryMock, configStub: $configStub);
+        $result = $sut->findDuplicateUrls(null);
+
+        $this->assertSame([$dtoStub], $result);
+    }
+
+    #[Test]
     public function deleteUrls(): void
     {
         $seoUrlDtos = [

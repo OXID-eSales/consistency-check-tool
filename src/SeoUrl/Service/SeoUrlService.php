@@ -29,11 +29,11 @@ final class SeoUrlService implements SeoUrlServiceInterface
 
     public function findDuplicateUrls(?string $suffix = null): array
     {
-        // The suffix decision was copied from SeoEncoder::getSuffix().
+        // The suffix decision was copied from SeoEncoder::__construct combined with getPrefix().
         // The default suffix is hardcoded there.
         $effectiveSuffix = $suffix
-            ?? $this->config->getConfigParam('sSEOuprefix')
-            ?? self::DEFAULT_SUFFIX;
+            ?: $this->config->getConfigParam('sSEOuprefix')
+            ?: self::DEFAULT_SUFFIX;
 
         return $this->repository->findDuplicateUrls($effectiveSuffix);
     }
