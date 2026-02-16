@@ -10,6 +10,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Path parameters (`app.log_file_path`, `app.export_directory_path`) now support both relative (`source` path) and absolute paths
 - Default paths for `app.log_file_path` and `app.export_directory_path` changed from absolute (`/var/www/source/...`) to relative (`log/...`, `export`)
 
+### Fixed
+- SEO URL duplicate check now falls back to default suffix when an empty string is provided
+- Default image entity directory paths changed from `/out/pictures/...` to `out/pictures/...` to be correctly resolved as relative paths
+
 ## [2.0.0] - 2026-01-15
 
 ### Added
