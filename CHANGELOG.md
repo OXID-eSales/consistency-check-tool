@@ -4,11 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Undecided] - unreleased
+## [2.1.0] - Unreleased
 
 ### Changed
-- Updated for OXID eShop 7.5.x compatibility
-- PHP 8.3-8.5 support (removed PHP 8.2)
+- Updated to work with OXID eShop 7.5.x
+- Minimum PHP version is now 8.3, tested up to PHP 8.5
 
 ## [2.0.1] - 2026-02-16
 
@@ -51,6 +51,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [1.0.0-rc.1] - 2025-05-13
 - Initial release
 
+[2.1.0]: https://github.com/OXID-eSales/consistency-check-tool/compare/v2.0.1...v2.1.0
 [2.0.1]: https://github.com/OXID-eSales/consistency-check-tool/compare/v2.0.0...v2.0.1
 [2.0.0]: https://github.com/OXID-eSales/consistency-check-tool/compare/v1.0.0...v2.0.0
 [1.0.0]: https://github.com/OXID-eSales/consistency-check-tool/compare/v1.0.0-rc.1...v1.0.0
