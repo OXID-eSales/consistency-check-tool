@@ -9,6 +9,7 @@ imports:
   - { resource: src/Shared/services.yaml }
   - { resource: src/Export/services.yaml }
   - { resource: src/SeoUrl/services.yaml }
+  - { resource: src/ExportByFilter/services.yaml }
 
 services:
 

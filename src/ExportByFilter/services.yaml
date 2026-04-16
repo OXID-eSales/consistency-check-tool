@@ -1,0 +1,7 @@
+imports:
+  - { resource: Filter/Credentials/services.yaml }
+
+services:
+  _defaults:
+    autowire: true
+    public: false
