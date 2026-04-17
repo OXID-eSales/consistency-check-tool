@@ -16,8 +16,6 @@ interface FilterInterface
 {
     public function getName(): string;
 
-    public function getDescription(): string;
-
     /**
      * @return array<string>
      */
