@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\ConsistencyCheck\SeoUrl\Exception;
+namespace OxidEsales\ConsistencyCheck\Export\Exception;
 
 use Exception;
 use OxidEsales\ConsistencyCheck\Export\Dto\ExportableDtoInterface;

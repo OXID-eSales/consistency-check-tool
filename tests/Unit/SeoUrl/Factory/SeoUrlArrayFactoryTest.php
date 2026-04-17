@@ -11,7 +11,7 @@ namespace OxidEsales\ConsistencyCheck\Tests\Unit\SeoUrl\Factory;
 
 use OxidEsales\ConsistencyCheck\Export\Factory\ArrayFactoryInterface;
 use OxidEsales\ConsistencyCheck\SeoUrl\Dto\SeoUrlDtoInterface;
-use OxidEsales\ConsistencyCheck\SeoUrl\Exception\InvalidDtoTypeException;
+use OxidEsales\ConsistencyCheck\Export\Exception\InvalidDtoTypeException;
 use OxidEsales\ConsistencyCheck\SeoUrl\Factory\SeoUrlArrayFactory;
 use OxidEsales\ConsistencyCheck\Export\Dto\ExportableDtoInterface;
 use PHPUnit\Framework\Attributes\Test;

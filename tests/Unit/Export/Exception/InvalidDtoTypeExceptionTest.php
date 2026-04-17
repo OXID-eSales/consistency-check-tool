@@ -7,11 +7,10 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\ConsistencyCheck\Tests\Unit\SeoUrl\Exception;
+namespace OxidEsales\ConsistencyCheck\Tests\Unit\Export\Exception;
 
-use OxidEsales\ConsistencyCheck\SeoUrl\Dto\SeoUrlDtoInterface;
-use OxidEsales\ConsistencyCheck\SeoUrl\Exception\InvalidDtoTypeException;
 use OxidEsales\ConsistencyCheck\Export\Dto\ExportableDtoInterface;
+use OxidEsales\ConsistencyCheck\Export\Exception\InvalidDtoTypeException;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
@@ -21,7 +20,7 @@ final class InvalidDtoTypeExceptionTest extends TestCase
     public function exceptionMessage(): void
     {
         $dtoStub = $this->createStub(ExportableDtoInterface::class);
-        $expectedType = SeoUrlDtoInterface::class;
+        $expectedType = uniqid();
 
         $sut = new InvalidDtoTypeException($dtoStub, $expectedType);
 

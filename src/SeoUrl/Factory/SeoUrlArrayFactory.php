@@ -11,7 +11,7 @@ namespace OxidEsales\ConsistencyCheck\SeoUrl\Factory;
 
 use OxidEsales\ConsistencyCheck\Export\Factory\ArrayFactoryInterface;
 use OxidEsales\ConsistencyCheck\SeoUrl\Dto\SeoUrlDtoInterface;
-use OxidEsales\ConsistencyCheck\SeoUrl\Exception\InvalidDtoTypeException;
+use OxidEsales\ConsistencyCheck\Export\Exception\InvalidDtoTypeException;
 use OxidEsales\ConsistencyCheck\Export\Dto\ExportableDtoInterface;
 
 final class SeoUrlArrayFactory implements ArrayFactoryInterface
