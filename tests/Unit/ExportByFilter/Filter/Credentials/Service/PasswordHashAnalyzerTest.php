@@ -68,6 +68,10 @@ final class PasswordHashAnalyzerTest extends TestCase
             'some-random-invalid-hash-format',
             CredentialStatus::UNKNOWN,
         ];
+        yield 'bcrypt prefix with invalid length' => [
+            '$2y$10$short',
+            CredentialStatus::UNKNOWN,
+        ];
     }
 
     #[Test]
@@ -109,6 +113,10 @@ final class PasswordHashAnalyzerTest extends TestCase
         ];
         yield 'unknown format' => [
             'some-random-invalid-hash-format',
+            'unknown',
+        ];
+        yield 'bcrypt prefix with invalid length' => [
+            '$2y$10$short',
             'unknown',
         ];
     }

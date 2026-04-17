@@ -14,6 +14,7 @@ use OxidEsales\ConsistencyCheck\ExportByFilter\Filter\Credentials\Enum\Credentia
 final class PasswordHashAnalyzer implements PasswordHashAnalyzerInterface
 {
     private const BCRYPT_PREFIXES = ['$2y$', '$2a$', '$2b$'];
+    private const BCRYPT_LENGTH = 60;
     private const SHA512_LENGTH = 128;
     private const MD5_LENGTH = 32;
 
@@ -41,6 +42,10 @@ final class PasswordHashAnalyzer implements PasswordHashAnalyzerInterface
 
     private function isBcrypt(string $hash): bool
     {
+        if (strlen($hash) !== self::BCRYPT_LENGTH) {
+            return false;
+        }
+
         foreach (self::BCRYPT_PREFIXES as $prefix) {
             if (str_starts_with($hash, $prefix)) {
                 return true;
