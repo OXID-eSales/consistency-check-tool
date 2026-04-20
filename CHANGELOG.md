@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [2.1.0] - Unreleased
 
+### Added
+- New console command `oe:consistency_check:export-by-filter` for exporting data matching specific filter criteria
+- Extensible filter system with `FilterInterface` for custom export filters
+- `deprecated-credentials` filter to identify users with outdated password hashes (MD5, SHA512)
+
 ### Changed
 - Updated to work with OXID eShop 7.5.x
 - Minimum PHP version is now 8.3, tested up to PHP 8.5

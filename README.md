@@ -14,6 +14,7 @@ The OXID eSales Consistency Check component is a flexible tool designed to perfo
 **Current capabilities include:**
 - **Unused Image Detection** - Identify orphaned image files no longer connected to products, categories, or manufacturers
 - **SEO URL Verification** - Detect unused and duplicate SEO URLs that may affect shop performance and search rankings
+- **Export by Filter** - Export data matching specific criteria (e.g., users with deprecated password hashes) to CSV
 
 This component ensures that your eShop remains optimized by helping you clean up unnecessary data while keeping track of all changes.
 
@@ -159,6 +160,38 @@ $ vendor/bin/oe-console oe:consistency_check:delete-seo-urls /absolute/path/to/e
 4. Run delete command with `--dry-run` to preview
 5. Run delete command to perform actual deletion
 
+## Export by Filter
+
+Export data matching specific filter criteria to CSV files.
+
+### Usage
+```bash
+$ vendor/bin/oe-console oe:consistency_check:export-by-filter --filter-name=<filter>
+```
+
+### Available Filters
+
+| Filter | Description |
+|--------|-------------|
+| `deprecated-credentials` | Users with outdated password hashes (MD5, SHA512) |
+
+### Example
+```bash
+# Export users with deprecated credentials
+$ vendor/bin/oe-console oe:consistency_check:export-by-filter --filter-name=deprecated-credentials
+```
+
+Output file: `export/deprecated-credentials-{timestamp}.csv`
+
+The exported CSV includes:
+- `user_id` - User OXID
+- `active` - Whether the user account is active
+- `created_at` - Account creation date
+- `user_updated_at` - Last modification date
+- `last_order_at` - Date of last order (empty if none)
+- `credential_status` - Status: `deprecated` (SHA512) or `unsupported` (MD5)
+- `credential_hash_scheme` - Hash algorithm name
+
 ### Logs
 All operations, including moved and deleted images, are logged in:
 ```
@@ -234,6 +267,35 @@ $ ./vendor/bin/phpunit -c vendor/oxid-esales/consistency-check-tool/tests/phpuni
 ```bash
 $ ./vendor/bin/phpunit --bootstrap=./source/bootstrap.php -c vendor/oxid-esales/consistency-check-tool/tests/phpintegration.xml
 ```
+
+## Extending: Creating Custom Filters
+
+You can create custom filters for the `export-by-filter` command to export any data matching your criteria.
+
+### Step 1: Create Filter Class
+
+Implement `OxidEsales\ConsistencyCheck\ExportByFilter\Filter\FilterInterface` in your module.
+
+See interface at `src/ExportByFilter/Filter/FilterInterface.php`.
+
+### Step 2: Register Filter Service
+
+Add to your module's `services.yaml` with the `oe.consistency_check.export_filter` tag:
+
+```yaml
+services:
+  YourVendor\YourModule\Filter\YourCustomFilter:
+    autowire: true
+    tags: ['oe.consistency_check.export_filter']
+```
+
+### Step 3: Use Your Filter
+
+```bash
+$ vendor/bin/oe-console oe:consistency_check:export-by-filter --filter-name=your-filter-name
+```
+
+For a complete example, see the `DeprecatedCredentialsFilter` implementation in `src/ExportByFilter/Filter/Credentials/`.
 
 ## Troubleshooting
 
