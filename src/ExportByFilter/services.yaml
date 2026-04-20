@@ -5,3 +5,8 @@ services:
   _defaults:
     autowire: true
     public: false
+
+  OxidEsales\ConsistencyCheck\ExportByFilter\Service\FilterRegistryInterface:
+    class: OxidEsales\ConsistencyCheck\ExportByFilter\Service\FilterRegistry
+    arguments:
+      $filters: !tagged_iterator oe.consistency_check.export_filter
