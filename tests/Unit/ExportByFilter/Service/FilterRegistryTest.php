@@ -26,7 +26,8 @@ final class FilterRegistryTest extends TestCase
         $filterStub = $this->createStub(FilterInterface::class);
         $filterStub->method('getName')->willReturn($filterName);
 
-        $this->assertSame($filterStub, $this->getSut([$filterStub])->get($filterName));
+        $sut = $this->getSut(filters: [$filterStub]);
+        $this->assertSame($filterStub, $sut->get($filterName));
     }
 
     #[Test]
@@ -39,17 +40,8 @@ final class FilterRegistryTest extends TestCase
             (new FilterNotFoundException($filterName, []))->getMessage()
         );
 
-        $this->getSut([])->get($filterName);
-    }
-
-    #[Test]
-    public function getAvailableFilters(): void
-    {
-        $filterName = uniqid();
-        $filterStub = $this->createStub(FilterInterface::class);
-        $filterStub->method('getName')->willReturn($filterName);
-
-        $this->assertSame([$filterName], $this->getSut([$filterStub])->getAvailableFilters());
+        $sut = $this->getSut(filters: []);
+        $sut->get($filterName);
     }
 
     /**

@@ -36,7 +36,10 @@ final class FilterRegistry implements FilterRegistryInterface
         return $this->filterMap[$name];
     }
 
-    public function getAvailableFilters(): array
+    /**
+     * @return array<string>
+     */
+    private function getAvailableFilters(): array
     {
         return array_keys($this->filterMap);
     }

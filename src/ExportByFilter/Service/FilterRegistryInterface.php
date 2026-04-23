@@ -14,9 +14,4 @@ use OxidEsales\ConsistencyCheck\ExportByFilter\Filter\FilterInterface;
 interface FilterRegistryInterface
 {
     public function get(string $name): FilterInterface;
-
-    /**
-     * @return array<string>
-     */
-    public function getAvailableFilters(): array;
 }
