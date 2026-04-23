@@ -26,14 +26,59 @@ final class UserRepositoryTest extends IntegrationTestCase
     {
         $sha512UserId = $this->insertUser(hash('sha512', uniqid()));
         $md5UserId = $this->insertUser(md5(uniqid()));
-        $this->insertUser('$2y$10$' . str_repeat('a', 53));
-        $this->insertUser('');
+        $bcryptUserId = $this->insertUser('$2y$10$' . str_repeat('a', 53));
+        $emptyPasswordUserId = $this->insertUser('');
 
         $result = $this->getSut()->findUsersWithOutdatedCredentials();
 
         $userIds = array_map(fn($dto) => $dto->getUserId(), $result);
         $this->assertContains($sha512UserId, $userIds);
         $this->assertContains($md5UserId, $userIds);
+        $this->assertNotContains($bcryptUserId, $userIds);
+        $this->assertNotContains($emptyPasswordUserId, $userIds);
+    }
+
+    #[Test]
+    public function lastOrderDateIsTheLatestOne(): void
+    {
+        $userId = $this->insertUser(hash('sha512', uniqid()));
+        $this->insertOrder($userId, $date1 = date('Y-m-d H:i:s', rand(0, time())));
+        $this->insertOrder($userId, $date2 = date('Y-m-d H:i:s', rand(0, time())));
+        $this->insertOrder($userId, $date3 = date('Y-m-d H:i:s', rand(0, time())));
+        $expectedLastOrderDate = max($date1, $date2, $date3);
+
+        $result = $this->getSut()->findUsersWithOutdatedCredentials();
+
+        $dto = $this->pickDtoFromResultList($result, $userId);
+        $this->assertSame($expectedLastOrderDate, $dto->getLastOrderAt());
+    }
+
+    private function pickDtoFromResultList(array $dtos, string $userId): UserCredentialDtoInterface
+    {
+        foreach ($dtos as $dto) {
+            if ($dto->getUserId() === $userId) {
+                return $dto;
+            }
+        }
+        $this->fail("No DTO found for user $userId");
+    }
+
+    private function insertOrder(string $userId, string $orderDate): void
+    {
+        $queryBuilder = $this->get(QueryBuilderFactoryInterface::class)->create();
+        $queryBuilder
+            ->insert('oxorder')
+            ->values([
+                'OXID' => ':oxid',
+                'OXUSERID' => ':userId',
+                'OXORDERDATE' => ':orderDate',
+            ])
+            ->setParameters([
+                'oxid' => uniqid('order_'),
+                'userId' => $userId,
+                'orderDate' => $orderDate,
+            ])
+            ->execute();
     }
 
     private function insertUser(string $password): string
@@ -58,23 +103,11 @@ final class UserRepositoryTest extends IntegrationTestCase
         return $userId;
     }
 
-    private function createDtoFactoryMock(): UserCredentialDtoFactoryInterface
-    {
-        $dtoFactory = $this->createMock(UserCredentialDtoFactoryInterface::class);
-        $dtoFactory->method('createFromArray')->willReturnCallback(function (array $data) {
-            $dto = $this->createStub(UserCredentialDtoInterface::class);
-            $dto->method('getUserId')->willReturn($data['OXID']);
-            return $dto;
-        });
-
-        return $dtoFactory;
-    }
-
     private function getSut(): UserRepositoryInterface
     {
         return new UserRepository(
             queryBuilderFactory: $this->get(QueryBuilderFactoryInterface::class),
-            userCredentialDtoFactory: $this->createDtoFactoryMock(),
+            userCredentialDtoFactory: $this->get(UserCredentialDtoFactoryInterface::class),
         );
     }
 }

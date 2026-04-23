@@ -35,7 +35,7 @@ final class UserRepository implements UserRepositoryInterface
                 'u.OXCREATE',
                 'u.OXTIMESTAMP',
                 'u.OXPASSWORD',
-                'COALESCE(MAX(o.OXORDERDATE), \'\') as OXLASTORDER'
+                "COALESCE(MAX(o.OXORDERDATE), '') as OXLASTORDER"
             )
             ->from('oxuser', 'u')
             ->leftJoin('u', 'oxorder', 'o', 'o.OXUSERID = u.OXID')
