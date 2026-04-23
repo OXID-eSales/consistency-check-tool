@@ -23,12 +23,16 @@ final class DeprecatedCredentialsFilterTest extends TestCase
     #[Test]
     public function getName(): void
     {
-        $this->assertSame('deprecated-credentials', $this->getSut()->getName());
+        $sut = $this->getSut();
+
+        $this->assertSame('deprecated-credentials', $sut->getName());
     }
 
     #[Test]
     public function getHeaders(): void
     {
+        $sut = $this->getSut();
+
         $this->assertSame([
             'user_id',
             'active',
@@ -37,7 +41,7 @@ final class DeprecatedCredentialsFilterTest extends TestCase
             'last_order_at',
             'credential_status',
             'credential_hash_scheme',
-        ], $this->getSut()->getHeaders());
+        ], $sut->getHeaders());
     }
 
     #[Test]
@@ -45,17 +49,22 @@ final class DeprecatedCredentialsFilterTest extends TestCase
     {
         $arrayFactoryStub = $this->createStub(ArrayFactoryInterface::class);
 
-        $this->assertSame($arrayFactoryStub, $this->getSut(arrayFactory: $arrayFactoryStub)->getArrayFactory());
+        $sut = $this->getSut(arrayFactory: $arrayFactoryStub);
+
+        $this->assertSame($arrayFactoryStub, $sut->getArrayFactory());
     }
 
     #[Test]
     public function getItems(): void
     {
         $dtoStub = $this->createStub(UserCredentialDtoInterface::class);
-        $userRepositoryStub = $this->createStub(UserRepositoryInterface::class);
-        $userRepositoryStub->method('findUsersWithOutdatedCredentials')->willReturn([$dtoStub]);
+        $userRepositoryStub = $this->createConfiguredStub(UserRepositoryInterface::class, [
+            'findUsersWithOutdatedCredentials' => [$dtoStub],
+        ]);
 
-        $this->assertSame([$dtoStub], $this->getSut(userRepository: $userRepositoryStub)->getItems());
+        $sut = $this->getSut(userRepository: $userRepositoryStub);
+
+        $this->assertSame([$dtoStub], $sut->getItems());
     }
 
     private function getSut(
