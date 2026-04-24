@@ -7,4 +7,4 @@ services:
     arguments:
       $logger: '@OxidEsales\ConsistencyCheck\Shared\Infrastructure\Logger'
     tags:
-      - { name: 'console.command' }
+      - { name: 'console.command', command: 'oe:consistency_check:export-by-filter' }
