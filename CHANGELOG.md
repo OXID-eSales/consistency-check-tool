@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 - Updated to work with OXID eShop 7.5.x
 - Minimum PHP version is now 8.3, tested up to PHP 8.5
+- Centralized logger configuration into `Shared\Infrastructure\Logger`; ImageManager, SeoUrl and ExportByFilter now use the shared logger instead of `ImageManager\Logger`
 
 ## [2.0.1] - 2026-02-16
 

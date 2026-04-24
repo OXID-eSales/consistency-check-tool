@@ -1,2 +1,24 @@
 imports:
   - { resource: Factory/services.yaml }
+
+services:
+  _defaults:
+    autowire: true
+    public: false
+
+  OxidEsales\ConsistencyCheck\Shared\Infrastructure\Logger:
+    class: Monolog\Logger
+    factory: [ '@OxidEsales\ConsistencyCheck\Shared\Infrastructure\Logger\Factory', 'create' ]
+
+  OxidEsales\ConsistencyCheck\Shared\Infrastructure\Logger\Factory:
+    class: OxidEsales\EshopCommunity\Internal\Framework\Logger\Factory\MonologLoggerFactory
+    arguments:
+      $configuration: '@OxidEsales\ConsistencyCheck\Shared\Infrastructure\Logger\Configuration'
+
+  OxidEsales\ConsistencyCheck\Shared\Infrastructure\Logger\Configuration:
+    class: OxidEsales\EshopCommunity\Internal\Framework\Logger\Configuration\MonologConfiguration
+    factory: [ '@OxidEsales\ConsistencyCheck\Shared\Infrastructure\Factory\MonologConfigurationFactoryInterface', 'create' ]
+    arguments:
+      $loggerName: 'Consistency Check Logger'
+      $logFilePath: '%app.log_file_path%'
+      $logLevel: !php/const Psr\Log\LogLevel::DEBUG
