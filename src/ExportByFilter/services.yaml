@@ -1,4 +1,6 @@
 imports:
+  - { resource: Console/services.yaml }
+  - { resource: Factory/services.yaml }
   - { resource: Filter/Credentials/services.yaml }
 
 services:

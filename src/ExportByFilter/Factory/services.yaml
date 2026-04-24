@@ -1,0 +1,7 @@
+services:
+  _defaults:
+    autowire: true
+    public: false
+
+  OxidEsales\ConsistencyCheck\ExportByFilter\Factory\ExportConfigurationFactoryInterface:
+    class: OxidEsales\ConsistencyCheck\ExportByFilter\Factory\ExportConfigurationFactory
