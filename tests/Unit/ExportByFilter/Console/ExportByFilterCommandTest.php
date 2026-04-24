@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace OxidEsales\ConsistencyCheck\Tests\Unit\ExportByFilter\Console;
 
+use OxidEsales\ConsistencyCheck\Export\Configuration\ExportConfigurationInterface;
 use OxidEsales\ConsistencyCheck\Export\Service\ExportServiceInterface;
 use OxidEsales\ConsistencyCheck\ExportByFilter\Console\ExportByFilterCommand;
 use OxidEsales\ConsistencyCheck\ExportByFilter\Exception\FilterNotFoundException;
@@ -31,7 +32,8 @@ final class ExportByFilterCommandTest extends TestCase
         $messageFormatterStub = $this->createStub(MessageFormatterServiceInterface::class);
         $messageFormatterStub->method('formatError')->willReturn('The --filter-name option is required');
 
-        $commandTester = new CommandTester($this->getSut(messageFormatter: $messageFormatterStub));
+        $sut = $this->getSut(messageFormatter: $messageFormatterStub);
+        $commandTester = new CommandTester($sut);
 
         $result = $commandTester->execute([]);
 
@@ -52,15 +54,44 @@ final class ExportByFilterCommandTest extends TestCase
         $messageFormatterStub = $this->createStub(MessageFormatterServiceInterface::class);
         $messageFormatterStub->method('formatError')->willReturn("Filter \"$filterName\" not found");
 
-        $commandTester = new CommandTester($this->getSut(
+        $sut = $this->getSut(
             filterRegistry: $filterRegistryStub,
             messageFormatter: $messageFormatterStub,
-        ));
+        );
+        $commandTester = new CommandTester($sut);
 
         $result = $commandTester->execute(['--filter-name' => $filterName]);
 
         $this->assertSame(Command::FAILURE, $result);
         $this->assertStringContainsString('not found', $commandTester->getDisplay());
+    }
+
+    #[Test]
+    public function executeTriggersExportWithExpectedConfiguration(): void
+    {
+        $filterName = uniqid();
+        $configurationStub = $this->createConfiguredStub(ExportConfigurationInterface::class, [
+            'getItems' => [],
+        ]);
+
+        $configurationFactoryStub = $this->createConfiguredStub(ExportConfigurationFactoryInterface::class, [
+            'createFromFilter' => $configurationStub,
+        ]);
+
+        $exportServiceSpy = $this->createMock(ExportServiceInterface::class);
+        $exportServiceSpy->expects($this->once())
+            ->method('export')
+            ->with($configurationStub);
+
+        $sut = $this->getSut(
+            configurationFactory: $configurationFactoryStub,
+            exportService: $exportServiceSpy,
+        );
+        $commandTester = new CommandTester($sut);
+
+        $result = $commandTester->execute(['--filter-name' => $filterName]);
+
+        $this->assertSame(Command::SUCCESS, $result);
     }
 
     private function getSut(
@@ -70,13 +101,18 @@ final class ExportByFilterCommandTest extends TestCase
         ?MessageFormatterServiceInterface $messageFormatter = null,
         ?LoggerInterface $logger = null,
     ): ExportByFilterCommand {
+        $filterRegistry ??= $this->createStub(FilterRegistryInterface::class);
+        $configurationFactory ??= $this->createStub(ExportConfigurationFactoryInterface::class);
+        $exportService ??= $this->createStub(ExportServiceInterface::class);
+        $messageFormatter ??= $this->createStub(MessageFormatterServiceInterface::class);
+        $logger ??= $this->createStub(LoggerInterface::class);
+
         return new ExportByFilterCommand(
-            filterRegistry: $filterRegistry ?? $this->createStub(FilterRegistryInterface::class),
-            configurationFactory: $configurationFactory
-                ?? $this->createStub(ExportConfigurationFactoryInterface::class),
-            exportService: $exportService ?? $this->createStub(ExportServiceInterface::class),
-            messageFormatter: $messageFormatter ?? $this->createStub(MessageFormatterServiceInterface::class),
-            logger: $logger ?? $this->createStub(LoggerInterface::class),
+            filterRegistry: $filterRegistry,
+            configurationFactory: $configurationFactory,
+            exportService: $exportService,
+            messageFormatter: $messageFormatter,
+            logger: $logger,
         );
     }
 }
