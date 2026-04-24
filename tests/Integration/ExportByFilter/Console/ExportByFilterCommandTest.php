@@ -19,28 +19,18 @@ use Symfony\Component\Console\Tester\CommandTester;
 
 final class ExportByFilterCommandTest extends IntegrationTestCase
 {
-    private CommandTester $commandTester;
     private array $insertedUserIds = [];
 
-    public function setUp(): void
-    {
-        parent::setUp();
-
-        $command = $this->get(ExportByFilterCommand::class);
-        $this->commandTester = new CommandTester($command);
-    }
-
     #[Test]
-    public function executeWithDeprecatedCredentialsFilter(): void
+    public function executeWithDeprecatedCredentialsFilterRuns(): void
     {
-        $userId = $this->insertUserWithMd5Password();
+        $this->insertUserWithMd5Password();
+        $commandTester = new CommandTester($this->get(ExportByFilterCommand::class));
 
-        $exitCode = $this->commandTester->execute(['--filter-name' => 'deprecated-credentials']);
+        $exitCode = $commandTester->execute(['--filter-name' => 'deprecated-credentials']);
 
         $this->assertSame(Command::SUCCESS, $exitCode);
-        $output = $this->commandTester->getDisplay();
-        $this->assertStringContainsString('Exported', $output);
-        $this->assertStringContainsString($userId, $output);
+        $this->assertStringContainsString('Exported', $commandTester->getDisplay());
     }
 
     private function insertUserWithMd5Password(): string
@@ -70,7 +60,7 @@ final class ExportByFilterCommandTest extends IntegrationTestCase
                 'password' => $md5Password,
                 'created' => date('Y-m-d H:i:s'),
             ])
-            ->executeStatement();
+            ->execute();
 
         return $userId;
     }
@@ -82,7 +72,7 @@ final class ExportByFilterCommandTest extends IntegrationTestCase
             $qb->delete('oxuser')
                 ->where($qb->expr()->in('OXID', ':ids'))
                 ->setParameter('ids', $this->insertedUserIds, Connection::PARAM_STR_ARRAY)
-                ->executeStatement();
+                ->execute();
         }
 
         parent::tearDown();

@@ -35,6 +35,8 @@ class ServiceAvailabilityTest extends IntegrationTestCase
             [\OxidEsales\ConsistencyCheck\ExportByFilter\Filter\Credentials\Factory\UserCredentialDtoFactoryInterface::class],
             [\OxidEsales\ConsistencyCheck\ExportByFilter\Filter\Credentials\Service\PasswordHashAnalyzerInterface::class],
             [\OxidEsales\ConsistencyCheck\ExportByFilter\Filter\Credentials\Factory\UserCredentialArrayFactory::class],
+            [\OxidEsales\ConsistencyCheck\ExportByFilter\Factory\ExportConfigurationFactoryInterface::class],
+            [\OxidEsales\ConsistencyCheck\ExportByFilter\Console\ExportByFilterCommand::class],
         ];
         // phpcs:enable
     }
