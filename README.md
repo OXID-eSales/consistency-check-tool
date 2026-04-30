@@ -14,7 +14,7 @@ The OXID eSales Consistency Check component is a flexible tool designed to perfo
 **Current capabilities include:**
 - **Unused Image Detection** - Identify orphaned image files no longer connected to products, categories, or manufacturers
 - **SEO URL Verification** - Detect unused and duplicate SEO URLs that may affect shop performance and search rankings
-- **Export by Filter** - Export data matching specific criteria (e.g., users with deprecated password hashes) to CSV
+- **Export by Filter** - Export data matching specific criteria (e.g., users whose password hash is not the shop's current Bcrypt) to CSV
 
 This component ensures that your eShop remains optimized by helping you clean up unnecessary data while keeping track of all changes.
 
@@ -173,24 +173,50 @@ $ vendor/bin/oe-console oe:consistency_check:export-by-filter --filter-name=<fil
 
 | Filter | Description |
 |--------|-------------|
-| `deprecated-credentials` | Users with outdated password hashes (MD5, SHA512) |
+| `deprecated-credentials` | Exports every user whose password hash is **not** native `$2y$` Bcrypt and is **not** empty. The CSV surfaces both deprecated/unsupported hashes (security risk) and externally-produced Bcrypt hashes (informational audit trail for imports from non-PHP systems). |
 
-### Example
+### Example: deprecated-credentials filter
 ```bash
-# Export users with deprecated credentials
 $ vendor/bin/oe-console oe:consistency_check:export-by-filter --filter-name=deprecated-credentials
 ```
 
 Output file: `export/deprecated-credentials-{timestamp}.csv`
 
 The exported CSV includes:
-- `user_id` - User OXID
+- `user_id` - User OXID (database key only — no email, name, or other PII; see "Privacy" below)
 - `active` - Whether the user account is active
 - `created_at` - Account creation date
-- `user_updated_at` - Last modification date
+- `user_updated_at` - Last modification date of the user row (`OXTIMESTAMP`). Touched by any update to the account, not specifically by password changes. Useful as an "account activity" signal; **not** a "password last changed" timestamp.
 - `last_order_at` - Date of last order (empty if none)
-- `credential_status` - Status: `deprecated` (SHA512) or `unsupported` (MD5)
-- `credential_hash_scheme` - Hash algorithm name
+- `credential_status` - Detected hash classification, see the table below
+- `credential_hash_scheme` - Detected algorithm name (e.g. `bcrypt`, `sha512`, `md5`, `unknown`)
+
+#### `credential_status` values
+
+| Value | Meaning | Recommended action |
+|---|---|---|
+| `deprecated` | SHA512 — older shop hashing scheme | Force password reset / re-hash on next login |
+| `unsupported` | MD5 — very old, broken | Force password reset |
+| `supported` | Bcrypt `$2a$` / `$2b$` — externally produced (Java BCrypt, OpenBSD, modern non-PHP libraries, manual imports). Cryptographically equivalent to `$2y$` and accepted transparently by PHP's `password_verify()`. | **No action needed.** Informational only — surfaces accounts imported from non-PHP backends. |
+| `unknown` | Any other format — argon2, scrypt, custom hash plugin, garbled data | Investigate manually. |
+
+When to expect each status:
+- Migrations from non-PHP backends (Java, OpenBSD, Python/Ruby auth) → expect `supported` rows
+- Shops upgraded from OXID 4.x/5.x/6.x → expect `deprecated` (SHA512) rows
+- Very old shops or hand-imported users → expect `unsupported` (MD5) rows
+- Shops using non-standard hashing plugins → expect `unknown` rows
+
+#### Privacy: minimal export by design
+
+The CSV contains only the `user_id` (OXID database key) — **no email, name, or other personal data**. This is intentional: the file can be shared, archived, or attached to tickets without leaking PII. To contact flagged users, look up `OXUSERNAME` from the `oxuser` table separately via the `user_id` column.
+
+#### Subshop scope
+
+The export covers users from **all shops** in an Enterprise Edition installation. There is no shop-id column on purpose:
+- With `blMallUsers = true`, a single user record can authenticate against any shop in the mall, so a weak hash is a shop-installation-wide concern rather than a per-shop one.
+- Even with mall-user disabled, the origin shop (`OXSHOPID`) is not a reliable signal for who should drive the cleanup, since users created in one shop frequently order from another.
+
+If you have a specific reason to slice differently, implement your own `FilterInterface` using the tag-based extension mechanism described in "Extending: Creating Custom Filters" below.
 
 ### Logs
 All operations, including moved and deleted images, are logged in:
@@ -210,6 +236,29 @@ There are several parameters in the `services.yaml` that can be customized for t
 Path parameters (`app.log_file_path`, `app.export_directory_path`) support both **relative** and **absolute** paths:
 - **Relative paths** (e.g., `log/oe_consistency_check.log`) are resolved relative to the OXID eShop `source` directory.
 - **Absolute paths** (e.g., `/var/log/oxid/consistency_check.log`) are used as-is.
+
+#### ⚠️ Configure the export directory before first use
+
+With the default `app.export_directory_path: 'export'`, output files land at `<shop>/source/export/<filename>.csv` — a directory inside the web document root. The shop's global `source/.htaccess` denies common sensitive extensions (`.log`, `.tpl`, `.ini`, `.pem`, etc.) but **does not cover `.csv`**, and `source/export/` has no dedicated `.htaccess`. Files written there are reachable via `https://<your-shop>/export/<filename>.csv` as static content. Although the consistency-check CSVs are privacy-minimal (`user_id` only, no PII), they still expose lists of accounts plus activity dates.
+
+Before running export commands in production, either:
+- Override `app.export_directory_path` to an absolute path **outside** the document root (for example, `/var/log/oxid/exports`), **or**
+- Drop a deny-all `.htaccess` into `source/export/`:
+  ```apache
+  <FilesMatch .*>
+      <IfModule mod_authz_core.c>
+          Require all denied
+      </IfModule>
+      <IfModule !mod_authz_core.c>
+          Order allow,deny
+          Deny from all
+      </IfModule>
+  </FilesMatch>
+
+  Options -Indexes
+  ```
+
+This applies to every feature writing to `source/export/`, not just this tool.
 
 To modify the parameters, create the `configurable_services.yaml` file in the `var/configuration` folder as
 described in the [Documentation](https://docs.oxid-esales.com/developer/en/latest/development/tell_me_about/service_container.html#replacing-oxid-eshop-services-in-a-project),
