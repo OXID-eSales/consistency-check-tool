@@ -17,7 +17,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Logger configuration centralized into `Shared\Infrastructure\Logger`; ImageManager, SeoUrl and ExportByFilter now use the shared logger
 
 ### Removed
-- Service IDs `OxidEsales\ConsistencyCheck\ImageManager\Logger`, its `Factory`, and its `Configuration` were removed from the DI container. They are replaced by `OxidEsales\ConsistencyCheck\Shared\Infrastructure\Logger`. 
+- Service IDs `OxidEsales\ConsistencyCheck\ImageManager\Logger`, its `Factory`, and its `Configuration` were removed from the DI container. They are replaced by `OxidEsales\ConsistencyCheck\Shared\Infrastructure\Logger`.
 
 ## [2.0.1] - 2026-02-16
 

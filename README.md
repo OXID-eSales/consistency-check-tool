@@ -14,7 +14,7 @@ The OXID eSales Consistency Check component is a flexible tool designed to perfo
 **Current capabilities include:**
 - **Unused Image Detection** - Identify orphaned image files no longer connected to products, categories, or manufacturers
 - **SEO URL Verification** - Detect unused and duplicate SEO URLs that may affect shop performance and search rankings
-- **Export by Filter** - Export data matching specific criteria (e.g., users whose password hash is not the shop's current Bcrypt) to CSV
+- **Export by Filter** - Export data matching specific criteria (e.g., users whose password hash is not native `$2y$` Bcrypt) to CSV
 
 This component ensures that your eShop remains optimized by helping you clean up unnecessary data while keeping track of all changes.
 
@@ -199,12 +199,14 @@ The exported CSV includes:
 | `unsupported` | MD5 — very old, broken | Force password reset |
 | `supported` | Bcrypt `$2a$` / `$2b$` — externally produced (Java BCrypt, OpenBSD, modern non-PHP libraries, manual imports). Cryptographically equivalent to `$2y$` and accepted transparently by PHP's `password_verify()`. | **No action needed.** Informational only — surfaces accounts imported from non-PHP backends. |
 | `unknown` | Any other format — argon2, scrypt, custom hash plugin, garbled data | Investigate manually. |
+| `not_set` | Empty password hash — account cannot log in via password | Filtered out at the database level and **never appears in the export**. Listed here only for completeness of the `CredentialStatus` enum. |
 
 When to expect each status:
 - Migrations from non-PHP backends (Java, OpenBSD, Python/Ruby auth) → expect `supported` rows
 - Shops upgraded from OXID 4.x/5.x/6.x → expect `deprecated` (SHA512) rows
 - Very old shops or hand-imported users → expect `unsupported` (MD5) rows
 - Shops using non-standard hashing plugins → expect `unknown` rows
+- Empty password hashes (`not_set`) are excluded by the SQL query and will not appear in the CSV
 
 #### Privacy: minimal export by design
 
