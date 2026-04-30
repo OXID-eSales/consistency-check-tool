@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [2.1.0] - Unreleased
+## [3.0.0] - Unreleased
 
 ### Added
 - New console command `oe:consistency_check:export-by-filter` for exporting data matching specific filter criteria
@@ -14,7 +14,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 - Updated to work with OXID eShop 7.5.x
 - Minimum PHP version is now 8.3, tested up to PHP 8.5
-- Centralized logger configuration into `Shared\Infrastructure\Logger`; ImageManager, SeoUrl and ExportByFilter now use the shared logger instead of `ImageManager\Logger`
+- Logger configuration centralized into `Shared\Infrastructure\Logger`; ImageManager, SeoUrl and ExportByFilter now use the shared logger
+
+### Removed
+- Service IDs `OxidEsales\ConsistencyCheck\ImageManager\Logger`, its `Factory`, and its `Configuration` were removed from the DI container. They are replaced by `OxidEsales\ConsistencyCheck\Shared\Infrastructure\Logger`. 
 
 ## [2.0.1] - 2026-02-16
 
@@ -57,7 +60,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [1.0.0-rc.1] - 2025-05-13
 - Initial release
 
-[2.1.0]: https://github.com/OXID-eSales/consistency-check-tool/compare/v2.0.1...v2.1.0
+[3.0.0]: https://github.com/OXID-eSales/consistency-check-tool/compare/v2.0.1...v3.0.0
 [2.0.1]: https://github.com/OXID-eSales/consistency-check-tool/compare/v2.0.0...v2.0.1
 [2.0.0]: https://github.com/OXID-eSales/consistency-check-tool/compare/v1.0.0...v2.0.0
 [1.0.0]: https://github.com/OXID-eSales/consistency-check-tool/compare/v1.0.0-rc.1...v1.0.0
