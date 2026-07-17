@@ -34,6 +34,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [2.0.2] - unreleased
 
+### Added
+- Changes from v1.0.1
+
 ### Fixed
 - `oe:consistency_check:move-unused-images` now inserts the missing path separator between the destination directory and the image path, so images are moved to the correct target (e.g. `out/pictures/backup/out/pictures/master/...` instead of `out/pictures/backupout/pictures/master/...`)
 
@@ -68,6 +71,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Removed
 - `FileSystemUtilsInterface::getAbsolutePath` method
+
+## [1.0.1] - unreleased
+
+### Fixed
+- Corrected the typo in the manufacturer thumbnail image entity service ID (`...manufacturer.oxthumbail` → `...manufacturer.oxthumbnail`). The entity is collected by tag, so behaviour is unchanged; shops overriding this service by its ID must update their configuration.
 
 ## [1.0.0] - 2025-06-11
 

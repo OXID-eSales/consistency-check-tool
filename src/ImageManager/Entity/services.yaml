@@ -183,7 +183,7 @@ services:
       $directory: out/pictures/master/manufacturer/promo_icon
     tags: ['oe.consistency_check.image_entity']
 
-  oxid_esales.consistency_check.entity.image_entity.manufacturer.oxthumbail:
+  oxid_esales.consistency_check.entity.image_entity.manufacturer.oxthumbnail:
     class: OxidEsales\ConsistencyCheck\ImageManager\Entity\ImageEntity
     arguments:
       $name: 'Manufacturer'
