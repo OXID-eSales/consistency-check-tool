@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [3.0.1] - unreleased
+
+### Added
+- Changes from v2.0.2
+
 ## [3.0.0] - 2026-05-04
 
 ### Added
@@ -18,6 +23,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Removed
 - Service IDs `OxidEsales\ConsistencyCheck\ImageManager\Logger`, its `Factory`, and its `Configuration` were removed from the DI container. They are replaced by `OxidEsales\ConsistencyCheck\Shared\Infrastructure\Logger`.
+
+## [2.0.2] - unreleased
+
+### Fixed
+- `oe:consistency_check:move-unused-images` now inserts the missing path separator between the destination directory and the image path, so images are moved to the correct target (e.g. `out/pictures/backup/out/pictures/master/...` instead of `out/pictures/backupout/pictures/master/...`)
 
 ## [2.0.1] - 2026-02-16
 
@@ -60,7 +70,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [1.0.0-rc.1] - 2025-05-13
 - Initial release
 
-[3.0.0]: https://github.com/OXID-eSales/consistency-check-tool/compare/v2.0.1...v3.0.0
 [2.0.1]: https://github.com/OXID-eSales/consistency-check-tool/compare/v2.0.0...v2.0.1
 [2.0.0]: https://github.com/OXID-eSales/consistency-check-tool/compare/v1.0.0...v2.0.0
 [1.0.0]: https://github.com/OXID-eSales/consistency-check-tool/compare/v1.0.0-rc.1...v1.0.0

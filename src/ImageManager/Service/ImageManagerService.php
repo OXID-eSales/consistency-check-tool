@@ -38,6 +38,7 @@ class ImageManagerService implements ImageManagerServiceInterface
             $sourcePath = rtrim($image->getDirectory(), '/') . '/' . $image->getImageName();
 
             $destinationPath = rtrim($destination, '/') .
+                '/' .
                 rtrim($image->getDirectory(), '/') .
                 '/' .
                 $image->getImageName();
