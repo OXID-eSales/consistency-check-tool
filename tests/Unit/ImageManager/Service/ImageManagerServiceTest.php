@@ -130,6 +130,46 @@ class ImageManagerServiceTest extends TestCase
     }
 
     #[Test]
+    public function itMovesImageToDestinationWithPathSeparator(): void
+    {
+        $destination = uniqid();
+        $imageMock = $this->createImageStub(
+            imageName: $imageName = uniqid(),
+            directory: $directory = uniqid()
+        );
+
+        $imageCollectionStub = $this->createMock(ImageCollectionInterface::class);
+        $imageCollectionStub
+            ->method('getAll')
+            ->willReturn([
+                uniqid() => $imageMock
+            ]);
+
+        $pathResolverStub = $this->createStub(PathResolverInterface::class);
+        $pathResolverStub
+            ->method('getAbsolutePath')
+            ->willReturn($absoluteSourcePath = uniqid());
+
+        $imageHandlerSpy = $this->createMock(ImageHandlerInterface::class);
+        $imageHandlerSpy
+            ->expects($this->once())
+            ->method('copy')
+            ->with(
+                $absoluteSourcePath,
+                $destination . '/' . $directory . '/' . $imageName
+            );
+
+        $sut = $this->getSut(
+            pathResolver: $pathResolverStub,
+            imageHandler: $imageHandlerSpy
+        );
+
+        $movedCount = $sut->moveImages($imageCollectionStub, $destination);
+
+        $this->assertSame(1, $movedCount);
+    }
+
+    #[Test]
     public function itLogsErrorWhenMoveFails(): void
     {
         $imageStub = $this->createImageStub();
