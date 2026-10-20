@@ -44,7 +44,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Removed
 - `FileSystemUtilsInterface::getAbsolutePath` method
 
-## [1.0.1] - unreleased
+## [1.0.1] - 2026-10-20
 
 ### Fixed
 - Corrected the typo in the manufacturer thumbnail image entity service ID (`...manufacturer.oxthumbail` → `...manufacturer.oxthumbnail`). The entity is collected by tag, so behaviour is unchanged; shops overriding this service by its ID must update their configuration.
@@ -60,5 +60,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 [2.0.1]: https://github.com/OXID-eSales/consistency-check-tool/compare/v2.0.0...v2.0.1
 [2.0.0]: https://github.com/OXID-eSales/consistency-check-tool/compare/v1.0.0...v2.0.0
+[1.0.1]: https://github.com/OXID-eSales/consistency-check-tool/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/OXID-eSales/consistency-check-tool/compare/v1.0.0-rc.1...v1.0.0
 [1.0.0-rc.1]: https://github.com/OXID-eSales/consistency-check-tool/releases/tag/v1.0.0-rc.1
