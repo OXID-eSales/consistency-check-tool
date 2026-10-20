@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [3.1.0] - unreleased
+## [3.1.0] - 2026-10-20
 
 ### Added
 - Changes from v3.0.1
@@ -86,6 +86,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [1.0.0-rc.1] - 2025-05-13
 - Initial release
 
+[3.1.0]: https://github.com/OXID-eSales/consistency-check-tool/compare/v3.0.1...v3.1.0
 [3.0.1]: https://github.com/OXID-eSales/consistency-check-tool/compare/v3.0.0...v3.0.1
 [3.0.0]: https://github.com/OXID-eSales/consistency-check-tool/compare/v2.0.2...v3.0.0
 [2.0.2]: https://github.com/OXID-eSales/consistency-check-tool/compare/v2.0.1...v2.0.2
