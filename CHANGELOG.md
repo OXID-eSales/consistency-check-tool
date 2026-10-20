@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 - Update component to work with OXID eShop 7.6
 
-## [3.0.1] - unreleased
+## [3.0.1] - 2026-10-20
 
 ### Added
 - Changes from v2.0.2
@@ -32,7 +32,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Removed
 - Service IDs `OxidEsales\ConsistencyCheck\ImageManager\Logger`, its `Factory`, and its `Configuration` were removed from the DI container. They are replaced by `OxidEsales\ConsistencyCheck\Shared\Infrastructure\Logger`.
 
-## [2.0.2] - unreleased
+## [2.0.2] - 2026-10-20
 
 ### Added
 - Changes from v1.0.1
@@ -72,7 +72,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Removed
 - `FileSystemUtilsInterface::getAbsolutePath` method
 
-## [1.0.1] - unreleased
+## [1.0.1] - 2026-10-20
 
 ### Fixed
 - Corrected the typo in the manufacturer thumbnail image entity service ID (`...manufacturer.oxthumbail` → `...manufacturer.oxthumbnail`). The entity is collected by tag, so behaviour is unchanged; shops overriding this service by its ID must update their configuration.
@@ -86,8 +86,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [1.0.0-rc.1] - 2025-05-13
 - Initial release
 
-[3.0.0]: https://github.com/OXID-eSales/consistency-check-tool/compare/v2.0.1...v3.0.0
+[3.0.1]: https://github.com/OXID-eSales/consistency-check-tool/compare/v3.0.0...v3.0.1
+[3.0.0]: https://github.com/OXID-eSales/consistency-check-tool/compare/v2.0.2...v3.0.0
+[2.0.2]: https://github.com/OXID-eSales/consistency-check-tool/compare/v2.0.1...v2.0.2
 [2.0.1]: https://github.com/OXID-eSales/consistency-check-tool/compare/v2.0.0...v2.0.1
 [2.0.0]: https://github.com/OXID-eSales/consistency-check-tool/compare/v1.0.0...v2.0.0
+[1.0.1]: https://github.com/OXID-eSales/consistency-check-tool/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/OXID-eSales/consistency-check-tool/compare/v1.0.0-rc.1...v1.0.0
 [1.0.0-rc.1]: https://github.com/OXID-eSales/consistency-check-tool/releases/tag/v1.0.0-rc.1
