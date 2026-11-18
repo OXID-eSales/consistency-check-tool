@@ -16,3 +16,9 @@ services:
     arguments:
       $arrayFactory: '@OxidEsales\ConsistencyCheck\SeoUrl\Factory\SeoUrlArrayFactory'
       $exportFilePrefix: '%app.duplicate_seo_urls_file%'
+
+  OxidEsales\ConsistencyCheck\SeoUrl\Factory\ProductSeoUrlWithoutContextExportConfigurationFactory:
+    class: OxidEsales\ConsistencyCheck\SeoUrl\Factory\SeoUrlExportConfigurationFactory
+    arguments:
+      $arrayFactory: '@OxidEsales\ConsistencyCheck\SeoUrl\Factory\SeoUrlArrayFactory'
+      $exportFilePrefix: '%app.product_seo_urls_without_context_file%'

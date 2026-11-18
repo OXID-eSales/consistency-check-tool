@@ -15,15 +15,25 @@ use OxidEsales\ConsistencyCheck\SeoUrl\Infrastructure\SeoTypeTableMapping;
 use OxidEsales\ConsistencyCheck\SeoUrl\Infrastructure\SeoUrlRepository;
 use OxidEsales\ConsistencyCheck\SeoUrl\Infrastructure\SeoUrlRepositoryInterface;
 use OxidEsales\Eshop\Application\Model\Article;
+use OxidEsales\Eshop\Application\Model\Category;
+use OxidEsales\Eshop\Application\Model\Object2Category;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 use OxidEsales\EshopCommunity\Internal\Transition\Adapter\ShopAdapterInterface;
 use OxidEsales\EshopCommunity\Internal\Transition\Utility\ContextInterface;
 use OxidEsales\EshopCommunity\Tests\Integration\IntegrationTestCase;
 use OxidEsales\Facts\Facts;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 
 final class SeoUrlRepositoryTest extends IntegrationTestCase
 {
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        $this->get(QueryBuilderFactoryInterface::class)->create()->delete('oxseo')->execute();
+    }
+
     #[Test]
     public function findUnusedUrls(): void
     {
@@ -146,6 +156,161 @@ final class SeoUrlRepositoryTest extends IntegrationTestCase
     }
 
     #[Test]
+    public function findProductUrlsWithoutContext(): void
+    {
+        $contextId = uniqid();
+        $productId = $this->insertArticleWithContext('category', $contextId);
+        $seoUrl = uniqid() . '-without-context.html';
+        $this->insertSeoUrl(
+            objectId: $productId,
+            seoUrl: $seoUrl,
+            type: 'oxarticle',
+            stdUrl: 'index.php?cl=details&amp;anid=' . $productId,
+            params: $contextId,
+            fixed: true
+        );
+
+        $result = $this->getSut()->findProductUrlsWithoutContext();
+
+        $this->assertCount(1, $result);
+        $this->assertSame($seoUrl, $result[0]->getSeoUrl());
+    }
+
+    public static function assignedContextDataProvider(): array
+    {
+        return [
+            'category' => ['category'],
+            'price category' => ['priceCategory'],
+            'vendor' => ['vendor'],
+            'manufacturer' => ['manufacturer'],
+        ];
+    }
+
+    #[Test]
+    #[DataProvider('assignedContextDataProvider')]
+    public function findProductUrlsWithoutContextFindsAllAssignedContexts(string $contextType): void
+    {
+        $contextId = uniqid();
+        $productId = $this->insertArticleWithContext($contextType, $contextId);
+        $this->insertSeoUrl(
+            objectId: $productId,
+            seoUrl: uniqid() . '.html',
+            type: 'oxarticle',
+            stdUrl: 'index.php?cl=details&amp;anid=' . $productId,
+            params: $contextId,
+            fixed: true
+        );
+
+        $result = $this->getSut()->findProductUrlsWithoutContext();
+
+        $this->assertCount(1, $result);
+    }
+
+    #[Test]
+    public function findProductUrlsWithoutContextIgnoresNotFixedUrls(): void
+    {
+        $contextId = uniqid();
+        $productId = $this->insertArticleWithContext('category', $contextId);
+        $this->insertSeoUrl(
+            objectId: $productId,
+            seoUrl: uniqid() . '.html',
+            type: 'oxarticle',
+            stdUrl: 'index.php?cl=details&amp;anid=' . $productId,
+            params: $contextId,
+            fixed: false
+        );
+
+        $result = $this->getSut()->findProductUrlsWithoutContext();
+
+        $this->assertEmpty($result);
+    }
+
+    #[Test]
+    public function findProductUrlsWithoutContextIgnoresContextsNoLongerAssigned(): void
+    {
+        $productId = $this->insertArticleWithContext('category', uniqid());
+        $this->insertSeoUrl(
+            objectId: $productId,
+            seoUrl: uniqid() . '.html',
+            type: 'oxarticle',
+            stdUrl: 'index.php?cl=details&amp;anid=' . $productId,
+            params: uniqid(),
+            fixed: true
+        );
+
+        $result = $this->getSut()->findProductUrlsWithoutContext();
+
+        $this->assertEmpty($result);
+    }
+
+    #[Test]
+    public function findProductUrlsWithoutContextCoversAllShops(): void
+    {
+        $vendorId = uniqid();
+        $productId = uniqid();
+        $this->insertArticle($productId, vendorId: $vendorId);
+        $expectedShopIds = [1];
+
+        if ($this->isNotCommunityEdition()) {
+            $this->insertArticle($productId, shopId: 2, vendorId: $vendorId);
+            $expectedShopIds[] = 2;
+        }
+
+        foreach ($expectedShopIds as $shopId) {
+            $this->insertSeoUrl(
+                objectId: $productId,
+                seoUrl: uniqid() . '-shop' . $shopId . '.html',
+                type: 'oxarticle',
+                shopId: $shopId,
+                stdUrl: 'index.php?cl=details&amp;anid=' . $productId,
+                params: $vendorId,
+                fixed: true
+            );
+        }
+
+        $result = $this->getSut()->findProductUrlsWithoutContext();
+
+        $shopIds = array_map(fn($dto) => $dto->getShopId(), $result);
+        sort($shopIds);
+        $this->assertSame($expectedShopIds, $shopIds);
+    }
+
+    public static function urlsWithValidContextDataProvider(): array
+    {
+        $contextId = 'test-context-id';
+
+        return [
+            'main url without context' => ['oxarticle', '', ''],
+            'category' => ['oxarticle', '&amp;cnid=' . $contextId, $contextId],
+            'vendor' => ['oxarticle', '&amp;cnid=v_' . $contextId . '&amp;listtype=vendor', $contextId],
+            'manufacturer' => ['oxarticle', '&amp;mnid=' . $contextId . '&amp;listtype=manufacturer', $contextId],
+            'other seo type' => ['oxcategory', '', $contextId],
+        ];
+    }
+
+    #[Test]
+    #[DataProvider('urlsWithValidContextDataProvider')]
+    public function findProductUrlsWithoutContextIgnoresValidUrls(
+        string $type,
+        string $stdUrlContext,
+        string $params
+    ): void {
+        $productId = $this->insertArticleWithContext('category', 'test-context-id');
+        $this->insertSeoUrl(
+            objectId: $productId,
+            seoUrl: uniqid() . '.html',
+            type: $type,
+            stdUrl: 'index.php?cl=details&amp;anid=' . $productId . $stdUrlContext,
+            params: $params,
+            fixed: true
+        );
+
+        $result = $this->getSut()->findProductUrlsWithoutContext();
+
+        $this->assertEmpty($result);
+    }
+
+    #[Test]
     public function deleteUrls(): void
     {
         $oxid1 = uniqid();
@@ -232,8 +397,16 @@ final class SeoUrlRepositoryTest extends IntegrationTestCase
         $this->assertSame(1, $remaining[0]->getLanguageId());
     }
 
-    private function insertSeoUrl(string $objectId, string $seoUrl, string $type, int $shopId = 1, int $lang = 0): void
-    {
+    private function insertSeoUrl(
+        string $objectId,
+        string $seoUrl,
+        string $type,
+        int $shopId = 1,
+        int $lang = 0,
+        ?string $stdUrl = null,
+        string $params = '',
+        bool $fixed = false
+    ): void {
         $queryBuilder = $this->get(QueryBuilderFactoryInterface::class)->create();
 
         $queryBuilder
@@ -255,12 +428,12 @@ final class SeoUrlRepositoryTest extends IntegrationTestCase
                 'ident' => md5($seoUrl . $shopId . $lang),
                 'shopId' => $shopId,
                 'lang' => $lang,
-                'stdUrl' => 'index.php?cl=details&anid=' . $objectId,
+                'stdUrl' => $stdUrl ?? 'index.php?cl=details&anid=' . $objectId,
                 'seoUrl' => $seoUrl,
                 'type' => $type,
-                'fixed' => 0,
+                'fixed' => (int)$fixed,
                 'expired' => 0,
-                'params' => '',
+                'params' => $params,
             ])
             ->execute();
     }
@@ -282,8 +455,13 @@ final class SeoUrlRepositoryTest extends IntegrationTestCase
         );
     }
 
-    private function insertArticle(string $articleId, int $shopId = 1): void
-    {
+    private function insertArticle(
+        string $articleId,
+        int $shopId = 1,
+        string $vendorId = '',
+        string $manufacturerId = '',
+        float $price = 0
+    ): void {
         $article = oxNew(Article::class);
         $article->setId($articleId);
         $article->setSkipAssign(true);
@@ -291,13 +469,50 @@ final class SeoUrlRepositoryTest extends IntegrationTestCase
             'oxparentid' => '',
             'oxartnum' => uniqid(),
             'oxtitle' => uniqid(),
-            'oxactive' => 1
+            'oxactive' => 1,
+            'oxvendorid' => $vendorId,
+            'oxmanufacturerid' => $manufacturerId,
+            'oxprice' => $price,
         ]);
         $article->save();
 
         if ($this->isNotCommunityEdition()) {
             $article->assignToShop($shopId);
         }
+    }
+
+    private function insertArticleWithContext(string $contextType, string $contextId): string
+    {
+        $productId = uniqid();
+
+        match ($contextType) {
+            'category' => $this->insertArticle($productId),
+            'priceCategory' => $this->insertArticle($productId, price: 50),
+            'vendor' => $this->insertArticle($productId, vendorId: $contextId),
+            'manufacturer' => $this->insertArticle($productId, manufacturerId: $contextId),
+        };
+
+        if ($contextType === 'category') {
+            $object2Category = oxNew(Object2Category::class);
+            $object2Category->setProductId($productId);
+            $object2Category->setCategoryId($contextId);
+            $object2Category->save();
+        }
+
+        if ($contextType === 'priceCategory') {
+            $category = oxNew(Category::class);
+            $category->setId($contextId);
+            $category->assign([
+                'oxparentid' => 'oxrootid',
+                'oxtitle' => uniqid(),
+                'oxactive' => 1,
+                'oxpricefrom' => 10,
+                'oxpriceto' => 100,
+            ]);
+            $category->save();
+        }
+
+        return $productId;
     }
 
     private function getSut(): SeoUrlRepositoryInterface

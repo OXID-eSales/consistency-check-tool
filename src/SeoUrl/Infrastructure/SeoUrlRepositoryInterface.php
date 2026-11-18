@@ -24,6 +24,14 @@ interface SeoUrlRepositoryInterface
     public function findDuplicateUrls(string $suffix): array;
 
     /**
+     * Fixed product SEO URLs saved for a category, vendor or manufacturer (OXPARAMS) that is still
+     * assigned to the product, whose standard URL lost that context.
+     *
+     * @return array<SeoUrlDtoInterface>
+     */
+    public function findProductUrlsWithoutContext(): array;
+
+    /**
      * @param array<SeoUrlDtoInterface> $seoUrlDtos
      */
     public function deleteUrls(array $seoUrlDtos): int;

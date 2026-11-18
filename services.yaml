@@ -3,6 +3,7 @@ parameters:
   app.export_directory_path: 'export'
   app.unused_seo_urls_file: 'Unused-Seo-Urls'
   app.duplicate_seo_urls_file: 'Duplicate-Seo-Urls'
+  app.product_seo_urls_without_context_file: 'Product-Seo-Urls-Without-Context'
 
 imports:
   - { resource: src/ImageManager/services.yaml }
