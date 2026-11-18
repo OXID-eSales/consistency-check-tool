@@ -17,6 +17,13 @@ services:
     tags:
       - { name: 'console.command', command: 'oe:consistency_check:check-duplicate-seo-urls' }
 
+  OxidEsales\ConsistencyCheck\SeoUrl\Console\CheckProductSeoUrlsWithoutContextCommand:
+    arguments:
+      $configurationFactory: '@OxidEsales\ConsistencyCheck\SeoUrl\Factory\ProductSeoUrlWithoutContextExportConfigurationFactory'
+      $logger: '@OxidEsales\ConsistencyCheck\ImageManager\Logger'
+    tags:
+      - { name: 'console.command', command: 'oe:consistency_check:check-product-seo-urls-without-context' }
+
   OxidEsales\ConsistencyCheck\SeoUrl\Console\DeleteSeoUrlsCommand:
     arguments:
       $readerConfigurationFactory: '@OxidEsales\ConsistencyCheck\SeoUrl\Factory\SeoUrlExportReaderConfigurationFactory'

@@ -24,6 +24,11 @@ interface SeoUrlServiceInterface
     public function findDuplicateUrls(?string $suffix = null): array;
 
     /**
+     * @return array<SeoUrlDtoInterface>
+     */
+    public function findProductUrlsWithoutContext(): array;
+
+    /**
      * @param array<SeoUrlDtoInterface> $seoUrlDtos
      */
     public function deleteUrls(array $seoUrlDtos): int;

@@ -140,6 +140,25 @@ Export results to CSV:
 $ vendor/bin/oe-console oe:consistency_check:check-duplicate-seo-urls --export
 ```
 
+### Check Product SEO URLs Without Context
+Detect product SEO URLs that were saved for a category, vendor or manufacturer (`OXPARAMS`), but whose
+standard URL (`OXSTDURL`) is missing that context (`cnid`/`mnid`). Older shop versions stored such entries
+when the SEO settings of a product were saved in the admin area:
+```bash
+$ vendor/bin/oe-console oe:consistency_check:check-product-seo-urls-without-context
+```
+
+Export results to CSV:
+```bash
+$ vendor/bin/oe-console oe:consistency_check:check-product-seo-urls-without-context --export
+```
+
+The command only reports the entries. To fix one, open the product in the admin area, go to the SEO tab,
+select the category, vendor or manufacturer from the `OXPARAMS` column, and save the SEO settings again
+with a shop version that contains the fix.
+> **Note:** Do not delete these entries with `delete-seo-urls`. They were saved by an admin
+> and usually contain a manually edited SEO URL, which would be lost.
+
 ### Delete SEO URLs from CSV
 Delete SEO URLs listed in a previously exported CSV file:
 ```bash
@@ -234,6 +253,7 @@ There are several parameters in the `services.yaml` that can be customized for t
 * `app.export_directory_path` - Directory where CSV export files are saved.
 * `app.unused_seo_urls_file` - File name prefix for unused SEO URLs export.
 * `app.duplicate_seo_urls_file` - File name prefix for duplicate SEO URLs export.
+* `app.product_seo_urls_without_context_file` - File name prefix for product SEO URLs without context export.
 
 Path parameters (`app.log_file_path`, `app.export_directory_path`) support both **relative** and **absolute** paths:
 - **Relative paths** (e.g., `log/oe_consistency_check.log`) are resolved relative to the OXID eShop `source` directory.
@@ -272,6 +292,7 @@ parameters:
   app.export_directory_path: 'var/exports'
   app.unused_seo_urls_file: 'orphaned-seo-urls'
   app.duplicate_seo_urls_file: 'collision-seo-urls'
+  app.product_seo_urls_without_context_file: 'product-seo-urls-without-context'
 ```
 
 ### Custom file paths for images

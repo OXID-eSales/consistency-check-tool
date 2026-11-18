@@ -23,6 +23,8 @@ final class SeoUrlRepository implements SeoUrlRepositoryInterface
 {
     private const ROOT_OBJECT_ID = 'root';
     private const DELETE_CHUNK_SIZE = 500;
+    private const PRODUCT_SEO_TYPE = 'oxarticle';
+    private const STD_URL_CONTEXT_PATTERNS = ['%cnid=%', '%mnid=%', '%recommid=%'];
 
 
     /**
@@ -97,6 +99,35 @@ final class SeoUrlRepository implements SeoUrlRepositoryInterface
             ->from('oxseo')
             ->where('OXSEOURL LIKE :pattern')
             ->setParameter('pattern', '%' . $suffix . '%');
+
+        /** @var Result<array> $result */
+        $result = $queryBuilder->execute();
+
+        $dtos = [];
+        while ($row = $result->fetchAssociative()) {
+            /** @var SeoUrlTableRow $row */
+            $dtos[] = $this->seoUrlDtoFactory->createFromArray($row);
+        }
+
+        return $dtos;
+    }
+
+    public function findProductUrlsWithoutContext(): array
+    {
+        $queryBuilder = $this->queryBuilderFactory->create();
+
+        $queryBuilder
+            ->select('*')
+            ->from('oxseo')
+            ->where('OXTYPE = :type')
+            ->andWhere("OXPARAMS != ''")
+            ->setParameter('type', self::PRODUCT_SEO_TYPE);
+
+        foreach (self::STD_URL_CONTEXT_PATTERNS as $index => $pattern) {
+            $queryBuilder
+                ->andWhere(sprintf('OXSTDURL NOT LIKE :contextPattern%d', $index))
+                ->setParameter('contextPattern' . $index, $pattern);
+        }
 
         /** @var Result<array> $result */
         $result = $queryBuilder->execute();

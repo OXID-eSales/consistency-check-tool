@@ -124,6 +124,19 @@ final class SeoUrlServiceTest extends TestCase
     }
 
     #[Test]
+    public function findProductUrlsWithoutContext(): void
+    {
+        $dtoStub = $this->createStub(SeoUrlDtoInterface::class);
+
+        $repositoryStub = $this->createStub(SeoUrlRepositoryInterface::class);
+        $repositoryStub->method('findProductUrlsWithoutContext')->willReturn([$dtoStub]);
+
+        $sut = $this->getSut(repositoryStub: $repositoryStub);
+
+        $this->assertSame([$dtoStub], $sut->findProductUrlsWithoutContext());
+    }
+
+    #[Test]
     public function deleteUrls(): void
     {
         $seoUrlDtos = [

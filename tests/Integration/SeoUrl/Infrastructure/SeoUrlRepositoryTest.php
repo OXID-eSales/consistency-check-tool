@@ -20,6 +20,7 @@ use OxidEsales\EshopCommunity\Internal\Transition\Adapter\ShopAdapterInterface;
 use OxidEsales\EshopCommunity\Internal\Transition\Utility\ContextInterface;
 use OxidEsales\EshopCommunity\Tests\Integration\IntegrationTestCase;
 use OxidEsales\Facts\Facts;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 
 final class SeoUrlRepositoryTest extends IntegrationTestCase
@@ -146,6 +147,98 @@ final class SeoUrlRepositoryTest extends IntegrationTestCase
     }
 
     #[Test]
+    public function findProductUrlsWithoutContext(): void
+    {
+        $objectId = uniqid();
+        $seoUrl = uniqid() . '-without-context.html';
+        $this->insertSeoUrl(
+            objectId: $objectId,
+            seoUrl: $seoUrl,
+            type: 'oxarticle',
+            stdUrl: 'index.php?cl=details&amp;anid=' . $objectId,
+            params: uniqid()
+        );
+
+        $result = $this->getSut()->findProductUrlsWithoutContext();
+
+        $this->assertCount(1, $result);
+        $this->assertSame($seoUrl, $result[0]->getSeoUrl());
+    }
+
+    #[Test]
+    public function findProductUrlsWithoutContextCoversAllShops(): void
+    {
+        $objectId = uniqid();
+        $this->insertSeoUrl(
+            objectId: $objectId,
+            seoUrl: uniqid() . '-shop1.html',
+            type: 'oxarticle',
+            shopId: 1,
+            stdUrl: 'index.php?cl=details&amp;anid=' . $objectId,
+            params: uniqid()
+        );
+        $this->insertSeoUrl(
+            objectId: $objectId,
+            seoUrl: uniqid() . '-shop2.html',
+            type: 'oxarticle',
+            shopId: 2,
+            stdUrl: 'index.php?cl=details&amp;anid=' . $objectId,
+            params: uniqid()
+        );
+
+        $result = $this->getSut()->findProductUrlsWithoutContext();
+
+        $shopIds = array_map(fn($dto) => $dto->getShopId(), $result);
+        sort($shopIds);
+        $this->assertSame([1, 2], $shopIds);
+    }
+
+    public static function urlsWithValidContextDataProvider(): array
+    {
+        $objectId = 'test-product-id';
+        $contextId = 'test-context-id';
+        $baseStdUrl = 'index.php?cl=details&amp;anid=' . $objectId;
+
+        return [
+            'main url without context' => ['oxarticle', $baseStdUrl, ''],
+            'category' => ['oxarticle', $baseStdUrl . '&amp;cnid=' . $contextId, $contextId],
+            'vendor' => [
+                'oxarticle',
+                $baseStdUrl . '&amp;cnid=v_' . $contextId . '&amp;listtype=vendor',
+                $contextId,
+            ],
+            'manufacturer' => [
+                'oxarticle',
+                $baseStdUrl . '&amp;mnid=' . $contextId . '&amp;listtype=manufacturer',
+                $contextId,
+            ],
+            'recommendation list' => [
+                'oxarticle',
+                $baseStdUrl . '&amp;recommid=' . $contextId . '&amp;listtype=recommlist',
+                $contextId,
+            ],
+            'other seo type' => ['oxcategory', 'index.php?cl=alist&amp;cnid=' . $contextId, 'any-params'],
+        ];
+    }
+
+    #[Test]
+    #[DataProvider('urlsWithValidContextDataProvider')]
+    public function findProductUrlsWithoutContextIgnoresValidUrls(string $type, string $stdUrl, string $params): void
+    {
+        $this->insertSeoUrl(
+            objectId: uniqid(),
+            seoUrl: uniqid() . '.html',
+            type: $type,
+            stdUrl: $stdUrl,
+            params: $params
+        );
+
+        $result = $this->getSut()->findProductUrlsWithoutContext();
+
+        $this->assertEmpty($result);
+    }
+
+    #[Test]
     public function deleteUrls(): void
     {
         $oxid1 = uniqid();
@@ -232,8 +325,15 @@ final class SeoUrlRepositoryTest extends IntegrationTestCase
         $this->assertSame(1, $remaining[0]->getLanguageId());
     }
 
-    private function insertSeoUrl(string $objectId, string $seoUrl, string $type, int $shopId = 1, int $lang = 0): void
-    {
+    private function insertSeoUrl(
+        string $objectId,
+        string $seoUrl,
+        string $type,
+        int $shopId = 1,
+        int $lang = 0,
+        ?string $stdUrl = null,
+        string $params = ''
+    ): void {
         $queryBuilder = $this->get(QueryBuilderFactoryInterface::class)->create();
 
         $queryBuilder
@@ -255,12 +355,12 @@ final class SeoUrlRepositoryTest extends IntegrationTestCase
                 'ident' => md5($seoUrl . $shopId . $lang),
                 'shopId' => $shopId,
                 'lang' => $lang,
-                'stdUrl' => 'index.php?cl=details&anid=' . $objectId,
+                'stdUrl' => $stdUrl ?? 'index.php?cl=details&anid=' . $objectId,
                 'seoUrl' => $seoUrl,
                 'type' => $type,
                 'fixed' => 0,
                 'expired' => 0,
-                'params' => '',
+                'params' => $params,
             ])
             ->execute();
     }
