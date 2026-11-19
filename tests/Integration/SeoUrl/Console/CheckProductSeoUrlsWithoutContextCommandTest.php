@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace OxidEsales\ConsistencyCheck\Tests\Integration\SeoUrl\Console;
 
 use OxidEsales\ConsistencyCheck\SeoUrl\Console\CheckProductSeoUrlsWithoutContextCommand;
+use OxidEsales\Eshop\Application\Model\Article;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 use OxidEsales\EshopCommunity\Tests\Integration\IntegrationTestCase;
 use PHPUnit\Framework\Attributes\Test;
@@ -31,13 +32,24 @@ final class CheckProductSeoUrlsWithoutContextCommandTest extends IntegrationTest
     public function itListsProductUrlsWithoutContext(): void
     {
         $productId = uniqid();
+        $productWithContextId = uniqid();
+        $vendorId = uniqid();
+        $this->insertProduct($productId, $vendorId);
+        $this->insertProduct($productWithContextId, $vendorId);
         $seoUrlWithoutContext = 'without-context-' . uniqid() . '.html';
         $seoUrlWithContext = 'with-context-' . uniqid() . '.html';
-        $this->insertProductSeoUrl($productId, $seoUrlWithoutContext, 'index.php?cl=details&amp;anid=' . $productId);
         $this->insertProductSeoUrl(
             $productId,
+            $seoUrlWithoutContext,
+            'index.php?cl=details&amp;anid=' . $productId,
+            $vendorId
+        );
+        $this->insertProductSeoUrl(
+            $productWithContextId,
             $seoUrlWithContext,
-            'index.php?cl=details&amp;anid=' . $productId . '&amp;cnid=category-id'
+            'index.php?cl=details&amp;anid=' . $productWithContextId . '&amp;cnid=v_' . $vendorId
+            . '&amp;listtype=vendor',
+            $vendorId
         );
 
         $exitCode = $this->commandTester->execute([]);
@@ -46,7 +58,7 @@ final class CheckProductSeoUrlsWithoutContextCommandTest extends IntegrationTest
         $this->assertSame(0, $exitCode);
         $this->assertStringContainsString($seoUrlWithoutContext, $output);
         $this->assertStringNotContainsString($seoUrlWithContext, $output);
-        $this->assertStringContainsString('Found 1 product SEO URLs without context', $output);
+        $this->assertStringContainsString('Found 1 fixed product SEO URLs without context', $output);
     }
 
     #[Test]
@@ -56,7 +68,7 @@ final class CheckProductSeoUrlsWithoutContextCommandTest extends IntegrationTest
 
         $this->assertSame(0, $exitCode);
         $this->assertStringContainsString(
-            'No product SEO URLs without context found',
+            'No fixed product SEO URLs without context found',
             $this->commandTester->getDisplay()
         );
     }
@@ -70,7 +82,21 @@ final class CheckProductSeoUrlsWithoutContextCommandTest extends IntegrationTest
         $this->assertSame('oe:consistency_check:check-product-seo-urls-without-context', $command->getName());
     }
 
-    private function insertProductSeoUrl(string $productId, string $seoUrl, string $stdUrl): void
+    private function insertProduct(string $productId, string $vendorId): void
+    {
+        $product = oxNew(Article::class);
+        $product->setId($productId);
+        $product->setSkipAssign(true);
+        $product->assign([
+            'oxartnum' => uniqid(),
+            'oxtitle' => uniqid(),
+            'oxactive' => 1,
+            'oxvendorid' => $vendorId,
+        ]);
+        $product->save();
+    }
+
+    private function insertProductSeoUrl(string $productId, string $seoUrl, string $stdUrl, string $params): void
     {
         $queryBuilder = $this->get(QueryBuilderFactoryInterface::class)->create();
         $queryBuilder
@@ -97,7 +123,7 @@ final class CheckProductSeoUrlsWithoutContextCommandTest extends IntegrationTest
                 'type' => 'oxarticle',
                 'fixed' => 1,
                 'expired' => 0,
-                'params' => uniqid(),
+                'params' => $params,
             ])
             ->execute();
     }

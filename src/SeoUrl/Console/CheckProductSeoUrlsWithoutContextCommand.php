@@ -15,10 +15,10 @@ final class CheckProductSeoUrlsWithoutContextCommand extends AbstractCheckSeoUrl
 {
     protected static $defaultName = 'oe:consistency_check:check-product-seo-urls-without-context';
 
-    private const COMMAND_DESCRIPTION = 'Check for product SEO URLs whose standard URL is missing the '
+    private const COMMAND_DESCRIPTION = 'Check for fixed product SEO URLs whose standard URL is missing the '
         . 'category, vendor or manufacturer context';
-    private const MESSAGE_NO_RESULTS = 'No product SEO URLs without context found';
-    private const MESSAGE_RESULTS = 'Found %d product SEO URLs without context. '
+    private const MESSAGE_NO_RESULTS = 'No fixed product SEO URLs without context found';
+    private const MESSAGE_RESULTS = 'Found %d fixed product SEO URLs without context. '
         . 'Save the SEO settings of these products again in the admin area to fix them';
 
     protected function findAllUrls(InputInterface $input): array

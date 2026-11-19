@@ -24,8 +24,8 @@ interface SeoUrlRepositoryInterface
     public function findDuplicateUrls(string $suffix): array;
 
     /**
-     * Product SEO URLs saved for a category, vendor or manufacturer (OXPARAMS),
-     * whose standard URL lost that context.
+     * Fixed product SEO URLs saved for a category, vendor or manufacturer (OXPARAMS) that is still
+     * assigned to the product, whose standard URL lost that context.
      *
      * @return array<SeoUrlDtoInterface>
      */

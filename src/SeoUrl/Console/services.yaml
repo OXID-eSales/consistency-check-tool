@@ -20,7 +20,7 @@ services:
   OxidEsales\ConsistencyCheck\SeoUrl\Console\CheckProductSeoUrlsWithoutContextCommand:
     arguments:
       $configurationFactory: '@OxidEsales\ConsistencyCheck\SeoUrl\Factory\ProductSeoUrlWithoutContextExportConfigurationFactory'
-      $logger: '@OxidEsales\ConsistencyCheck\ImageManager\Logger'
+      $logger: '@OxidEsales\ConsistencyCheck\Shared\Infrastructure\Logger'
     tags:
       - { name: 'console.command', command: 'oe:consistency_check:check-product-seo-urls-without-context' }
 

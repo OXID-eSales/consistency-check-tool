@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [3.2.0] - Unreleased
 
 ### Added
-- Console command `oe:consistency_check:check-product-seo-urls-without-context` to find product SEO URLs saved for a category, vendor or manufacturer whose standard URL is missing that context
+- Console command `oe:consistency_check:check-product-seo-urls-without-context` to find fixed product SEO URLs saved for a category, vendor or manufacturer whose standard URL is missing that context
 
 ## [3.1.0] - 2026-10-20
 

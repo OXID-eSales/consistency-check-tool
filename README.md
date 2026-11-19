@@ -141,7 +141,7 @@ $ vendor/bin/oe-console oe:consistency_check:check-duplicate-seo-urls --export
 ```
 
 ### Check Product SEO URLs Without Context
-Detect product SEO URLs that were saved for a category, vendor or manufacturer (`OXPARAMS`), but whose
+Detect fixed product SEO URLs that were saved for a category, vendor or manufacturer (`OXPARAMS`), but whose
 standard URL (`OXSTDURL`) is missing that context (`cnid`/`mnid`). Older shop versions stored such entries
 when the SEO settings of a product were saved in the admin area:
 ```bash
@@ -156,6 +156,12 @@ $ vendor/bin/oe-console oe:consistency_check:check-product-seo-urls-without-cont
 The command only reports the entries. To fix one, open the product in the admin area, go to the SEO tab,
 select the category, vendor or manufacturer from the `OXPARAMS` column, and save the SEO settings again
 with a shop version that contains the fix.
+
+The following entries are not reported, because there is nothing to fix for an admin:
+- Entries that are not fixed (`OXFIXED = 0`). The shop regenerates them with the correct standard URL,
+  e.g. after "Update SEO URLs" in the admin area and the next visit of the product page.
+- Entries whose category, vendor or manufacturer is no longer assigned to the product. The shop does not
+  create links for this context anymore, and it can not be selected in the SEO tab of the product.
 > **Note:** Do not delete these entries with `delete-seo-urls`. They were saved by an admin
 > and usually contain a manually edited SEO URL, which would be lost.
 
