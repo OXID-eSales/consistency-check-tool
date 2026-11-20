@@ -284,11 +284,6 @@ final class SeoUrlRepositoryTest extends IntegrationTestCase
             'category' => ['oxarticle', '&amp;cnid=' . $contextId, $contextId],
             'vendor' => ['oxarticle', '&amp;cnid=v_' . $contextId . '&amp;listtype=vendor', $contextId],
             'manufacturer' => ['oxarticle', '&amp;mnid=' . $contextId . '&amp;listtype=manufacturer', $contextId],
-            'recommendation list' => [
-                'oxarticle',
-                '&amp;recommid=' . $contextId . '&amp;listtype=recommlist',
-                $contextId,
-            ],
             'other seo type' => ['oxcategory', '', $contextId],
         ];
     }

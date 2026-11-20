@@ -24,7 +24,7 @@ final class SeoUrlRepository implements SeoUrlRepositoryInterface
     private const ROOT_OBJECT_ID = 'root';
     private const DELETE_CHUNK_SIZE = 500;
     private const PRODUCT_SEO_TYPE = 'oxarticle';
-    private const STD_URL_CONTEXT_PATTERNS = ['%cnid=%', '%mnid=%', '%recommid=%'];
+    private const STD_URL_CONTEXT_PATTERNS = ['%cnid=%', '%mnid=%'];
 
 
     /**
